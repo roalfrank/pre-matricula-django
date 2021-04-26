@@ -1,0 +1,111 @@
+{% load static %}
+{% load menu %}
+{% tipo_menu request as tipos %}
+{% load sitio_confi%}
+{% sitio_web as sitio%}
+<!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: {{sitio.color_sider}};">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link mb-2">
+      {% if sitio.icono %}
+      <i class="fas {{sitio.icono}}" style="margin-left: 5%;"></i>
+      {%else%}
+      <img src="{% static 'lib/adminlte-master/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      {%endif%}
+      <span class="brand-text font-weight-light">{{sitio.nombre}}</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- SidebarSearch Form -->
+      <div class="form-inline" style="background-color: brown;">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" style='background-color: white; color:black' type="search" placeholder="Buscar Módulo" aria-label="Buscar">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                    <li class="nav-item">
+                <a href="/" class="nav-link {% activo_inicio request %}">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>
+                    Panel Principal
+                  </p>
+                </a>
+              </li>
+    {% for tm in tipos %}
+      {% is_active_tm request  as tm_activo %}
+      
+      {% if tm.estado %}
+            <li class="nav-item {% if tm_activo == tm %}menu-open{%endif%}">
+              <a href="#" class="nav-link  {% if tm_activo == tm %}active{%endif%} " style="background-color: {%if tm_activo == tm %}{{sitio.color_activo_menu}};{%else%}{{sitio.color_no_activo_menu}};{%endif%}">
+                <i class="nav-icon fas {{ tm.icono }}"></i>
+                <p>
+                  {{tm.nombre}}
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+            <ul class="nav nav-treeview">
+            {% modulo_for_groups request tm as modulos%}
+            {% if modulos %}
+               {% for m in modulos %}
+               <!--and request.user.groups.all in m.grupos.all-->
+                  {%if m.estado %}
+                  <li class="nav-item ">
+                      <a href="{{m.get_url}}" class="nav-link {% activo request m.url_path %}" >
+                        <i class="fas {{ m.icono }} nav-icon"></i>
+                        <p>{{m.nombre}}</p>
+                      </a>
+                      <span>{{m.url}}</span>
+                  </li>
+                  {%endif%}
+               {%endfor%}
+            {%endif%}
+
+            {% if tm.padre %}
+                {% for hijo in tm.padre.all %}
+                    {% if hijo.estado %}
+                      {%if hijo.modulos.all  %} 
+                      
+                         <li class="nav-item {% if tm_activo == hijo %}menu-open{%endif%} " >
+                            <a href="#" class="nav-link " style="background-color: rgba(158, 71, 55, 0.322);">
+                              <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>
+                               {{hijo.nombre}}
+                               <i class="right fas fa-angle-left"></i>
+                            </p>
+                         </a>
+                           <ul class="nav nav-treeview">
+                           {% for m in hijo.modulos.all %}
+                              <li class="nav-item">
+                                <a href="{{m.get_url}}" class="nav-link {% activo request m.url_path %}">
+                                  <i class="far fa-circle nav-icon"></i>
+                                  <p>{{m.nombre}}</p>
+                                </a>
+                             </li>
+                            {%endfor%}
+                           </ul>
+                      {%endif %}
+                    {%endif%}
+                    </li>
+                {%endfor%}
+             {%endif%}
+            </ul>
+            </li>
+      {% endif %}
+    {%endfor%}
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

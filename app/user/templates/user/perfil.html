@@ -1,0 +1,710 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block contenido %}
+<div class="row">
+    <div class="col-md-3">
+
+        <!-- Profile Image -->
+        <div class="card card-primary card-outline">
+            <div class="card-body box-profile"><!--"{% static 'lib/adminlte-master/img/user2-160x160.jpg' %}"-->
+                <div class="text-center">
+                    <img class="profile-user-img img-fluid img-circle" src="{{request.user.perfil.get_image}}"
+                        alt="User profile picture">
+                </div>
+
+                <h3 class="profile-username text-center">{{request.user.get_full_name}}</h3>
+
+                <p class="text-perfil text-center"><i class='fas fa-user'></i> {{request.user.get_cargo_display}} - <i class='fas fa-university'></i> {{request.user.entidad}}</p>
+                <ul class="list-group list-group-unbordered mb-3">
+                    <li class="list-group-item">
+                        <b><i class='fas fa-cart-plus'></i> Dic</b>
+                        <a class="float-right text-perfil">$1,322 (<span style="color: white; font-weight: bolder;">90%</span>)</a>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 90%"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <b><i class='fas fa-cart-plus'></i> 2020</b> <a class="float-right text-perfil">$20,000(<span style="color: white; font-weight: bolder;">60%</span>)</a>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 60%"></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <b><span style="height: 50%;"><i class='fas fa-list-ol'></i></span> Servicios</b> <a class="float-right text-perfil"><span style="color: white; font-weight: bolder;">2</span></a>
+                    </li>
+                </ul>
+                <span><i class="far fa-clock mr-1"></i>Activo {{request.user.last_login|naturaltime}}</span>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+        <!-- About Me Box -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Datos</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <strong><i class="fas fa-book mr-1"></i> Educación</strong>
+                <p class="text-perfil">
+                    {{request.user.perfil.estudios}}
+                </p>
+                <hr>
+                <strong><i class="fas fa-map-marker-alt mr-1"></i> Dirección</strong>
+                <p class="text-perfil">{{request.user.perfil.direccion}}</p>
+                <hr>
+                <strong><i class="fas fa-phone mr-1"></i> Teléfono</strong>
+                <p class="text-perfil"> {{request.user.perfil.telefono}}</p>
+                <hr>
+                <strong><i class="fas fa-pencil-alt mr-1"></i> Dominio</strong>
+                <p class="text-perfil">
+                    {% for e in request.user.perfil.domina.all%}
+                    <span class="tag tag-danger">{{e.nombre}}</span>
+                    {%endfor %}
+                </p>
+                <hr>
+                <strong><i class="far fa-file-alt mr-1"></i> Notas</strong>
+                <p class="text-perfil">{{request.user.perfil.notas}}</p>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                    <li class="nav-item"><a class="nav-link active" id='frank' href="#ventas" data-toggle="tab"><i class='fas fa-cart-plus'></i> Ventas</a></li>
+                    <li class="nav-item"><a class="nav-link" id='frank' href="#servicios" data-toggle="tab"><i class='fa fa-address-card'></i> Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" id='frank' href="#notificacion" data-toggle="tab"><i class='fas fa-bullhorn'></i> Notificaciones <span class="badge badge-warning">15</span></a></li>
+                    <li class="nav-item"><a class="nav-link" id='frank' href="#mensajes" data-toggle="tab"><i class='fas fa-envelope'></i> Mensajes <span class="badge badge-danger">15</span></a></li>
+                </ul>
+            </div><!-- /.card-header -->
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="ventas">
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <div class="d-flex justify-content-between">
+                                    <h3 class="card-title"><i class='fas fa-cart-plus'></i> Ventas Diciembre</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <p class="d-flex flex-column">
+                                        <span class="text-bold text-lg">$3,000</span>
+                                        <span>Totales Ventas</span>
+                                    </p>
+                                    <p class="ml-auto d-flex flex-column text-right">
+                                        <span class="text-success">
+                                            <i class="fas fa-arrow-up"></i> 50%
+                                        </span>
+                                        <span class="text-perfil">Plan</span>
+                                    </p>
+                                </div>
+                                <!-- /.d-flex -->
+                        
+                                <div class="position-relative mb-4">
+                                    <canvas id="ventas-mes-chart" height="200"></canvas>
+                                </div>
+                        
+                                <div class="d-flex flex-row justify-content-end">
+                                    <span class="mr-2">
+                                        <i class="fas fa-square text-primary"></i> Ventas
+                                    </span>
+                        
+                                    <span>
+                                        <i class="fas fa-square text-gray"></i> Plan
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <div class="d-flex justify-content-between">
+                                    <h3 class="card-title"><i class='fas fa-cart-plus'></i> Ventas 2020</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <p class="d-flex flex-column">
+                                        <span class="text-bold text-lg">$13,000</span>
+                                        <span>Totales Ventas</span>
+                                    </p>
+                                    <p class="ml-auto d-flex flex-column text-right">
+                                        <span class="text-warning">
+                                            <i class="fas fa-arrow-down"></i> 5%
+                                        </span>
+                                        <span class="text-perfil">Plan</span>
+                                    </p>
+                                </div>
+                                <!-- /.d-flex -->
+                        
+                                <div class="position-relative mb-4">
+                                    <canvas id="ventas-anual-chart" height="200"></canvas>
+                                </div>
+                        
+                                <div class="d-flex flex-row justify-content-end">
+                                    <span class="mr-2">
+                                        <i class="fas fa-square text-primary"></i> Ventas
+                                    </span>
+                        
+                                    <span>
+                                        <i class="fas fa-square text-gray"></i> Plan
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="servicios">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title"><i class='fa fa-address-card'></i> Plan de Servicios Diciembre</h3>
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-tool btn-sm">
+                                    Mes <i class="fas fa-search"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Servicio</th>
+                                        <th>Plan</th>
+                                        <th>Ventas</th>
+                                        <th>Analizar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bell'></i>
+                                            Tiempo Máquina
+                                        </td>
+                                        <td>$2,000.</td>
+                                        <td>
+                                            <small class="text-success mr-1">
+                                                <i class="fas fa-arrow-up"></i>
+                                                50%
+                                            </small>
+                                            $1,000
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bell'></i>
+                                            Navegación
+                                        </td>
+                                        <td>$3,000.</td>
+                                        <td>
+                                            <strong>
+                                                <small class="text-danger mr-1">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                    10%
+                                                </small>
+                                            </strong>
+                                            $300
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bars'></i>
+                                            Alquiler de PC(N)
+                                        </td>
+                                        <td>$20,000.</td>
+                                        <td>
+                                            <small class="text-success mr-1">
+                                                <i class="fas fa-arrow-up"></i>
+                                                105%
+                                            </small>
+                                            $21,000.
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-book'></i>
+                                            Graduados(Cursos)
+                                            <span class="badge bg-danger">Nuevo</span>
+                                        </td>
+                                        <td>200</td>
+                                        <td>
+                                            <small class="text-warning mr-1">
+                                                <i class="fas fa-arrow-down"></i>
+                                                10%
+                                            </small>
+                                            20
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bell'></i>
+                                            Tiempo Máquina
+                                        </td>
+                                        <td>$2,000.</td>
+                                        <td>
+                                            <small class="text-success mr-1">
+                                                <i class="fas fa-arrow-up"></i>
+                                                50%
+                                            </small>
+                                            $1,000
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bell'></i>
+                                            Tiempo Máquina
+                                        </td>
+                                        <td>$2,000.</td>
+                                        <td>
+                                            <small class="text-success mr-1">
+                                                <i class="fas fa-arrow-up"></i>
+                                                50%
+                                            </small>
+                                            $1,000
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bell'></i>
+                                            Tiempo Máquina
+                                        </td>
+                                        <td>$2,000.</td>
+                                        <td>
+                                            <small class="text-success mr-1">
+                                                <i class="fas fa-arrow-up"></i>
+                                                50%
+                                            </small>
+                                            $1,000
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <i class='fas fa-bell'></i>
+                                            Tiempo Máquina
+                                        </td>
+                                        <td>$2,000.</td>
+                                        <td>
+                                            <small class="text-success mr-1">
+                                                <i class="fas fa-arrow-up"></i>
+                                                50%
+                                            </small>
+                                            $1,000
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-perfil">
+                                                <i class="fas fa-search"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                    <div class="tab-pane" id="notificacion">
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <h3 class="card-title"><i class='fas fa-bullhorn'></i> Últimas notificaciones</h3>
+                                <div class="card-tools">
+                                </div>
+                            </div>
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-striped table-valign-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Titulo</th>
+                                            <th>Mensaje</th>
+                                            <th>Enviado</th>
+                                            <th>Ver</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Recogida de Uniforme!
+                                            </td>
+                                            <td>A todos los trabajadores, se estan dando el uniforme en provincia.</td>
+                                            <td>
+                                                <img src="{% static 'lib/adminlte-master/img/user2-160x160.jpg'%}" class='img-size-32 img-circle' alt="Guillermo Constantin">
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Navegación
+                                            </td>
+                                            <td>$3,000.</td>
+                                            <td>
+                                                <strong>
+                                                    <small class="text-danger mr-1">
+                                                        <i class="fas fa-arrow-down"></i>
+                                                        10%
+                                                    </small>
+                                                </strong>
+                                                $300
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bars'></i>
+                                                Alquiler de PC(N)
+                                            </td>
+                                            <td>$20,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    105%
+                                                </small>
+                                                $21,000.
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-book'></i>
+                                                Graduados(Cursos)
+                                                <span class="badge bg-danger">Nuevo</span>
+                                            </td>
+                                            <td>200</td>
+                                            <td>
+                                                <small class="text-warning mr-1">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                    10%
+                                                </small>
+                                                20
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="mensajes">
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <h3 class="card-title"><i class='fas fa-envelope'></i> Últimos Mensajes</h3>
+                                <div class="card-tools">
+                                </div>
+                            </div>
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-striped table-valign-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Titulo</th>
+                                            <th>Mensaje</th>
+                                            <th>Enviado</th>
+                                            <th>Ver</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Recogida de Uniforme!
+                                            </td>
+                                            <td>A todos los trabajadores, se estan dando el uniforme en provincia.</td>
+                                            <td>
+                                                <img src="{% static 'lib/adminlte-master/img/user2-160x160.jpg'%}"
+                                                    class='img-size-32 img-circle' alt="Guillermo Constantin">
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Navegación
+                                            </td>
+                                            <td>$3,000.</td>
+                                            <td>
+                                                <strong>
+                                                    <small class="text-danger mr-1">
+                                                        <i class="fas fa-arrow-down"></i>
+                                                        10%
+                                                    </small>
+                                                </strong>
+                                                $300
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bars'></i>
+                                                Alquiler de PC(N)
+                                            </td>
+                                            <td>$20,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    105%
+                                                </small>
+                                                $21,000.
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-book'></i>
+                                                Graduados(Cursos)
+                                                <span class="badge bg-danger">Nuevo</span>
+                                            </td>
+                                            <td>200</td>
+                                            <td>
+                                                <small class="text-warning mr-1">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                    10%
+                                                </small>
+                                                20
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <i class='fas fa-bell'></i>
+                                                Tiempo Máquina
+                                            </td>
+                                            <td>$2,000.</td>
+                                            <td>
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    50%
+                                                </small>
+                                                $1,000
+                                            </td>
+                                            <td>
+                                                <a href="#" class="text-perfil">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div><!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+{% endblock  %}
+{%block js %}
+<!-- OPTIONAL SCRIPTS -->
+<script src="{% static 'lib/adminlte-master/plugins/chart.js/Chart.min.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'js/perfil.js'%}"></script>
+{%endblock%}
