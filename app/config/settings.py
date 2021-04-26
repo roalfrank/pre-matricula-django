@@ -43,8 +43,7 @@ INSTALLED_APPS = [
     "user",
     "widget_tweaks",
     "django.contrib.humanize",
-
-
+    "preMatricula",
 ]
 
 MIDDLEWARE = [
