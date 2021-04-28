@@ -15,22 +15,11 @@ CHOICES_CARGO = [
 
 
 class User(AbstractUser):
-    entidad = models.ForeignKey(
-        to='sitio.Entidad', on_delete=models.SET_NULL, null=True, blank=True)
     cargo = models.CharField(
         max_length=15, choices=CHOICES_CARGO, null=True, blank=True)
 
     def __str__(self):
         return f"{self.username}"
-
-
-class Etiqueta_Domina(models.Model):
-    nombre = models.CharField(
-        max_length=40, verbose_name="Etiqueta para Domina")
-
-    def __str__(self):
-        return self.nombre
-
 
 class Perfil(models.Model):
     user = models.OneToOneField(
@@ -45,7 +34,6 @@ class Perfil(models.Model):
         max_length=15, null=True, blank=True, verbose_name="Teléfono")
     notas = models.CharField(max_length=200, null=True,
                              blank=True, verbose_name="Notas")
-    domina = models.ManyToManyField(Etiqueta_Domina)
 
     def __str__(self):
         return f"{self.user.username}"
