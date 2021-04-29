@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "user",
     "widget_tweaks",
     "django.contrib.humanize",
-    "preMatricula",
+    "core.preMatricula",
 ]
 
 MIDDLEWARE = [
@@ -139,3 +139,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 LOGIN_URL = '/login/'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3600
+SESSION_SAVE_EVERY_REQUEST = True
