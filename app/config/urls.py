@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include("sitio.urls")),
     path('login/', include("login.urls")),
     path('perfil/', include("user.urls")),
+    path('sistema/', include("core.preMatricula.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

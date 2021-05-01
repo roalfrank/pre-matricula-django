@@ -8,7 +8,7 @@ a:hover {
 /*color del menu sin activar*/
 .no-active{
   color: #ffff !important;
-  background-color: #17a2b8;
+  background-color: transparent;
 }
 /*Icono de info- presentacion panel */
 .icono_panel_info{
