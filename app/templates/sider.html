@@ -3,6 +3,7 @@
 {% tipo_menu request as tipos %}
 {% load sitio_confi%}
 {% sitio_web as sitio%}
+{% is_active_tm request  as tm_activo %}
 <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: {{sitio.color_sider}};">
     <!-- Brand Logo -->
@@ -43,10 +44,9 @@
                 </a>
               </li>
     {% for tm in tipos %}
-      {% is_active_tm request  as tm_activo %}
-      
+      {% is_papa tm_activo tm as espapa%}
       {% if tm.estado %}
-            <li class="nav-item {% if tm_activo == tm %}menu-open{%endif%}">
+            <li class="nav-item {% if tm_activo == tm or espapa %}menu-open{%endif%}">
               <a href="#" class="nav-link  {% if tm_activo == tm %}active{%endif%} " style="background-color: {%if tm_activo == tm %}{{sitio.color_activo_menu}};{%else%}{{sitio.color_no_activo_menu}};{%endif%}">
                 <i class="nav-icon fas {{ tm.icono }}"></i>
                 <p>

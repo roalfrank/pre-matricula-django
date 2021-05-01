@@ -9,21 +9,21 @@ class Sitio_Web(models.Model):
     nombre = models.CharField(
         max_length=20, unique=True, verbose_name="Nombre del sitio")
     color_activo_menu = models.CharField(
-        max_length=20, verbose_name="Color activo menu", default="#2d0604c7")
+        max_length=20, verbose_name="Color activo menu", default="#007bff")
     color_no_activo_menu = models.CharField(
         max_length=20, verbose_name="Color menu no activo", default="#11101070")
     color_sider = models.CharField(
-        max_length=20, verbose_name="Color sider", default="#343a40")
+        max_length=20, verbose_name="Color sider", default="#0087c3")
     color_footer = models.CharField(
-        max_length=20, verbose_name="Color footer", default="#343a40")
+        max_length=20, verbose_name="Color footer", default="#e8e8ea")
     color_header = models.CharField(
-        max_length=20, verbose_name="Color header", default="#343a40")
+        max_length=20, verbose_name="Color header", default="#26bdef")
     color_text_body = models.CharField(
         max_length=20, verbose_name="Color Texto Body", default="rgb(9, 79, 102)")
     color_contenido = models.CharField(
-        max_length=20, verbose_name="Color contenido", default="rgb(9, 79, 102)")
+        max_length=20, verbose_name="Color contenido", default="#fffff")
     color_fondo_inicio = models.CharField(
-        max_length=20, verbose_name="Color Fondo Inicio", default="rgb(9, 79, 102)")
+        max_length=20, verbose_name="Color Fondo Inicio", default="#26bdef")
 
     icono = models.CharField(max_length=20, null=True, blank=True,
                              verbose_name="Icono del sitio Barra Lateral")
@@ -66,24 +66,3 @@ class Modulo(models.Model):
 
 # modelos de la entidad
 
-
-class Jcc(models.Model):
-    nombre = models.CharField(max_length=150, verbose_name='Nombre Jcc')
-    endidad_lugar = models.OneToOneField(
-        to="sitio.Entidad", on_delete=models.SET_NULL, null=True, blank=True)
-    director = models.OneToOneField(
-        User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    def __str__(self):
-        return self.nombre
-
-
-class Entidad(models.Model):
-    nombre = models.CharField(max_length=150, verbose_name='Nombre Entidad')
-    direccion = models.CharField(
-        max_length=300, verbose_name="Direccion", null=True, blank=True)
-    telefono = models.CharField(max_length=8, verbose_name="Telefono")
-    from_jcc = models.ForeignKey(Jcc, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return self.nombre
