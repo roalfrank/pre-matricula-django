@@ -31,6 +31,23 @@ def is_active_tm(request):
 
 
 @register.simple_tag
+def is_papa(hijo, papa):
+    try:
+        if hijo.padre_tipo == papa:
+            return True
+        return False
+        #print(f"{}")
+        #print(f"{papa}")
+        # if hijo in papa.padre_tipo.all():
+        #     print(f"Si soy papa- {hijo}")
+        #     return True
+        # print(f'desde is_papa - {hijo}')
+        # return False
+    except:
+        return False
+
+
+@register.simple_tag
 def activo(request, urlconfi):
     try:
         url_reverse = reverse(urlconfi)
