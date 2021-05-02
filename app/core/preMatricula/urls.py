@@ -1,8 +1,8 @@
 from django.urls import path
-from core.preMatricula.logica.tbentidad.Provincia.views import createProvincia
+from core.preMatricula.logica.tbentidad.Provincia.views import ProvinciaListView
 
 app_name = "prematricula"
 
 urlpatterns = [
-    path("provincia/list/", createProvincia, name="listar-provincia"),
+    path("provincia/", ProvinciaListView.as_view(), name="listar-provincia"),
 ]

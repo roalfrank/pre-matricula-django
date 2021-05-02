@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect
 from config import settings
-from .models import TipoModulo, Modulo
+
 # Create your views here.
 
 
 def dashBoardPrincipal(request):
-    activo_menu = []
     if not request.user.is_authenticated:
         return redirect("login:login-user")
-    if Modulo.objects.filter(nombre="mas 3"):
-        activo_menu = Modulo.objects.filter(nombre="mas 3")[0]
     context = {
         "title": "Panel Principal",
         'notificaciones': [
@@ -49,3 +46,4 @@ def dashBoardPrincipal(request):
         "icono_titulo": "fas fa-tachometer-alt"
     }
     return render(request, "sitio/dashboartPrincipal.html", context)
+

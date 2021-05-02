@@ -1,5 +1,5 @@
 {% load static  %}
-<table class="table table-striped table-valign-middle">
+<table class="table table-striped table-valign-middle"id='{{id_table}}'>
         <thead>
             <tr>
             {% if encabezado %}
@@ -7,9 +7,7 @@
                     <th>{{columna.nombre}}</th>
                 {% endfor%}
             {% else %}
-                <th>lolo</th>
-                <th>lolo</th>
-                <th>lolo</th>
+               <p>Falta encabezado</p>
             {% endif %}
             </tr>
         </thead>
@@ -17,18 +15,11 @@
             {% if body %}
                 {% for fila in body%}
                 <tr>
+                    {%for k, v in fila.items%}
                     <td>
-                        <img src="{% static 'img/python.png' %}" class="img-tabla-curso card-img-top h-md-25 w-md-50 m-2 rounded"  alt="...">
-                        {{fila.nombre}}
+                        {{v}}
                     </td>
-                    <td>
-                        {{fila.municipio}}
-                    </td>
-                    {% if fila.tipo %}
-                    <td>
-                        {{fila.tipo}}
-                    </td>
-                    {% endif %}
+                    {%endfor%}
                     <td>
                     <a href="#" class="text-perfil">
                         <i class="fas fa-search"></i>

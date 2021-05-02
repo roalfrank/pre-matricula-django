@@ -1,5 +1,35 @@
-{% extends 'base.html' %}
+{% extends 'element_comun/list.html' %}
 
-{%block contenido%}
-<H1>Hola Mundo</H1>
+{% block columns %}
+<tr>
+    <th>Id</th>
+    <th>Nombre</th>
+    <th>Acción</th>
+</tr>
+{% endblock %}
+
+{% block rows %}
+{%for provincia in object_list%}
+<tr>
+    <th>
+        {{provincia.id}}
+    </th>
+    <th>
+        {{provincia.nombre}}
+    </th>
+    <th>
+        <a href="." ><i class="fa fa-times" aria-hidden="true"></i></a>
+        <a href="." ><i class="fa-fa-outdent" aria-hidden="true"></i></a>
+    </th>
+</tr>
+{%endfor%}
+
+{% endblock %}
+
+{%block js_listar%}
+<script>
+    $(function () {
+        $('#data').DataTable();
+    });
+</script>
 {%endblock%}
