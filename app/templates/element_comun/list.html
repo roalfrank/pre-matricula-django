@@ -8,10 +8,13 @@
 {% endblock  %}
 
 {% block contenido %}
+<div class='d-flex justify-content-end pb-2'>
+    <button type="button" class="btn btn-default" id='btnNuevo' >
+        <i class="fa fa-plus"></i>
+    </button>
+</div>
 <div class="card ">
-    <div class="card-header">
-        
-    </div>
+   
     <div class="card-body">
         <table class="table table-bordered" id="data">
             <thead>
@@ -38,5 +41,8 @@
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'lib/jquery-validation/jquery.validate.min.js'%}"></script>
+<script src="{% static 'lib/jquery-validation/additional-methods.min.js'%}"></script>
 {%block js_listar%}{%endblock%}
 {% endblock %}

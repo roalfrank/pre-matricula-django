@@ -1,8 +1,13 @@
 from django.db import models
+from django.forms import model_to_dict
 
 # Create your models here.
 class Provincia(models.Model):
-    nombre = models.CharField(max_length=100,verbose_name="Provincia")
+    nombre = models.CharField(max_length=100,verbose_name="Provincia",unique=True)
+
+    def toJson(self):
+        item = model_to_dict(self)
+        return item
 
     def __str__(self):
         return self.nombre
