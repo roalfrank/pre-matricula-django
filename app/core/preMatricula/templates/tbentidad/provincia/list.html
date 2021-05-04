@@ -13,13 +13,21 @@
       <th >Acción</th>
     </tr>
 {% endblock %}
+{% block boton_accion%}
+    <button type="button" class="btn btn-default" id='btnNuevo' >
+        <i class="fa fa-plus"></i>
+    </button>
+    <button type="button" class="btn btn-danger  ml-1" id='btnDeleteAll' >
+        <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
+    </button>
+    {% endblock%}
 {%block modal_listar%}
 <div class="modal fade" id="modal-nuevo">
   <form action="post" id='fromProvincia'>
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Default Modal</h4>
+          <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
           <button
             type="button"
             class="close"
@@ -53,11 +61,14 @@
 {%block js_listar%}
 <script>
   $(function () {
+    var modal_title = $('.modal-title');
+    var id_edit = null;
     var tblProvincia = $("#data").DataTable({
       responsive: true,
       autoWidth: false,
       destroy:true,
       deferRender:true,
+      loading:true,
       ajax:{
         url:window.location.pathname,
         type:'POST',
@@ -80,16 +91,21 @@
           visible:false,
         },
         {
+          targets:[1],
+          class: "text-center",
+        },
+        {
           targets: [-1],
           class: "text-center",
           orderable: false,
           render:function(data,type,row){
-            var buttons = '<a href="#"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
-            buttons += '<a href="#"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+            var buttons = '<a href="#" rel="edit" class="text-info"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+            buttons += '<a href="#" class="pl-2 text-danger"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
             return buttons
           }
         },
       ],
+      order:[[ 1, 'asc' ]],
       initComplete:function(settings,json){
 
       }
@@ -97,25 +113,44 @@
     
     $("#btnNuevo").on("click", function () {
       $('input[name="action"]').val("add");
+      modal_title.find('span').html("Crear Nueva Provincia");
+      modal_title.find('i').removeClass().addClass('fa fa-plus');
       document.getElementById('fromProvincia').reset();
       $("#modal-nuevo").modal("show");
     });
     
+    $('#data tbody').on('click','a[rel="edit"]',function(){
+      var tr = tblProvincia.cell($(this).closest('td,li')).index();
+      var data = tblProvincia.row(tr.row).data();
+      var result = Object.entries(data);
+      $('#fromProvincia input[type!="hidden"]').each(function(index,element){
+        element.value = result[index+1][1];
+      });
+      $('input[name="action"]').val("edit");
+      id_edit = result[0][1];
+      modal_title.find('span').html("Editar Provincia");
+      modal_title.find('i').removeClass().addClass('fa fa-edit');
+      $('#modal-nuevo').modal('show');
+    });
     $.validator.setDefaults({
       submitHandler: function (form) {
         var parametros = new FormData(form);
         console.log(parametros)
+        parametros.append('id_edit', id_edit);
+        console.log(parametros)
         submit_with_ajax(window.location.pathname,'Notificacion','Estas seguro de guardar los datos?',parametros,function(data){
-          console.log(data)
           if(data.enviado){
             $("#modal-nuevo").modal("hide");
             tblProvincia.ajax.reload();
             mensaje("success","Guardado el Registro - "+data.nombre);
+            id_edit=null;
           }
-            //location.reload();
+          else{
+            mensaje("error","Error Guardando el Registro - "+data.error );
+          }
         })
     }});
-    $("form").validate({
+    $("#fromProvincia").validate({
       rules: {
         nombre: {
           required: true,
@@ -125,9 +160,14 @@
                       type: "post",
                       data: {
                             action: "chequearProvincia",
-                                csrfmiddlewaretoken:function(){
+                            edit_id:function(){
+                              return id_edit;
+                            },
+                            csrfmiddlewaretoken:function(){
+                                  console.log(id_edit);
                                   return $('input[name="csrfmiddlewaretoken"]').val();
-                                }
+                                },
+                            
                         }
         }
           }
