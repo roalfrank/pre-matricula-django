@@ -100,7 +100,7 @@
           orderable: false,
           render:function(data,type,row){
             var buttons = '<a href="#" rel="edit" class="text-info"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
-            buttons += '<a href="#" class="pl-2 text-danger"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+            buttons += '<a href="#" rel="delete" class="pl-2 text-danger"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
             return buttons
           }
         },
@@ -132,12 +132,31 @@
       modal_title.find('i').removeClass().addClass('fa fa-edit');
       $('#modal-nuevo').modal('show');
     });
+    $('#data tbody').on('click','a[rel="delete"]',function(){
+        var tr = tblProvincia.cell($(this).closest('td,li')).index();
+        var data = tblProvincia.row(tr.row).data();
+        contexto = {
+          id:data.id,
+          action:"delete",
+          csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
+          },
+        with_ajax(window.location.pathname,"Eliminando","Estas seguro de eliminar este registro-"+data.nombre,contexto,function(data){
+          if (data.hasOwnProperty('error')){
+              mensaje("error","Error Guardando el Registro - "+data.error );
+              id_edit=null;
+          }
+          else{
+            $("#modal-nuevo").modal("hide");
+            tblProvincia.ajax.reload();
+            mensaje("success","Registro eliminado correctamente");
+            id_edit=null;
+          }
+        });
+    });
     $.validator.setDefaults({
       submitHandler: function (form) {
         var parametros = new FormData(form);
-        console.log(parametros)
         parametros.append('id_edit', id_edit);
-        console.log(parametros)
         submit_with_ajax(window.location.pathname,'Notificacion','Estas seguro de guardar los datos?',parametros,function(data){
           if(data.enviado){
             $("#modal-nuevo").modal("hide");
@@ -164,10 +183,8 @@
                               return id_edit;
                             },
                             csrfmiddlewaretoken:function(){
-                                  console.log(id_edit);
                                   return $('input[name="csrfmiddlewaretoken"]').val();
                                 },
-                            
                         }
         }
           }
