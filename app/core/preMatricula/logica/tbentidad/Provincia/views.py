@@ -12,9 +12,7 @@ import json
 from django.db.models.deletion import RestrictedError
 
 
-def provinciaList(request):
-    pass
-    #if request.POST
+
     
 class ProvinciaListView(TemplateView):
     template_name = "tbentidad/provincia/list.html"
@@ -30,6 +28,8 @@ class ProvinciaListView(TemplateView):
             action = request.POST['action']
             #action addd para adicionar registro
             if action == 'add':
+                print("add")
+                #print(request.POST)
                 form = ProvinciaForm(request.POST)
                 if form.is_valid():
                     form.save()
@@ -41,6 +41,8 @@ class ProvinciaListView(TemplateView):
             #action chequearProvincia , esto es para comprobar rapido si ya hay otra provincia con el Mismo Nombre
             elif action == 'chequearProvincia':
                 try:
+                    print("cheque")
+                    print(request.POST)
                     #chequeamos si estamos en editar o add . si es editar hacemos la consulta con NONe
                     #edit_id no se incluye en la consulta 
                     id_edit = request.POST['edit_id']
@@ -60,13 +62,15 @@ class ProvinciaListView(TemplateView):
             elif action == "cargarDatos":
                 #tiempo_inicial = time.time()
                 data = [i.toJson()  for i in Provincia.objects.all()]
-                print(data)
                 respuesta = JsonResponse(data, safe=False)
                 #tiempo = time.time() - tiempo_inicial
                 #print(tiempo)
                 return respuesta
             #action edit - editando una provincia.
             elif action=='edit':
+                print("edit")
+                #print("editd")
+                #print(request.POST)
                 provincia=Provincia.objects.get(pk=int(request.POST['id_edit']))
                 form = ProvinciaForm(request.POST,instance=provincia)
                 if form.is_valid():
@@ -82,7 +86,6 @@ class ProvinciaListView(TemplateView):
                     id_deletes = []
                     error = []
                     id = json.loads(request.POST["id"])
-                    print(id)
                     if type(id) == int:
                         id_deletes.append(id)
                     else:

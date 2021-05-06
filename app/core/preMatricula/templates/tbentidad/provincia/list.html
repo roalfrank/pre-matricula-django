@@ -1,11 +1,5 @@
 {% extends 'element_comun/list.html' %} {% load static %} 
-{% load widget_tweaks%} 
-{% block head_list %}
-<link
-  rel="stylesheet"
-  href="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.css'%}"
-/>
-{% endblock %} 
+ 
 {% block columns %}
     <tr>
       <th style="width: 5%;">Selecciona</th>
@@ -15,59 +9,10 @@
       <th style="width: 20%;">Acción</th>
     </tr>
 {% endblock %}
-{% block boton_accion%}
-    <button type="button" class="btn btn-default btn-xs" id='btnNuevo' >
-        <i class="fa fa-plus mr-2"></i><span>Nueva Provincia</span>
-    </button>
-    <button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll' >
-        <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
-    </button>
-    {% endblock%}
-{%block modal_listar%}
-<div class="modal fade" id="modal-nuevo">
-  <form action="post" id='fromProvincia'>
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="action" value="add" />
-          {% csrf_token %}
-          {% for field in form.visible_fields%}
-          <div class="form-group">
-            {{field.label_tag}}
-            {{field|add_class:'form-control'|attr:'autocomplete:off'}}
-          </div>
-          {%endfor%}
-        </div>
-        <div class="modal-footer justify-content-between">
-          <button type="submit" class="btn btn-primary vw-100">Guardar</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </form>
-</div>
-<div class="row" style="height: 2%;"></div>
-<!-- /.modal -->
-{%endblock%} 
 {%block js_listar%}
 <script>
   $(function () {
-    var modal_title = $('.modal-title');
-    var id_edit = null;
-    var tooltip = function(){$('[data-toggle="tooltip"]').tooltip()};
-    var tblProvincia = $("#data").DataTable({
+    var tblListar = $("#data").DataTable({
       responsive: true,
       autoWidth: false,
       destroy:true,
@@ -128,86 +73,26 @@
           }
         },
       ],
-      select:{
-        style:'multi',
-        selector:'td:first-child',
-      },
       order:[[ 1, 'asc' ]],
       initComplete:function(settings,json){
           tooltip();
       }
     });
+    
     $('#btnDeleteAll').on('click',function(){
-      var select_item = new Array();
-      $('#data input[type="checkbox"]:checked').each(function(){
-        var tr = tblProvincia.cell($(this).closest('td,li')).index();
-        var data = tblProvincia.row(tr.row).data();
-        select_item.push(data.id);
-      });
-      if(select_item.length == 0){ mensaje("info",'No hay registros seleccionados.');}
-      else{
-      var contexto = {
-          id:JSON.stringify(select_item),
-          action:"delete",
-          csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
-          }
-      console.log(contexto);
-      with_ajax(window.location.pathname,"Eliminando","Estas seguro de eliminar los registro seleccionados",contexto,function(data){
-          if (data.hasOwnProperty('error')){
-              mensaje("error","Estos registros están Restringido:  - "+data.error );
-              tblProvincia.ajax.reload();
-              id_edit=null;
-          }
-          else{
-            tblProvincia.ajax.reload();
-            mensaje("success","Registro eliminado correctamente");
-            id_edit=null;
-          }
-        });
-        }
+        delete_select(tblListar);
     });
 
     $("#btnNuevo").on("click", function () {
-      $('input[name="action"]').val("add");
-      modal_title.find('span').html("Crear Nueva Provincia");
-      modal_title.find('i').removeClass().addClass('fa fa-plus');
-      document.getElementById('fromProvincia').reset();
-      $("#modal-nuevo").modal("show");
+      abrir_modal_nuevo("Crear Provincia");
     });
     
-    $('#data tbody').on('click','a[rel="edit"]',function(){
-      var tr = tblProvincia.cell($(this).closest('td,li')).index();
-      var data = tblProvincia.row(tr.row).data();
-      var result = Object.entries(data);
-      $('#fromProvincia input[type!="hidden"]').each(function(index,element){
-        element.value = result[index+1][1];
-      });
-      $('input[name="action"]').val("edit");
-      id_edit = result[0][1];
-      modal_title.find('span').html("Editar Provincia");
-      modal_title.find('i').removeClass().addClass('fa fa-edit');
-      $('#modal-nuevo').modal('show');
+    $('#data tbody').on('click','a[rel="edit"]',function(element){
+      abrir_modal_editar("Editar Provincia",tblListar,element.currentTarget);
     });
-    $('#data tbody').on('click','a[rel="delete"]',function(){
-        var tr = tblProvincia.cell($(this).closest('td,li')).index();
-        var data = tblProvincia.row(tr.row).data();
-        contexto = {
-          id:data.id,
-          action:"delete",
-          csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
-          }
-        with_ajax(window.location.pathname,"Eliminando","Estas seguro de eliminar este registro-"+data.nombre,contexto,function(data){
-          if (data.hasOwnProperty('error')){
-              mensaje("error","Error Guardando el Registro - "+data.error );
-              id_edit=null;
-          }
-          else{
-            $("#modal-nuevo").modal("hide");
-            tblProvincia.ajax.reload();
-            mensaje("success","Registro eliminado correctamente");
-            id_edit=null;
-          }
-        });
+
+    $('#data tbody').on('click','a[rel="delete"]',function(element){
+      delete_registro(tblListar,element.currentTarget);
     });
     $.validator.setDefaults({
       submitHandler: function (form) {
@@ -216,7 +101,7 @@
         submit_with_ajax(window.location.pathname,'Notificacion','Estas seguro de guardar los datos?',parametros,function(data){
           if(data.enviado){
             $("#modal-nuevo").modal("hide");
-            tblProvincia.ajax.reload();
+            tblListar.ajax.reload();
             mensaje("success","Guardado el Registro - "+data.nombre);
             id_edit=null;
           }
@@ -225,7 +110,7 @@
           }
         })
     }});
-    $("#fromProvincia").validate({
+    $("#formRegistro").validate({
       rules: {
         nombre: {
           required: true,
