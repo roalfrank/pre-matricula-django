@@ -8,9 +8,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import  Q
 import time
+import json
 from django.db.models.deletion import RestrictedError
 
 
+def provinciaList(request):
+    pass
+    #if request.POST
+    
 class ProvinciaListView(TemplateView):
     template_name = "tbentidad/provincia/list.html"
     
@@ -55,6 +60,7 @@ class ProvinciaListView(TemplateView):
             elif action == "cargarDatos":
                 #tiempo_inicial = time.time()
                 data = [i.toJson()  for i in Provincia.objects.all()]
+                print(data)
                 respuesta = JsonResponse(data, safe=False)
                 #tiempo = time.time() - tiempo_inicial
                 #print(tiempo)
@@ -73,13 +79,28 @@ class ProvinciaListView(TemplateView):
             #action delete, eliminar una provincia
             elif action=="delete":
                 try:
-                    delet_provincia = Provincia.objects.get(pk=int(request.POST["id"]))
-                    delet_provincia.delete()
+                    id_deletes = []
+                    error = []
+                    id = json.loads(request.POST["id"])
+                    print(id)
+                    if type(id) == int:
+                        id_deletes.append(id)
+                    else:
+                        id_deletes.extend(id)
+                    delet_provincia = Provincia.objects.filter(pk__in=id_deletes)
+                    for provincia in delet_provincia:
+                        try:
+                            provincia.delete()
+                        except:
+                            error.append(f"{provincia.nombre}")
+                    if len(error)>0:
+                        data['error'] = error
                 except Exception as e:
                     if type(e) == RestrictedError:
                         data['error'] = "Esta provincia tiene municipios, no se puede borrar."
                     else:
-                        data['error']="Error durante la eliminacion del registro."
+                        print(type(e))
+                        data['error'] = e
         except Exception as e:
             #comprobar los errores , esto despues solo dejar a data['error']
             print(e)

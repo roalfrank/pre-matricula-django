@@ -7,6 +7,7 @@ class Provincia(models.Model):
 
     def toJson(self):
         item = model_to_dict(self)
+        item['cantmunicipio']=self.municipio_set.all().count()
         return item
 
     def __str__(self):
