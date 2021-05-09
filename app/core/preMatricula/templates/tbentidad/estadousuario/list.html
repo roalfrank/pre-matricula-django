@@ -5,24 +5,23 @@
       <th style="width: 5%;">Selecciona</th>
       <th >Id</th>
       <th style="width: 50%;">Nombre</th>
-      <th>CantMunicipio</th>
-      {% if perms.preMatricula.change_provincia or perms.preMatricula.delete_provincia %}
+      <!-- {% if perms.user.change_estado or perms.user.delete_estado %} -->
         <th style="width: 20%;">Acción</th>
-      {%endif%}
+      <!-- {%endif%} -->
       
     </tr>
 {% endblock %}
 {% block boton_accion%}
-  {% if perms.preMatricula.add_provincia%}
+  <!-- {% if perms.user.add_estado%} -->
     <button type="button" class="btn btn-default btn-xs" id='btnNuevo' >
         <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
     </button>
-  {%endif%}
-  {% if perms.preMatricula.delete_provincia%}
+  <!-- {%endif%}
+  {% if perms.user.delete_estado%} -->
     <button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll' >
         <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
     </button>
-  {% endif %}
+  <!-- {% endif %} -->
 {% endblock%}
 {%block js_listar%}
 <script>
@@ -49,10 +48,9 @@
         {"data":'id'},
         {"data":"id"},
         {"data":"nombre"},
-        {"data":"cantmunicipio"},
-        {% if perms.preMatricula.change_provincia or perms.preMatricula.delete_provincia %}
+        //{% if perms.user.change_estado or perms.user.delete_estado %}
         {"data":"nombre"}
-        {%endif%}
+        //{%endif%}
       ],
       columnDefs: [
         {
@@ -65,36 +63,30 @@
           }
         },
         {
-          targets:[1,3],
+          targets:[1],
           visible:false,
         },
         {
           targets:[2],
-          class: "text-center",
-          render:function(data,type,row){
-            var result = "";
-            result = '<div class="d-flex justify-content-center">'+row.nombre+'<span class="badge bg-success ml-2" data-toggle="tooltip" data-placement="right" title="Cantidad de Municipio" style="height: 1%;">'+row.cantmunicipio+'</span></div>';
-              //result = '<><span class="badge bg-success">'+row.cantmunicipio+'</span><h5>'+row.nombre+'</h5></>';
-            return result
-          }
+          class: "text-center"
         },
-        {% if perms.preMatricula.change_provincia or perms.preMatricula.delete_provincia %}
+        //{% if perms.user.change_estado or perms.user.delete_estado %}
         {
           targets: [-1],
           class: "text-center",
           orderable: false,
           render:function(data,type,row){
             var buttons = ''
-          {% if perms.preMatricula.change_provincia%}
+          //{% if perms.user.change_estado%}
             buttons = '<a href="#" rel="edit" class="text-info" data-toggle="tooltip" title="Editar Registro"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
-          {%endif%}
-          {% if perms.preMatricula.delete_provincia%} 
+          //{%endif%}
+          //{% if perms.user.delete_estado%} 
             buttons += '<a href="#" rel="delete" class="pl-2 text-danger" data-toggle="tooltip" title="Eliminar Registro"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
-          {%endif%}
+          //{%endif%}
             return buttons
           }
         },
-        {%endif%}
+        //{%endif%}
 
       ],
       order:[[ 1, 'asc' ]],
@@ -108,11 +100,11 @@
     });
 
     $("#btnNuevo").on("click", function () {
-      abrir_modal_nuevo("Crear Provincia");
+      abrir_modal_nuevo("Crear Esrado Usuario");
     });
     
     $('#data tbody').on('click','a[rel="edit"]',function(element){
-      abrir_modal_editar("Editar Provincia",tblListar,element.currentTarget);
+      abrir_modal_editar("Editar Estado Usuario",tblListar,element.currentTarget);
     });
 
     $('#data tbody').on('click','a[rel="delete"]',function(element){
@@ -140,10 +132,10 @@
           required: true,
           maxlength: 30,
           remote: {
-                      url: "{% url 'prematricula:listar-provincia'%}",
+                      url: "{% url 'prematricula:estado-usuario'%}",
                       type: "post",
                       data: {
-                            action: "chequearProvincia",
+                            action: "chequearEstado",
                             edit_id:function(){
                               return id_edit;
                             },
@@ -156,7 +148,7 @@
         },
       messages: {
         nombre: {
-          required: "El nombre de la Provincia es necesario",
+          required: "El nombre del Estado es necesario",
           maxlength: "No esta permitido mas de 30 caracteres",
           remote:"Ya esta en sistema",
         },

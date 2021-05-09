@@ -17,7 +17,7 @@ var delete_select = function (tabla,url_deletes=window.location.pathname) {
             csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
             }
         console.log(contexto);
-        with_ajax(url_delete,"Eliminando","Estas seguro de eliminar los registro seleccionados",contexto,function(data){
+        with_ajax(url_deletes,"Eliminando","Estas seguro de eliminar los registro seleccionados",contexto,function(data){
             if (data.hasOwnProperty('error')){
                 mensaje("error","Estos registros están Restringido:  - "+data.error );
             }

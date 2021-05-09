@@ -1,12 +1,13 @@
-from django.forms import ModelForm
 from core.preMatricula.models import Provincia
+from django.forms import ModelForm
+from user.models import Estado
 
 
-class ProvinciaForm(ModelForm):
+class EstadoUsuarioForm(ModelForm):
     """Form definition for Provincia."""
 
     class Meta:
         """Meta definition for Provinciaform."""
 
-        model = Provincia
+        model = Estado
         fields = '__all__'
