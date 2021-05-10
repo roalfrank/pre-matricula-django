@@ -1,11 +1,6 @@
-import time
 import json
-from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import  Q
 from django.db.models.deletion import RestrictedError
@@ -23,16 +18,12 @@ class EstadoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, 
         'delete': 'delete_estado',
         }
     
-    #def dispatch(self, request, *args, **kwargs):
-        #return super().dispatch(request, *args, **kwargs)
-    
     def post(self,request,*args,**kwargs):
         data = {}
         try:
             action = request.POST['action']
             #action addd para adicionar registro
             if action == 'add':
-                #if request.user.has_perms(("user.add_estado",)):
                 form = EstadoUsuarioForm(request.POST)
                 if form.is_valid():
                     form.save()
@@ -41,26 +32,17 @@ class EstadoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, 
                 else:    
                     data['enviado']= False
                     data['error']="Error insertando dato"
-                #:
-                #    data['enviado'] = False
-                #    data['error'] = "No tiene acceso a esta opcion"
             #action chequearEstado , esto es para comprobar rapido si ya hay otra provincia con el Mismo Nombre
             elif action == 'chequearEstado':
                 try:
-                    print("cheque")
-                    print(request.POST)
                     #chequeamos si estamos en editar o add . si es editar hacemos la consulta con NONe
                     #edit_id no se incluye en la consulta 
                     id_edit = request.POST['edit_id']
                     if id_edit == "":
                         id_edit = None
-                    print(id_edit)
-
                     #consulta a la base dato chequear el nombre de la provincia.
                     estado = Estado.objects.filter(
                         ~Q(id=id_edit), nombre__iexact=request.POST['nombre'])
-                    print('paso la consulta')
-
                     if len(estado) < 1:
                         #si no hay resultado en la busqueda , se devuelve True, dando lus verde a esa estado.
                         return JsonResponse(True, safe=False)
@@ -75,7 +57,6 @@ class EstadoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, 
                 return respuesta
             #action edit - editando una provincia.
             elif action=='edit':
-                #if request.user.has_perms(("user.change_estado",)):
                 registro = Estado.objects.get(
                     pk=int(request.POST['id_edit']))
                 form = EstadoUsuarioForm(request.POST, instance=registro)
@@ -90,7 +71,6 @@ class EstadoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, 
             #action delete, eliminar una provincia
             elif action=="delete":
                 try:
-                    #if request.user.has_perms(("user.delete_estado",)):
                     id_deletes = []
                     error = []
                     id = json.loads(request.POST["id"])

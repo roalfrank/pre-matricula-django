@@ -100,11 +100,11 @@
     });
 
     $("#btnNuevo").on("click", function () {
-      abrir_modal_nuevo("Crear Estado Usuario");
+      abrir_modal_nuevo("Nuevo Cargo Instructor");
     });
     
     $('#data tbody').on('click','a[rel="edit"]',function(element){
-      abrir_modal_editar("Editar Estado Usuario",tblListar,element.currentTarget);
+      abrir_modal_editar("Editar Cargo Instructor ",tblListar,element.currentTarget);
     });
 
     $('#data tbody').on('click','a[rel="delete"]',function(element){
@@ -132,10 +132,10 @@
           required: true,
           maxlength: 30,
           remote: {
-                      url: "{% url 'prematricula:estado-usuario'%}",
+                      url: window.location.pathname,
                       type: "post",
                       data: {
-                            action: "chequearEstado",
+                            action: "chequearCargo",
                             edit_id:function(){
                               return id_edit;
                             },
@@ -148,7 +148,7 @@
         },
       messages: {
         nombre: {
-          required: "El nombre del Estado es necesario",
+          required: "El nombre del Cargo es necesario",
           maxlength: "No esta permitido mas de 30 caracteres",
           remote:"Ya esta en sistema",
         },

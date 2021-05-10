@@ -70,6 +70,10 @@ class Cargo(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJson(self):
+        item = model_to_dict(self)
+        return item
 class Instructor(models.Model):
     ci = models.IntegerField(
         verbose_name="Carnet Identidad", unique=True)
@@ -94,6 +98,10 @@ class Ocupacion(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJson(self):
+        item = model_to_dict(self)
+        return item
 
 class Discapacidad(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre Discapacidad')
@@ -128,6 +136,9 @@ class Estudiante(models.Model):
 
     def __str__(self):
         return self.usuario.perfil
+
+    def toJson(self):
+        return model_to_dict(self)
 
 
 #mucho a mucho cursosiscae y estudiante

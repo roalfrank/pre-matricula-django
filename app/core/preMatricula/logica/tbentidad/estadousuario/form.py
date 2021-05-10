@@ -1,4 +1,3 @@
-from core.preMatricula.models import Provincia
 from django.forms import ModelForm
 from user.models import Estado
 

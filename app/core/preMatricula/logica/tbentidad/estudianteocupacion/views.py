@@ -4,25 +4,27 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.db.models import  Q
 from django.db.models.deletion import RestrictedError
-from core.preMatricula.models import Provincia
-from .form import ProvinciaForm
-from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
+from core.preMatricula.models import Ocupacion
+from .form import OcupacionEstudianteForm
+from  core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 
     
-class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
-    template_name = "tbentidad/provincia/list.html"
-    permiso_vista = 'view_provincia'
+class OcupacionEstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
+    template_name = "tbentidad/estudianteocupacion/list.html"
+    permiso_vista = 'view_ocupacion'
     permiso_crud = {
-        'add': 'add_provincia',
-        'change': 'change_provincia',
-        'delete': 'delete_provincia',}
-
+        'add': 'add_ocupacion',
+        'change': 'change_ocupacion',
+        'delete': 'delete_ocupacion',
+        }
+    
     def post(self,request,*args,**kwargs):
         data = {}
         try:
             action = request.POST['action']
+            #action addd para adicionar registro
             if action == 'add':
-                form = ProvinciaForm(request.POST)
+                form = OcupacionEstudianteForm(request.POST)
                 if form.is_valid():
                     form.save()
                     data['enviado']=True
@@ -30,19 +32,21 @@ class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimple
                 else:    
                     data['enviado']= False
                     data['error']="Error insertando dato"
-            #action chequearProvincia , esto es para comprobar rapido si ya hay otra provincia con el Mismo Nombre
-            elif action == 'chequearProvincia':
+            #action chequearEstado , esto es para comprobar rapido si ya hay otra provincia con el Mismo Nombre
+            elif action == 'chequear':
                 try:
+                    print(request.POST)
                     #chequeamos si estamos en editar o add . si es editar hacemos la consulta con NONe
                     #edit_id no se incluye en la consulta 
                     id_edit = request.POST['edit_id']
+                    print("estoy en chequear")
                     if id_edit == "":
                         id_edit = None
                     #consulta a la base dato chequear el nombre de la provincia.
-                    provincia = Provincia.objects.filter(
+                    estado = Ocupacion.objects.filter(
                         ~Q(id=id_edit), nombre__iexact=request.POST['nombre'])
-                    if len(provincia) < 1:
-                        #si no hay resultado en la busqueda , se devuelve True, dando lus verde a esa provincia.
+                    if len(estado) < 1:
+                        #si no hay resultado en la busqueda , se devuelve True, dando lus verde a esa estado.
                         return JsonResponse(True, safe=False)
                     #si hay resultado se retorna Fasle para impedir que se cree la provincia con nombres repetidos.
                     return JsonResponse(False,safe=False)
@@ -50,13 +54,14 @@ class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimple
                     return JsonResponse(False,safe=False)
             # Action  cargarDatos - para cargar la datatable de mi vista.
             elif action == "cargarDatos":
-                data = [i.toJson()  for i in Provincia.objects.all()]
+                data = [i.toJson() for i in Ocupacion.objects.all()]
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             #action edit - editando una provincia.
             elif action=='edit':
-                provincia=Provincia.objects.get(pk=int(request.POST['id_edit']))
-                form = ProvinciaForm(request.POST,instance=provincia)
+                registro = Ocupacion.objects.get(
+                    pk=int(request.POST['id_edit']))
+                form = OcupacionEstudianteForm(request.POST, instance=registro)
                 if form.is_valid():
                     form.save()
                     data['enviado'] = True
@@ -64,7 +69,8 @@ class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimple
                 else:
                     data['enviado']= False
                     data['error'] = "Error editando datos"
-            #action delete, eliminar una provincia
+                
+            #action delete, eliminar una registro
             elif action=="delete":
                 try:
                     id_deletes = []
@@ -74,17 +80,18 @@ class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimple
                         id_deletes.append(id)
                     else:
                         id_deletes.extend(id)
-                    delet_provincia = Provincia.objects.filter(pk__in=id_deletes)
-                    for provincia in delet_provincia:
+                    delet_registro = Ocupacion.objects.filter(
+                        pk__in=id_deletes)
+                    for registro in delet_registro:
                         try:
-                            provincia.delete()
+                            registro.delete()
                         except:
-                            error.append(f"{provincia.nombre}")
+                            error.append(f"{registro.nombre}")
                     if len(error)>0:
                         data['error'] = error
                 except Exception as e:
                     if type(e) == RestrictedError:
-                        data['error'] = "Esta provincia tiene municipios, no se puede borrar."
+                        data['error'] = "Esta estado tiene registro vinculados, no se puede borrar."
                     else:
                         print(type(e))
                         data['error'] = e
@@ -93,14 +100,16 @@ class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimple
             print(e)
             print(e.args)
             print(type(e))
+            print('type(e) ver si es aqui')
+
             data['error'] = 'Error en las operaciones con los registros'
         return JsonResponse(data)
             
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "Lista de Provincia"
+        context['title'] = "Lista de Ocupación Estudiante"
         context['icono_titulo'] = "fas fa-tachometer-alt"
-        context['form'] = ProvinciaForm()
+        context['form'] = OcupacionEstudianteForm()
         return context
 
 

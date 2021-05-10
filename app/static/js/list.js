@@ -29,7 +29,8 @@ var delete_select = function (tabla,url_deletes=window.location.pathname) {
         });
         }
 }
-var abrir_modal_nuevo=function (titulo) {
+var abrir_modal_nuevo = function (titulo) {
+        console.log(titulo)
         $('input[name="action"]').val("add");
         modal_title.find('span').html(titulo);
         modal_title.find('i').removeClass().addClass('fa fa-plus');
