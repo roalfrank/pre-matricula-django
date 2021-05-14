@@ -43,7 +43,6 @@ class Perfil(models.Model):
         return f"{self.nombre}-{self.user.username}"
 
     def get_image(self):
-        print("Hollaalalalalala desde avatar")
         if self.avatar:
             return '{}{}'.format(MEDIA_URL, self.avatar)
         print('{}{}'.format(STATIC_URL, 'img/default.png'))
