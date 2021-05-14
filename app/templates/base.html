@@ -44,12 +44,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
             {%sitio_map request as rutas%}
             <ol class="breadcrumb float-sm-right">
               {% if rutas.cantidad == 1%}
-              <li class="breadcrumb-item"><a href="{% url 'sitio:listar' %}">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'sitio:inicio' %}">Inicio</a></li>
               <li class="breadcrumb-item active">{{rutas.ultimo.nombre}}</li>
               {% elif rutas.cantidad == 0 %}
-              <li class="breadcrumb-item"><a href="{% url 'sitio:listar' %}">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'sitio:inicio' %}">Inicio</a></li>
               {%else%}
-                 <li class="breadcrumb-item"><a href="{% url 'sitio:listar' %}">Inicio</a></li>
+                 <li class="breadcrumb-item"><a href="{% url 'sitio:inicio' %}">Inicio</a></li>
                  {% for n in rutas.data%}
                     <li class="breadcrumb-item"><a href="{{n.url}}">{{n.nombre}}</a></li>
                  {%endfor%}
@@ -95,13 +95,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- jQuery -->
 <script src="{% static 'lib/adminlte-master/plugins/jquery/jquery.min.js' %}"></script>
+<!-- <script src="{% static 'lib/popper/popper.min.js' %}"></script> -->
 <!-- Bootstrap 4 -->
 <script src="{% static 'lib/adminlte-master/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- Sweetalert2 -->
 <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'lib/adminlte-master/js/adminlte.min.js' %}"></script>
+<script src="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.js'%}"></script>
+<script src="{% static 'js/funcion.js' %}"></script>
 {%block js%}
 {%endblock%}
+
 </body>
 </html>

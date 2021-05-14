@@ -1,18 +1,30 @@
 {% extends 'login/base.html' %}
+{% load static %}
 {% load widget_tweaks %}
+
+{% block head %}
+ <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+    
 {% block content %}
-    <div class="login-box">
-        <div class="login-logo" >
-            <a href="#" id="prueba" style="color: white;"><b>Pre-</b>Matrícula</a>
-        </div>
-        <div class="card">
-            <div class="card-body login-card-body" style="background-color: #f3f3f72e; color: white;">
-                <p class="login-box-msg">Inicie sesión con sus credenciales</p>
+<div class="content">
+    <div class="row">
+        <div class="col-12">LOLO</div>
+        <div class="col-12"><div class="titulo">Sistema Matrícula Online</div></div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+        <div class="firstinfo">
+            <div class="text-center">
+            <img src="{% static 'img/p2.png'%}" />
+            </div>
+            <div class="profileinfo ">
                 <form action="." method="post">
                     <input type="hidden" name="next" value="{{ next }}">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su username' }}
+                        {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:usuario' }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope" style="color: white;"></span>
@@ -20,7 +32,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Ingrese su password' }}
+                        {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:contraseña' }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock" style="color: white;"></span>
@@ -30,18 +42,33 @@
                     <hr>
                     <div class="row">
                         <div class="col-lg-12">
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                            <button type="submit" class="btn btn-info btn-block btn-sm">
+                                <i class="fas fa-sign-in-alt"></i> Iniciar sección
                             </button>
                         </div>
+                        <div class="col-lg-12">
+                            <a href="{% url 'login:registrar'%}" class="btn btn-warning btn-block btn-sm mt-2 text-white">
+                                <i class="fas fa-user-plus"></i> Crear Cuenta
+                            </a>
+                        </div>
                     </div>
-                    <p class="text-center mt-2" style="font-size: 13px;">
-                        Si no recuerdas tu contraseña puedes resetearla dando click <strong><a href="#" style="color: white;">aqui </a></strong>
-                    </p>
+                    
                 </form>
             </div>
         </div>
-        <script type="application/javascript">
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="badgescard">
+                <span style="font-size: 13px;">Si no recuerdas tu contraseña puedes resetearla dando click 
+                    <strong><a href="#" style="color: rgb(231, 26, 26);">aqui </a></strong>
+                </span> 
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script type="application/javascript">
         
             var Toast = Swal.mixin({
                 toast: true,
@@ -51,11 +78,10 @@
                 timer: 10000
             });
             {% if form.errors %}
-                    
                 var errors = '';
                 {% for field in form %}
                     {% for error in field.errors %}
-                        errors += '{{ error }}<br>';
+                        errors += '{ error }}<br>';
                     {% endfor %}
                 {% endfor %}
                 {% for error in form.non_field_errors %}
@@ -66,7 +92,5 @@
                 html: errors,
                 });
             {% endif %}
-           
         </script>
-    </div>
 {% endblock %}

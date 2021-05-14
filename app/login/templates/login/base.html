@@ -13,24 +13,31 @@
     <link rel="stylesheet" href="{% static 'lib/adminlte-master/plugins/fontawesome-free/css/all.min.css' %}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{% static 'lib/adminlte-master/css/adminlte.min.css' %}">
+    {% block head %}
+
+    {% endblock %}
     
     <script src="{% static 'lib/adminlte-master/plugins/jquery/jquery.min.js' %}"></script>
     <!-- Bootstrap 4 -->
     <script src="{% static 'lib/adminlte-master/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <!-- AdminLTE App -->
+    
     <script src="{% static 'lib/adminlte-master/js/adminlte.min.js' %}"></script>
     <!-- Sweetalert2 -->
     <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
     <!-- Jquery Confirm -->
     <!-- Functions -->
     <!--<script src="{% static 'js/functions.js' %}"></script>-->
-    {% block head %}
 
-    {% endblock %}
 </head>
-<body class="hold-transition login-page" style="background-color: {{sitio.color_fondo_inicio}};">
+<body class="hold-transition login-page" style="background-color: #00bcd4;">
 {% block content %}
 
 {% endblock %}
+
+{% block  js%}
+    
+{% endblock  %}
+    
 </body>
 </html>

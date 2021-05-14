@@ -1,55 +1,27 @@
 {% extends 'base.html'%}
 {% load static %}
-
+{% load widget_tweaks%}
 {% block head %}
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
-    <link rel="stylesheet"
-        href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
-    
-    {% block head_list %}
-    
-    {% endblock %}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.css'%}"/>
+    {% block head_list %}{% endblock %}
 {% endblock  %}
 
 {% block contenido %}
+<div class='d-flex justify-content-end pb-2'>
+    {% block boton_accion%}
+    <button type="button" class="btn btn-default btn-xs" id='btnNuevo' >
+        <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
+    </button>
+    <button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll' >
+        <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
+    </button>
+    {% endblock%}
+    {%block boton_accion_extra%}{%endblock%}
+</div>
 <div class="card ">
-    <div class="card-header">
-        <div class='row'>
-            <div class='col-md-3'>
-                <h3 class="card-title">
-                  <i class="{{icono_titulo}}"></i>
-                   {{ title }}
-                </h3>
-            </div>
-            <div class='col-md-7'>
-                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                {%block carrusel%}
-                        <div class="carousel-item active" >
-                             <i class="fas fa-bell"></i> Recuerda mandar la energía antes de las 8:15am.
-                        </div>
-                        <div class="carousel-item">
-                            <i class="fas fa-bell"></i> Si no se manda la energía, el sistema carga la del dia anterior y añade una nota.
-                        </div>
-                {%endblock%}
-                    </div>
-                </div>
-            </div>
-            <div class='col-md-2'>
-                <span id="hora"></span>
-                <div class='card-tools' style="float: right;">
-                <a href="#" class="btn btn-dark btn-flat btnNuevo" style="font-size: 10px;">
-                    <i class="fas fa-plus"></i>
-                </a>
-                <a href="#" class="btn btn-dark btn-flat" style="font-size: 10px;">
-                    <i class="fas fa-sync"></i>
-                </a>
-                {% block tool %}
-            
-                {% endblock %}
-            </div></div>
-        </div>
-    </div>
+   
     <div class="card-body">
         <table class="table table-bordered" id="data">
             <thead>
@@ -68,9 +40,44 @@
         {% endblock %}
     </div>
 </div>
-  {%block modal_listar%}
-
-  {%endblock%}
+{%block modal_listar%}
+<div class="modal fade" id="modal-nuevo">
+  <form action="post" id='formRegistro'>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="action" value="add" />
+          {% csrf_token %}
+          {%block form_modal%}
+          {% for field in form.visible_fields%}
+          <div class="form-group">
+            {{field.label_tag}}
+            {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+          </div>
+          {%endfor%}
+          {%endblock%}
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="submit" class="btn btn-primary vw-100">Guardar</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </form>
+</div>
+{%endblock%}
 {% endblock %}
 
 {% block js %}
@@ -78,32 +85,9 @@
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
-{%block js_listar%}
-{%endblock%}
-<script type="application/javascript">
-   {% block js_query %}
-   $(function () {
-        $('#data').DataTable({
-            responsive: true,
-            autoWidth: false
-        });
-
-        $('.btnTest').on('click', function () {
-            $.ajax({
-                url: "#",
-                type: 'POST',
-                data: { id: 1 },
-                dataType: 'json'
-            }).done(function (data) {
-                console.log(data);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                alert(textStatus + ': ' + errorThrown);
-            }).always(function (data) {
-
-            });
-        });
-    });
-    {% endblock %}
-
-</script>
+<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'lib/jquery-validation/jquery.validate.min.js'%}"></script>
+<script src="{% static 'lib/jquery-validation/additional-methods.min.js'%}"></script>
+<script src="{% static 'js/list.js'%}"></script>
+{%block js_listar%}{%endblock%}
 {% endblock %}

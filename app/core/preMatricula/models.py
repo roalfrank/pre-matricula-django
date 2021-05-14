@@ -1,8 +1,14 @@
 from django.db import models
+from django.forms import model_to_dict
 
 # Create your models here.
 class Provincia(models.Model):
-    nombre = models.CharField(max_length=100,verbose_name="Provincia")
+    nombre = models.CharField(max_length=100,verbose_name="Provincia",unique=True)
+
+    def toJson(self):
+        item = model_to_dict(self)
+        item['cantmunicipio']=self.municipio_set.all().count()
+        return item
 
     def __str__(self):
         return self.nombre
@@ -64,6 +70,10 @@ class Cargo(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJson(self):
+        item = model_to_dict(self)
+        return item
 class Instructor(models.Model):
     ci = models.IntegerField(
         verbose_name="Carnet Identidad", unique=True)
@@ -88,6 +98,10 @@ class Ocupacion(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def toJson(self):
+        item = model_to_dict(self)
+        return item
 
 class Discapacidad(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre Discapacidad')
@@ -122,6 +136,9 @@ class Estudiante(models.Model):
 
     def __str__(self):
         return self.usuario.perfil
+
+    def toJson(self):
+        return model_to_dict(self)
 
 
 #mucho a mucho cursosiscae y estudiante
