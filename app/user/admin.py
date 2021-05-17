@@ -1,7 +1,4 @@
 from django.contrib import admin
-from .models import User,Perfil,Estado
-
-admin.site.register(User)
-admin.site.register(Estado)
+from .models import Perfil
 
 admin.site.register(Perfil)

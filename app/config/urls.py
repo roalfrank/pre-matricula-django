@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("sitio.urls")),
     path('login/', include("login.urls")),
-    path('perfil/', include("user.urls")),
+    path('user/', include("user.urls")),
     path('sistema/', include("core.preMatricula.urls")),
 ]
 

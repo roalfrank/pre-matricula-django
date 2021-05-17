@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Provincia(models.Model):
@@ -30,7 +31,7 @@ class Entidad(models.Model):
 
 class JCP(models.Model):
     codigo_jcp = models.CharField(max_length=10,verbose_name="Codigo JCP",unique=True)
-    entidad = models.ForeignKey(Entidad,verbose_name="Entidad",on_delete=models.CASCADE)
+    entidad = models.OneToOneField(Entidad,verbose_name="Entidad",on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.entidad} - ({self.codigo_jcp})"
@@ -46,7 +47,7 @@ class Region(models.Model):
 class JCM(models.Model):
     codigo_jcm = models.CharField(
         max_length=10, verbose_name="Código Joven Club Municipal")
-    entidad = models.ForeignKey(Entidad,on_delete=models.CASCADE,verbose_name="Entidad")
+    entidad = models.OneToOneField(Entidad,on_delete=models.CASCADE,verbose_name="Entidad")
     region = models.ForeignKey(
         Region, on_delete=models.CASCADE, verbose_name="Región")
 
@@ -56,7 +57,7 @@ class JCM(models.Model):
 class JCB(models.Model):
     codigo_jcb = models.CharField(
         max_length=10, verbose_name="Código Joven Club")
-    entidad = models.ForeignKey(
+    entidad = models.OneToOneField(
         Entidad, on_delete=models.CASCADE, verbose_name="Entidad")
     jcm = models.ForeignKey(
         JCM, on_delete=models.CASCADE, verbose_name="Joven Club Municipal")
@@ -77,8 +78,8 @@ class Cargo(models.Model):
 class Instructor(models.Model):
     ci = models.IntegerField(
         verbose_name="Carnet Identidad", unique=True)
-    usuario_sisce = models.CharField(max_length=50,verbose_name="Usuario del siscae",null=True,blank=False)
-    usuario = models.OneToOneField('user.User',on_delete=models.CASCADE, verbose_name="Usuario")
+    usuario_siscae = models.CharField(max_length=50,verbose_name="Usuario del siscae",null=True,blank=False)
+    usuario = models.OneToOneField(User,on_delete=models.CASCADE, verbose_name="Usuario")
     jcb = models.ForeignKey(JCB,on_delete=models.RESTRICT,verbose_name='Joven Club')
     cargo = models.ForeignKey(Cargo,on_delete=models.RESTRICT,verbose_name='Cargo')
 
@@ -130,8 +131,8 @@ class Estudiante(models.Model):
         Discapacidad, on_delete=models.RESTRICT, verbose_name='Discapacidad')
     categoria_ocupacional = models.ForeignKey(
         CategoriaOcupacional, on_delete=models.RESTRICT, verbose_name='Categoría Ocupacional')
-    usuario = models.ForeignKey(
-        'user.User', on_delete=models.RESTRICT, verbose_name='usuario')
+    usuario = models.OneToOneField(
+        User, on_delete=models.RESTRICT, verbose_name='usuario')
     ocupacion = models.ForeignKey(Ocupacion,on_delete=models.RESTRICT,verbose_name='Ocupación')
 
     def __str__(self):
@@ -153,7 +154,7 @@ class EstudianteCursoSiscae(models.Model):
         
 #Gestor de JCM es un usuario 
 class Gestor(models.Model):
-    usuario = models.ForeignKey('user.User',on_delete=models.RESTRICT)
+    usuario = models.OneToOneField(User,on_delete=models.RESTRICT)
     jcm = models.ForeignKey(JCM,on_delete=models.RESTRICT,verbose_name='Joven Club Municipal')
 
     def __str__(self):

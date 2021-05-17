@@ -1,7 +1,8 @@
 from django.urls import path
-from.views import perfil
+from.views import perfil,estaUsuario
 app_name = "user"
 
 urlpatterns = [
-    path("", perfil, name="perfil")
+    path("perfil/", perfil, name="perfil"),
+    path("chequear-name/", estaUsuario, name="chequearUserName"),
 ]

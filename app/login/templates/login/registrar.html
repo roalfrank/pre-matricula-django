@@ -1,18 +1,19 @@
 {% extends 'login/base.html' %} {% load static %}
 {% load widget_tweaks %} {% block head %}
-<link
+<link 
   rel="stylesheet"
-  href="{% static 'lib/bs-stepper/css/bs-stepper.min.css'%}"
+  href="{% static 'lib/jquery-smartwizard-master/css/smart_wizard_all.min.css'%}"
 />
 <style>
+.sw .toolbar > .btn.disabled, .sw .toolbar > .btn:disabled{
+    opacity: 0.4;
+}
   .card-registrar {
     background-color: white !important;  
     position: relative;
     animation: formulario 1.75s cubic-bezier(0.425, 0.5, 0.47, 1.105) 0.5s both;  
   }
-  .active .bs-stepper-circle{
-      background-color:#ffc107;
-  }
+ 
   .titulo-card{
       position: relative;
       top: 5px;
@@ -107,88 +108,81 @@
             <div class="cuadro bg-info px-3 text-center pt-2 d-none d-sm-none d-md-block"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt, quisquam magnam autem eius dolorum dolores, unde officia earum quaera</p></div>
     </div>
     <div class="col-12 col-lg-6 ">
-<div class="card card-registrar ">
+       
+    <div class="card card-registrar ">
             
-    <div class="card-body p-2">
-      <div class="bs-stepper">
-        <div class="bs-stepper-header" role="tablist">
-          <!-- your steps here -->
-          <div class="step" data-target="#logins-part">
-            <button
-              type="button"
-              class="step-trigger"
-              role="tab"
-              aria-controls="logins-part"
-              id="logins-part-trigger"
-            >
-              <span class="bs-stepper-circle">1</span>
-              <span class="bs-stepper-label">Cuenta</span>
-            </button>
-          </div>
-          <div class="line"></div>
-          <div class="step" data-target="#information-part">
-            <button
-              type="button"
-              class="step-trigger"
-              role="tab"
-              aria-controls="information-part"
-              id="information-part-trigger"
-            >
-              <span class="bs-stepper-circle">2</span>
-              <span class="bs-stepper-label">Perfil</span>
-            </button>
-          </div>
-        </div>
-        <div class="bs-stepper-content">
-          <form method="POST">
-           {% csrf_token %}
-          <!-- your steps content here -->
-          <div
-            id="logins-part"
-            class="content"
-            role="tabpanel"
-            aria-labelledby="logins-part-trigger"
-          >
-          {% for field in form %}
-            <div class="form-group">
-             {{field.label_tag}}
-             {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+        <div class="card-body p-2">
+            <div id="smartwizard" class="sw sw-theme-arrows sw-justified">
+
+        <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link inactive " href="#step-1">
+                <strong>Paso 1</strong> <br>Configura tu Cuenta
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link inactive" href="#step-2">
+                <strong>Paso 2</strong> <br>Dato Personal
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link inactive" href="#step-3">
+                <strong>Paso 3</strong> <br>Dirección
+              </a>
+            </li>
+        </ul>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        <div class="tab-content" >
+            <div id="step-1" class="tab-pane p-2" role="tabpanel" aria-labelledby="step-1" >
+                <div>
+                    <div class="form-group">
+                        {% for field in form %}
+                            {{field.label_tag}}
+                            {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+                        {%endfor%}
+                        {{formPerfil.correo.label_tag}}
+                        {{formPerfil.correo|add_class:'form-control'|attr:'autocomplete:off'}}
+                        {{formPerfil.correo.error}}
+                    </div>
+                </div>
             </div>
-          {%endfor%}
-            <button class="btn btn-warning" onclick="stepper.next()">
-              Siguiente
-            </button>
-            <button type="submit" class="btn btn-warning">Enviar</button>
-          </div>
-          <div
-            id="information-part"
-            class="content"
-            role="tabpanel"
-            aria-labelledby="information-part-trigger"
-          >
-            {% for field in formUserPerfil %}
-              <div class="form-group">
-                {{field.label_tag}}
-                {{field}}
-              </div>
-            {%endfor%}
-            <div class="d-flex justify-content-between">
-             <button class="btn btn-secondary" onclick="stepper.previous()">
-                Anterior
-                </button>
-                <button type="submit" class="btn btn-warning">Enviar</button>
+            <div id="step-2" class="tab-pane p-2" role="tabpanel" aria-labelledby="step-2" >
+                <div class="form-group">
+                    {% for field in formPerfil %}
+                        {%if field.name == 'correo' or field.name == 'telefono' or field.name == 'direccion'%}
+                        {%else%}
+                            {{field.label_tag}}
+                            {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+                            {{ field.errors }}
+                        {%endif%}
+                        
+                    {%endfor%}
+                </div>
             </div>
-               </form>
-          </div>
+            <div id="step-3" class="tab-pane p-2" role="tabpanel" aria-labelledby="step-3" >
+                <div class="form-group">
+                    {{formPerfil.direccion.label_tag}}
+                    {{formPerfil.direccion|add_class:'form-control'|attr:'autocomplete:off'}}
+                    {{formPerfil.direccion.errors}}
+                    {{formPerfil.correo.label_tag}}
+                    {{formPerfil.correo|add_class:'form-control'|attr:'autocomplete:off'}}
+                    {{formPerfil.correo.error}}
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Enviar</button>
+            </div>
         </div>
-      </div>
-    </div>
-    <!-- /.card-body -->
-    <div class="card-footer text-center">
-      Si tienes una cuenta accede desde
-      <a href="{% url 'login:login-user'%}">aqui</a
+        </form>
+            </div>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer text-center">
+            Si tienes una cuenta accede desde
+            <a href="{% url 'login:login-user'%}">aqui</a>
       
+        </div>
     </div>
+    
   </div>
     </div>
 </div>
@@ -196,21 +190,99 @@
 </div>
 </div>
 
-{% endblock %} {% block js%}
-<script src="{% static 'lib/bs-stepper/js/bs-stepper.min.js'%}"></script>
-<script>
-  // BS-Stepper Init
-  document.addEventListener("DOMContentLoaded", function () {
-    var stepper1Node = document.querySelector(".bs-stepper");
-    window.stepper = new Stepper(document.querySelector(".bs-stepper"), {
-      animation: true,
+{% endblock %} 
+{% block js%}
+
+<script src="{% static 'lib/jquery-smartwizard-master/js/jquery.smartWizard.min.js' %} "></script>
+<script src="{% static 'lib/jquery-validation/jquery.validate.min.js'%}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("form").validate({
+        rules: {
+                username: {
+                    required: true,
+                    maxlength: 30,
+                    remote: {
+                        url: "{% url 'user:chequearUserName'%}",
+                        type: "post",
+                        data: {
+                            action: "chequearUsuario",
+                            csrfmiddlewaretoken:function(){
+                                    return $('input[name="csrfmiddlewaretoken"]').val();
+                                },
+                            }
+                        }
+                    },
+                password1:{
+                    required:true,
+                    minlength:8,
+                },
+                password2:{
+                    required:true,
+                    minlength:8,
+                    equalTo:'#id_password1'
+                },
+                correo:{
+                    required:true,
+                    email:true
+                }
+                },
+        messages: {
+                username: {
+                    required: "El nombre de usuario es necesario.",
+                    maxlength: "No esta permitido mas de 30 caracteres.",
+                    remote:'Nombre de Usuario ya está en el sistema.'
+                },
+                password1:{
+                    required:'Contraseña es un dato necesario.',
+                    minlength:'La contraseña tiene que ser mayor a 8 letras.'
+                },
+                password2:{
+                    required:'Contraseña es un dato necesario.',
+                    minlength:'La contraseña tiene que ser mayor a 8 letras.',
+                    equalTo: 'Las contraseñas no coiciden.'
+                },
+                correo:{
+                    required:'El correo es necesario para poder crear la cuenta.',
+                    email:'Entre un correo válido'
+                }
+            },
+      errorElement: "span",
+      errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        error.insertBefore(element);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass("is-invalid");
+      },
     });
-    stepper1Node.addEventListener("show.bs-stepper", function (event) {
-      console.warn("show.bs-stepper", event);
+    $('#smartwizard').smartWizard({
+        theme:'arrows',
+        autoAdjustHeight: false,
+        enableURLhash: false,
+        transition: {
+            animation: 'fade'
+        },
+          toolbarSettings: {
+      toolbarPosition: 'bottom', // none, top, bottom, both
+      toolbarButtonPosition: 'center', // left, right, center
+      showNextButton: true, // show/hide a Next button
+      showPreviousButton: true, // show/hide a Previous button
+      toolbarExtraButtons: [] // Extra buttons to show on toolbar, array of jQuery input/buttons elements
+  },
+        justified: true,
+        lang: { // Language variables for button
+            next: 'Siguiente',
+            previous: 'Anterior'
+        },
+       //errorSteps: [0] // Highlight step with errors
     });
-    stepper1Node.addEventListener("shown.bs-stepper", function (event) {
-      console.warn("shown.bs-stepper", event);
+    $("#smartwizard").on("leaveStep", function(e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
+        return $("form").valid();
     });
-  });
+});
 </script>
 {% endblock %}

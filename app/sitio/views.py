@@ -11,7 +11,7 @@ from config import settings
 @login_required
 def index(request):
     group = request.user.groups.all().first()
-    print(request.user.perfil.get_image())
+    
     if group.name == "Admin":
         return redirect(reverse("sitio:panel-admin"))
     elif group.name == "Estudiante":

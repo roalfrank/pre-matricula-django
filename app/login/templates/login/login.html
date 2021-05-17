@@ -85,7 +85,7 @@
                     {% endfor %}
                 {% endfor %}
                 {% for error in form.non_field_errors %}
-                    errors += '{{ error }}<br>';
+                    errors += '{{ error }}<br>Recuerde la cuenta debe estas activa para poder entrar.';
                 {% endfor %}
                 Toast.fire({
                 icon: 'error',
