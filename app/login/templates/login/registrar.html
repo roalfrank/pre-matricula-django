@@ -4,6 +4,8 @@
   rel="stylesheet"
   href="{% static 'lib/jquery-smartwizard-master/css/smart_wizard_all.min.css'%}"
 />
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}"/>
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}"/>
 <style>
 .sw .toolbar > .btn.disabled, .sw .toolbar > .btn:disabled{
     opacity: 0.4;
@@ -34,7 +36,7 @@
   }
   .cuadro{
       position: relative;
-      height: 5rem;
+      height: 8rem;
       left: 0px;
       box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
       top: -10px;
@@ -100,24 +102,24 @@
     <div class="col-12 col-lg-6">
         <div class="titulo-card bg-info pt-1 w-100 d-flex justify-content-center">
                 <img src="{% static 'img/registro.png'%}" alt="Imagen de registro" class="img-registro mr-2">
-                <h5>FORMULARIO DE REGISTRO EN DOS PASOS</h5>
+                <h5>FORMULARIO DE REGISTRO EN 3 PASOS</h5>
             </div>
             <div class="text-center d-none d-sm-none d-md-block">
             <img src="{% static 'img/si.png'%}"class="img-grupo" />
             </div>
-            <div class="cuadro bg-info px-3 text-center pt-2 d-none d-sm-none d-md-block"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt, quisquam magnam autem eius dolorum dolores, unde officia earum quaera</p></div>
+            <div class="cuadro bg-info px-3 text-center pt-2 d-none d-sm-none d-md-block"><p>¿Quieres formar parte de esta gran familia cubana? <br/>En el "Sistema de Matrícula Online para Cursos de los Joven Club de Computación" encontrará cursos de su interés, con los cuales aumentará sus conocimientos en el mundo de las tecnología.</p></div>
     </div>
     <div class="col-12 col-lg-6 ">
        
     <div class="card card-registrar ">
             
         <div class="card-body p-2">
-            <div id="smartwizard" class="sw sw-theme-arrows sw-justified">
+            <div id="smartwizard" class="sw">
 
         <ul class="nav">
             <li class="nav-item">
               <a class="nav-link inactive " href="#step-1">
-                <strong>Paso 1</strong> <br>Configura tu Cuenta
+                <strong>Paso 1</strong> <br>Tu Cuenta
               </a>
             </li>
             <li class="nav-item">
@@ -138,21 +140,30 @@
                 <div>
                     <div class="form-group">
                         {% for field in form %}
-                            {{field.label_tag}}
+                            {{field.label_tag}}*
                             {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+                                {% if field.help_text %}
+                                    <small class="help text-info">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <small class="help text-danger">{{ field.errors|safe }}</small>
+                                {% endif %}
+                            
                         {%endfor%}
-                        {{formPerfil.correo.label_tag}}
+                        <br>
+                        {{formPerfil.correo.label_tag}}*
                         {{formPerfil.correo|add_class:'form-control'|attr:'autocomplete:off'}}
-                        {{formPerfil.correo.error}}
+                        <small class="help text-info">nauta.com.cu,nauta.cu,gmail.com,cubava.cu</small>
+                        {{formPerfil.correo.errors}}
                     </div>
                 </div>
             </div>
             <div id="step-2" class="tab-pane p-2" role="tabpanel" aria-labelledby="step-2" >
                 <div class="form-group">
                     {% for field in formPerfil %}
-                        {%if field.name == 'correo' or field.name == 'telefono' or field.name == 'direccion'%}
+                        {%if field.name == 'correo' or field.name == 'telefono' or field.name == 'direccion' or field.name == 'provincia' or field.name == 'municipio' %}
                         {%else%}
-                            {{field.label_tag}}
+                            {{field.label_tag}}*
                             {{field|add_class:'form-control'|attr:'autocomplete:off'}}
                             {{ field.errors }}
                         {%endif%}
@@ -162,12 +173,18 @@
             </div>
             <div id="step-3" class="tab-pane p-2" role="tabpanel" aria-labelledby="step-3" >
                 <div class="form-group">
-                    {{formPerfil.direccion.label_tag}}
+                    {{formPerfil.direccion.label_tag}}*
                     {{formPerfil.direccion|add_class:'form-control'|attr:'autocomplete:off'}}
                     {{formPerfil.direccion.errors}}
-                    {{formPerfil.correo.label_tag}}
-                    {{formPerfil.correo|add_class:'form-control'|attr:'autocomplete:off'}}
-                    {{formPerfil.correo.error}}
+                    {{formPerfil.provincia.label_tag}}*
+                    {{formPerfil.provincia|add_class:'form-control'|attr:'autocomplete:off'}}
+                    {{formPerfil.provincia.errors}}
+                    {{formPerfil.municipio.label_tag}}*
+                    {{formPerfil.municipio|add_class:'form-control select2'|attr:'autocomplete:off'}}
+                    {{formPerfil.municipio.errors}}
+                    {{formPerfil.telefono.label_tag}}
+                    {{formPerfil.telefono|add_class:'form-control'|attr:'autocomplete:off'}}
+                    {{formPerfil.telefono.error}}
                 </div>
                 <button type="submit" class="btn btn-success btn-block">Enviar</button>
             </div>
@@ -194,14 +211,52 @@
 {% block js%}
 
 <script src="{% static 'lib/jquery-smartwizard-master/js/jquery.smartWizard.min.js' %} "></script>
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %} "></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script src="{% static 'lib/jquery-validation/jquery.validate.min.js'%}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+    var select_municipio = $('#id_perfil-municipio');
+    /*select_municipio.html('');*/
+    $('.select2').select2({
+        theme: 'bootstrap4',
+        language:'es',
+    });
+    $('#id_perfil-provincia').on('change',function(){
+        var id = $(this).val();
+        $.ajax({
+            url:"{% url 'prematricula:buscar-municipios'%}",
+            type:'POST',
+            data:{
+                'id_provincia':id,
+                csrfmiddlewaretoken:function(){
+                                    return $('input[name="csrfmiddlewaretoken"]').val();
+                                },
+            },
+            dataType:'json'
+        }).done(function(data){
+            select_municipio.html('').select2({
+                theme: 'bootstrap4',
+                language:'es',
+                data:data
+            });
+        });
+    });
+    $.validator.addMethod("userCorrect", function (value, element) {
+        var pattern = new RegExp("\^[A-Za-z0-9_-]+$");
+        return this.optional(element) || pattern.test(value);
+    }, "Formato del usuario incorrecto.");
+    $.validator.addMethod("formEmail", function (value, element) {
+        var correo = '(nauta\.com\.cu|nauta\.cu|gmail\.com|cubava\.cu|cha\.jovenclub\.cu)$'
+        var pattern = new RegExp("\^([a-zA-Z0-9_.-])+@"+correo);
+        return this.optional(element) || pattern.test(value);
+    }, "Formato del email incorrecto.");
     $("form").validate({
         rules: {
                 username: {
                     required: true,
-                    maxlength: 30,
+                    maxlength: 150,
+                    userCorrect:true,
                     remote: {
                         url: "{% url 'user:chequearUserName'%}",
                         type: "post",
@@ -222,12 +277,52 @@ $(document).ready(function() {
                     minlength:8,
                     equalTo:'#id_password1'
                 },
-                correo:{
+                'perfil-correo':{
                     required:true,
-                    email:true
-                }
+                    formEmail:true
+                },
+                'perfil-ci':{
+                    required:true,
+                    minlength:11,
+                    maxlength:11
+                },
+                'perfil-direccion':{
+                    required:true,
+                },
+                'perfil-telefono':{
+                    number:true,
+                },
+                
+               
                 },
         messages: {
+                'perfil-provincia':{
+                    required:'Debe elegir una Provincia',
+                },
+                'perfil-municipio':{
+                    required:'Debe elegir un municipio',
+                },
+                'perfil-telefono':{
+                    number:'Solo números permitido',
+                },
+                'perfil-direccion':{
+                    required:'La dirección es un campo requerido',
+                },
+                'perfil-nombre':{
+                    required:'Nombre es requerido.'
+                },
+                'perfil-apellido1':{
+                    required:'Apellido Paterno es requerido.'
+                },
+                'perfil-apellido2':{
+                    required:'Apellido Materno es requerido.'
+                },
+                'perfil-ci':{
+                    required:'Carnet Identidad es requerido',
+                    number:'Solo numeros en el carnet identidad.',
+                    minlength:'Mínimo 11 números',
+                    maxlength:'Máximo 11 números'
+                },
                 username: {
                     required: "El nombre de usuario es necesario.",
                     maxlength: "No esta permitido mas de 30 caracteres.",
@@ -242,7 +337,7 @@ $(document).ready(function() {
                     minlength:'La contraseña tiene que ser mayor a 8 letras.',
                     equalTo: 'Las contraseñas no coiciden.'
                 },
-                correo:{
+                'perfil-correo':{
                     required:'El correo es necesario para poder crear la cuenta.',
                     email:'Entre un correo válido'
                 }
@@ -283,6 +378,7 @@ $(document).ready(function() {
     $("#smartwizard").on("leaveStep", function(e, anchorObject, currentStepIndex, nextStepIndex, stepDirection) {
         return $("form").valid();
     });
+    
 });
 </script>
 {% endblock %}

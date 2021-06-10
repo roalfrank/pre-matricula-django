@@ -1,6 +1,7 @@
-from django.forms import ModelForm
+from django.forms import ModelForm,ModelChoiceField,Select
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from user.models import User, Perfil
+from core.preMatricula.models import Provincia
 
 
 
@@ -13,7 +14,10 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class UserPerfilRegistrationForm(ModelForm):
+    provincia = ModelChoiceField(queryset=Provincia.objects.all(),widget=Select(attrs={
+        'class':'select2'
+    }))
     class Meta:
         model = Perfil
         fields = '__all__'
-        exclude=('user','municipio','avatar')
+        exclude=('user','avatar')

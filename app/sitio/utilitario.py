@@ -37,12 +37,15 @@ def mandar_correo(destinatarios, asunto, cuerpo, remitente=None, nombre_adjunto=
         mensaje.attach(adjunto_MIME)
         # Creamos la conexión con el servidor
     try:
-        server = smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT)
+        server = smtplib.SMTP_SSL(settings.EMAIL_HOST,465 )#settings.EMAIL_PORT
         server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
         server.sendmail(settings.EMAIL_FROM_USER,
                         destinatarios,
                         mensaje.as_string())
         server.quit()
         return True
-    except:
+    except Exception as e:
+        print('error mandando correo')
+        print(e)
+        print(type(e))
         return False

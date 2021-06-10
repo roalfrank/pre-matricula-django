@@ -7,11 +7,11 @@
 <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: {{sitio.color_sider}};">
     <!-- Brand Logo -->
-    <a href="/" class="brand-link mb-2">
+    <a href="/" class="brand-link mb-2 ">
       {% if sitio.icono %}
       <i class="fas {{sitio.icono}}" style="margin-left: 5%;"></i>
       {%else%}
-      <img src="{% static 'lib/adminlte-master/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{% static 'img/logo.png' %}" alt="Matricula Online JCC" class="brand-image img-circle elevation-3 bg-white" >
       {%endif%}
       <span class="brand-text font-weight-light">{{sitio.nombre}}</span>
     </a>
@@ -77,7 +77,7 @@
                       {%if hijo.modulos.all  %} 
                       
                          <li class="nav-item {% if tm_activo == hijo %}menu-open{%endif%} " >
-                            <a href="#" class="nav-link " style="background-color: rgba(158, 71, 55, 0.322);">
+                            <a href="#" class="nav-link " style="background-color: rgba(45, 74, 15, 0.54);">
                               <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
                                {{hijo.nombre}}

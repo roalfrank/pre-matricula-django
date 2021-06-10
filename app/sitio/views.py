@@ -113,9 +113,9 @@ def dashBoardEstudiante(request):
     context = {
         "title": "Panel Principal",
         'notificaciones': [
-            {'nombre': "Roaldys", "municipio": "Regla"},
-            {'nombre':"Roaldys","municipio":"Regla"},
-            {'nombre':"Roaldys","municipio":"Regla"},
+            {'nombre': "Aprobada su solicitud", "municipio": "SM"},
+            {'nombre':"Verifique su perfil","municipio":"Regla"},
+            {'nombre':"dsdfsdf","municipio":"Regla"},
             {'nombre': "Roaldys", "municipio": "Regla"},
             {'nombre': "Roaldys", "municipio": "Regla"}],
         'notificacioneEncabezado': [
@@ -124,11 +124,11 @@ def dashBoardEstudiante(request):
             {'nombre': "Accion"}
         ],
         'casiMatriculados': [
-            {'nombre': "Roaldys", "municipio": "Regla",'tipo':'Corto'},
-            {'nombre': "Roaldys", "municipio": "Regla", 'tipo': 'Corto'},
-            {'nombre': "Roaldys", "municipio": "Regla", 'tipo': 'Corto'},
-            {'nombre': "Roaldys", "municipio": "Regla", 'tipo': 'Corto'},
-            {'nombre': "Roaldys", "municipio": "Regla", 'tipo': 'Corto'}],
+            {'nombre': "Curso de Python", "municipio": "Regla",'tipo':'Corto'},
+            {'nombre': "Aprendiendo Windows", "municipio": "SMP", 'tipo': 'Corto'},
+            {'nombre': "Curso Tablet", "municipio": "Cerro", 'tipo': 'Largo'},
+            {'nombre': "Dibujando con Paint", "municipio": "Plaza", 'tipo': 'Corto'},
+            {'nombre': "Word Básico", "municipio": "Guanabacoa", 'tipo': 'largo'}],
         'casiMatriculadosEncabezado': [
             {'nombre': "Curso"},
             {'nombre': "Municipio"},
@@ -136,11 +136,11 @@ def dashBoardEstudiante(request):
             {'nombre': "Accion"}
         ],
         'cursosRecientes': [
-            {'nombre': "Roaldys", "municipio": "Regla"},
-            {'nombre': "Roaldys", "municipio": "Regla"},
-            {'nombre': "Roaldys", "municipio": "Regla"},
-            {'nombre': "Roaldys", "municipio": "Regla"},
-            {'nombre': "Roaldys", "municipio": "Regla"}],
+            {'nombre': "Curso de Python", "municipio": "Regla",'tipo':'Corto'},
+            {'nombre': "Aprendiendo Windows", "municipio": "SMP", 'tipo': 'Corto'},
+            {'nombre': "Curso Tablet", "municipio": "Cerro", 'tipo': 'Largo'},
+            {'nombre': "Dibujando con Paint", "municipio": "Plaza", 'tipo': 'Corto'},
+            {'nombre': "Word Básico", "municipio": "Guanabacoa", 'tipo': 'largo'}],
         'cursosRecientesEncabezado': [
             {'nombre': "Curso"},
             {'nombre': "Municipio"},

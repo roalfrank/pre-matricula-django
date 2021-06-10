@@ -18,7 +18,9 @@ class LoginFormView(LoginView):
     template_name = 'login/login.html'
     
     def dispatch(self, request, *args, **kwargs):
-        # cuerpo= render_to_string("sitio/email.html")
+        # cuerpo= render_to_string("sitio/email.html",{
+        #     'link_activar':'Aqui va el linck para activar'
+        # })
         # mandar_correo("roaldis.garcia@cha.jovenclub.cu",
         #               "Hola desde django con utilitario", cuerpo, html=True)
         
@@ -49,21 +51,27 @@ class RegistarUsuarioOnlineView(CreateView):
         form_perfil = UserPerfilRegistrationForm(request.POST,request.FILES,prefix = "perfil")
         if form_user.is_valid() and form_perfil.is_valid():
             user = form_user.save(commit=False)
-            user.is_active=False
+            #user.is_active=False
             user.save()
             grupo_estudiante = Group.objects.filter(name='Estudiante')[0]
             user.groups.add(grupo_estudiante)
             user_perfil = form_perfil.save(commit=False)
             user_perfil.user = user
-            user_perfil.municipio = Municipio.objects.filter(nombre='Regla')[0]
             user_perfil.save()
+            cuerpo= render_to_string("sitio/email.html",{
+                    'link_activar':'Link para activar',
+
+                })
+            mandar_correo(user_perfil.correo,
+                "Hola desde django con utilitario", cuerpo, html=True)
+        
             return redirect('/')
         
         return render(request,self.template_name,{'formPerfil':form_perfil,'form':form_user})
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['formPerfil'] = UserPerfilRegistrationForm(prefix = "perfil_%s")
+        context['formPerfil'] = UserPerfilRegistrationForm(prefix = "perfil")
         return context
     
 
