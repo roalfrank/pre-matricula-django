@@ -34,7 +34,7 @@ class Sitio_Web(models.Model):
 
 class TipoModulo(models.Model):
     nombre = models.CharField(max_length=20, verbose_name="Nombre Modulo")
-    icono = models.CharField(max_length=20, unique=True, verbose_name="Icono")
+    icono = models.CharField(max_length=20, verbose_name="Icono")
     padre_tipo = models.ForeignKey('TipoModulo', on_delete=models.CASCADE,
                                    verbose_name="Padre", related_name="padre", null=True, blank=True)
     estado = models.BooleanField()
@@ -65,4 +65,3 @@ class Modulo(models.Model):
             return "#"
 
 # modelos de la entidad
-

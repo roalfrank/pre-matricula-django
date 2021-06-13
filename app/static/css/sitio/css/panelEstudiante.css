@@ -1,0 +1,29 @@
+.btn-detalles-curso:hover i {
+    color: black;
+}
+
+.btn-matricular:hover i {
+    color: black;
+}
+
+/*-color del a del +50% */
+.product-title {
+    color: #7b8e95 !important;
+}
+
+.product-title:hover {
+    color: #1f875f !important;
+}
+
+a:hover .notificaciones-a {
+    background-color: rgb(58, 226, 226);
+    color: black;
+}
+
+.fst-italic {
+    font-style: italic !important
+}
+
+.callout p a:hover {
+    color: #1f875f !important;
+}

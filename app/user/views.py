@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 
+
 # Create your views here.
+
+
 def estaUsuario(request):
     estas = True
     print(request.POST)
@@ -10,13 +13,15 @@ def estaUsuario(request):
         action = request.POST['action']
         if action == 'chequearUsuario':
             try:
-                user = User.objects.get(username__iexact=request.POST['username'])   
+                user = User.objects.get(
+                    username__iexact=request.POST['username'])
                 print(user)
-                estas=False             
+                estas = False
             except:
                 print("no encontro nada")
-                esta=True
-    return JsonResponse(estas,safe=False)
+                estas = True
+    return JsonResponse(estas, safe=False)
+
 
 def perfil(request):
     data = {

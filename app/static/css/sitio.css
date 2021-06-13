@@ -7,16 +7,19 @@ a {
   color: #26bdef;
   font-weight: bolder;
 }
+
 a:hover {
   color: #3e8c56;
 }
+
 /*color del menu sin activar*/
-.no-active{
+.no-active {
   color: #ffff !important;
   background-color: transparent;
 }
+
 /*--btn de matricula y detalles del curso--*/
-.btn-matricular{
+.btn-matricular {
   left: 75%;
   margin-left: 0px;
   position: absolute;
@@ -24,7 +27,7 @@ a:hover {
   transition: 1s;
 }
 
-.btn-detalles-curso{
+.btn-detalles-curso {
   left: 27%;
   margin-left: -45px;
   position: absolute;
@@ -33,88 +36,108 @@ a:hover {
 }
 
 /*Icono de info- presentacion panel */
-.icono_panel_info{
+.icono_panel_info {
   font-size: 50px !important;
-  top:10px !important;
+  top: 10px !important;
 }
-.tamano_caja_info_panel{
-height: 80%;
+
+.tamano_caja_info_panel {
+  height: 80%;
 }
+
 /* Imagen de los cursos en sugerencia*/
-.imag_card_sugerencia{
-  height:80px ;
+.imag_card_sugerencia {
+  height: 80px;
   width: 80px;
 }
+
 /*color indicador de carrusel*/
-.carousel-indicators li{
+.carousel-indicators li {
   background-color: #393d3e !important;
 }
-.carousel-indicators{
+
+.carousel-indicators {
   margin-bottom: 0px !important;
 }
+
 /*titulo de las card*/
-.card-title{
+.card-title {
   color: #26bdef;
   font-weight: bold;
 }
+
 /* image del curso en tabla*/
-.img-tabla-curso{
+.img-tabla-curso {
   width: 10%;
 }
+
 /*color para los botones*/
-.btn-sitio{
-background-color: #26bdef;
-color: white;
+.btn-sitio {
+  background-color: #26bdef;
+  color: white;
 }
+
 /*mis card de curso*/
-.card-curso{
-  background-color:#1c718d17  !important ;
+.card-curso {
+  background-color: #1c718d17 !important;
 }
+
 /*fondo del contenido */
-.content-wrapper{
+.content-wrapper {
   background-color: white;
 }
+
 /*fin fondo del contenido */
 .table tbody tr:hover {
   background-color: #26bdef;
   color: #ffffff;
 }
+
 .table tbody tr a {
   color: #83837a;
 }
+
 .table tbody tr a:hover {
   color: #fafafa;
 }
+
 .card {
-  background-color: #ffff; /*#0d0c0c57;*/
+  background-color: #ffff;
+  /*#0d0c0c57;*/
   color: #3f474e;
 }
 
 .list-group-item {
   background-color: transparent;
 }
+
 .nav-pills .nav-link.active,
-.nav-pills .show > .nav-link {
+.nav-pills .show>.nav-link {
   background-color: #ffffff4a;
 }
 
 .callout {
   background-color: transparent;
 }
+
 .card-header {
   background-color: #ffffff4a;
 }
+
 /* link navegacion tab*/
 #frank:hover {
   color: white;
 }
+
 .nav-pills .nav-link {
   color: #333435;
 }
+
 /* menu head*/
 .navbar-light .navbar-nav .nav-link {
   color: rgb(255, 255, 255);
 }
+
 .navbar-light .navbar-nav .nav-link:hover {
   color: #3e8c56;
 }
@@ -123,30 +146,37 @@ color: white;
   background-color: #f3f3f7;
   color: white;
 }
+
 /*  perfil */
 .text-perfil {
   color: #abbac8;
 }
+
 .progress {
   height: 0.2rem;
   background-color: #8995a2;
 }
+
 .progress-bar {
   background-color: #1b9b26;
 }
+
 /* body*/
 body {
   background-color: #343a40;
 }
+
 /* listar energia */
 .text-warning .procesando-energia {
   height: 10%;
   width: 10%;
 }
+
 .modal-content {
   color: #333435;
   background-color: #edf0e7;
 }
+
 .modal-body .card {
   background-color: #0f0f09;
 }
