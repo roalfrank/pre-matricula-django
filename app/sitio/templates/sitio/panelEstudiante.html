@@ -63,6 +63,12 @@
       <div class="card-header border-0">
         <h1 class="card-title">Sugerencia de la semana:</h1>
         <div class="card-tools">
+          <button type="button" class="btn btn-tool boton-pause" >
+            <i class="fa fa-pause" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-tool boton-play" >
+            <i class="fa fa-play" aria-hidden="true"></i>
+          </button>
           <button type="button" class="btn btn-tool" data-card-widget="collapse">
             <i class="fas fa-minus"></i>
           </button>
@@ -79,330 +85,534 @@
             <div class="carousel-item active">
               <div class="row">
                 <div class="col-12 col-lg-6 col-md-6 col-sm-6">
-                  <div class="card card-widget widget-user">
-                    <div class="ribbon-wrapper ">
-                      <div class="ribbon bg-danger">+ 50 %</div>
-                    </div>
-                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-warning">
-                      <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
-                      <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-                    </div>
-                    <div class="btn-detalles-curso">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-search"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="btn-matricular">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="widget-user-image">
-                      <img class="img-circle elevation-2" src="{% static 'img/python.png' %}" alt="User Avatar" />
-                    </div>
-                    <div class="card-footer">
-                      <div class="row">
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">24h</h5>
-                            <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/05/21</h5>
-                            <span class="description-text text-xs">Inicio</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/06/21</h5>
-                            <span class="description-text text-xs">fin</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
                       </div>
-                      <!-- /.row -->
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/windows.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success ">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger ">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
                     </div>
-                  </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Aprende Windows"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">San Miguel del Padrón</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">SMP1</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
                 </div>
-                <div class="col-12 col-lg-6 col-md-6 col-sm-6 ">
-                  <div class="card card-widget widget-user">
-                    <div class="ribbon-wrapper">
-                      <div class="ribbon bg-success">
-                        Nuevo
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-success">Nuevo</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-info">
+                        <h3 class="widget-user-username">Aprende Word Básico</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/word.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
                       </div>
                     </div>
-                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-info">
-                      <h3 class="widget-user-username">Aprendiendo lo basico de Word</h3>
-                      <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-                    </div>
-                    <div class="btn-detalles-curso">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-search"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="btn-matricular">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="widget-user-image">
-                      <img class="img-circle elevation-2" src="{% static 'img/word.png' %}" alt="User Avatar" />
-                    </div>
-                    <div class="card-footer">
-                      <div class="row">
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">24h</h5>
-                            <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                          </div>
-                          <!-- /.description-block -->
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-info">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
                         </div>
-                        <!-- /.col -->
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/05/21</h5>
-                            <span class="description-text text-xs">Inicio</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/06/21</h5>
-                            <span class="description-text text-xs">Fin</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
                       </div>
-                      <!-- /.row -->
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Aprende Word Básico"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">San Miguel del Padrón</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">SMP1</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
               <div class="row">
                 <div class="col-12 col-lg-6 col-md-6 col-sm-6">
-                  <div class="card card-widget widget-user">
-                    <div class="ribbon-wrapper ">
-                      <div class="ribbon bg-danger">+ 50 %</div>
-                    </div>
-                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-warning">
-                      <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
-                      <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-                    </div>
-                    <div class="btn-detalles-curso">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-search"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="btn-matricular">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="widget-user-image">
-                      <img class="img-circle elevation-2" src="{% static 'img/python.png' %}" alt="User Avatar" />
-                    </div>
-                    <div class="card-footer">
-                      <div class="row">
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">24h</h5>
-                            <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/05/21</h5>
-                            <span class="description-text text-xs">Inicio</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/06/21</h5>
-                            <span class="description-text text-xs">fin</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-success">Nuevo</div>
                       </div>
-                      <!-- /.row -->
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-info">
+                        <h3 class="widget-user-username">Aprendiendo excel como un profesional</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/excel.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
                     </div>
-                  </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-info">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Aprendiendo excel como un profesional"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guanabacoa</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guanabacoa 1</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
                 </div>
-                <div class="col-12 col-lg-6 col-md-6 col-sm-6 ">
-                  <div class="card card-widget widget-user">
-                    <div class="ribbon-wrapper">
-                      <div class="ribbon bg-success">
-                        Nuevo
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Automatización con python</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/python.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
                       </div>
                     </div>
-                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-info">
-                      <h3 class="widget-user-username">Aprendiendo lo basico de Word</h3>
-                      <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-                    </div>
-                    <div class="btn-detalles-curso">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-search"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="btn-matricular">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="widget-user-image">
-                      <img class="img-circle elevation-2" src="{% static 'img/word.png' %}" alt="User Avatar" />
-                    </div>
-                    <div class="card-footer">
-                      <div class="row">
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">24h</h5>
-                            <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                          </div>
-                          <!-- /.description-block -->
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
                         </div>
-                        <!-- /.col -->
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/05/21</h5>
-                            <span class="description-text text-xs">Inicio</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/06/21</h5>
-                            <span class="description-text text-xs">Fin</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
                       </div>
-                      <!-- /.row -->
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Automatización con python"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Cotorro</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Cotorro 3</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
               <div class="row">
                 <div class="col-12 col-lg-6 col-md-6 col-sm-6">
-                  <div class="card card-widget widget-user">
-                    <div class="ribbon-wrapper ">
-                      <div class="ribbon bg-danger">+ 50 %</div>
-                    </div>
-                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-warning">
-                      <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
-                      <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-                    </div>
-                    <div class="btn-detalles-curso">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-search"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="btn-matricular">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="widget-user-image">
-                      <img class="img-circle elevation-2" src="{% static 'img/python.png' %}" alt="User Avatar" />
-                    </div>
-                    <div class="card-footer">
-                      <div class="row">
-                        <div class="col-sm-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">24h</h5>
-                            <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/05/21</h5>
-                            <span class="description-text text-xs">Inicio</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-4">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/06/21</h5>
-                            <span class="description-text text-xs">fin</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
                       </div>
-                      <!-- /.row -->
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Colaborar con Ecured</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/ecured.jpg' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">64h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
                     </div>
-                  </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Colaborar con Ecured"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Marianao</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Marianao 3</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
                 </div>
-                <div class="col-12 col-lg-6 col-md-6 col-sm-6 ">
-                  <div class="card card-widget widget-user">
-                    <div class="ribbon-wrapper">
-                      <div class="ribbon bg-success">
-                        Nuevo
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Plataforma Wordpress para hacer blog.</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/wordpress.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
                       </div>
                     </div>
-                    <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-info">
-                      <h3 class="widget-user-username">Aprendiendo lo basico de Word</h3>
-                      <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-                    </div>
-                    <div class="btn-detalles-curso">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-search"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="btn-matricular">
-                      <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                          aria-hidden="true"></i></button>
-                    </div>
-                    <div class="widget-user-image">
-                      <img class="img-circle elevation-2" src="{% static 'img/word.png' %}" alt="User Avatar" />
-                    </div>
-                    <div class="card-footer">
-                      <div class="row">
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">24h</h5>
-                            <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                          </div>
-                          <!-- /.description-block -->
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
                         </div>
-                        <!-- /.col -->
-                        <div class="col-4 border-right">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/05/21</h5>
-                            <span class="description-text text-xs">Inicio</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-4">
-                          <div class="description-block">
-                            <h5 class="description-header text-xs">04/06/21</h5>
-                            <span class="description-text text-xs">Fin</span>
-                          </div>
-                          <!-- /.description-block -->
-                        </div>
-                        <!-- /.col -->
                       </div>
-                      <!-- /.row -->
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Plataforma Wordpress para hacer blog."</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Playa</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Playa 6</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </span>
                 </div>
               </div>
             </div>
@@ -710,7 +920,7 @@
       </div>
       <!-- /.card-header -->
       <div class="card-body p-2 text-xs">
-        
+
         <div class="callout callout-success p-2">
           <div class="row">
             <div class="col-1 p-1">
@@ -721,12 +931,14 @@
             </div>
             <div class="col-3">
               <div class="d-flex justify-content-end">
-                <a href="" class="float-right"><span class="badge badge-success float-right notificaciones-a ">leer</span></a>
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
               </div>
               <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 20 minutos</span>
             </div>
           </div>
-          <p class="fst-italic">Seré tu profesor del curso ¨ Aprendiendo Word ¨. Cualquier duda me puedes contactar. </p>
+          <p class="fst-italic">Seré tu profesor del curso ¨ Aprendiendo Word ¨. Cualquier duda me puedes contactar.
+          </p>
         </div>
         <div class="callout callout-info p-2">
           <div class="row">
@@ -738,12 +950,14 @@
             </div>
             <div class="col-3">
               <div class="d-flex justify-content-end">
-                <a href="" class="float-right"><span class="badge badge-success float-right notificaciones-a ">leer</span></a>
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
               </div>
               <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 1 horas</span>
             </div>
           </div>
-          <p class="fst-italic">Saludos {{request.user.username}} te sugerimos este curso de <a href="">Curso sistema operativo Windows.</a></p>
+          <p class="fst-italic">Saludos {{request.user.username}} te sugerimos este curso de <a href="">Curso sistema
+              operativo Windows.</a></p>
         </div>
         <div class="callout callout-warning p-2">
           <div class="row">
@@ -755,7 +969,8 @@
             </div>
             <div class="col-3">
               <div class="d-flex justify-content-end">
-                <a href="" class="float-right"><span class="badge badge-success float-right notificaciones-a ">leer</span></a>
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
               </div>
               <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 2 hora</span>
             </div>
@@ -772,14 +987,15 @@
             </div>
             <div class="col-3">
               <div class="d-flex justify-content-end">
-                <a href="" class="float-right"><span class="badge badge-success float-right notificaciones-a ">leer</span></a>
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
               </div>
               <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 3 horas</span>
             </div>
           </div>
           <p class="fst-italic">Usted ha matriculado en el curso <a href="">Aprendiendo Word.</a></p>
         </div>
-        
+
       </div>
       <!-- /.card-body -->
       <!-- /.card-body -->
@@ -788,6 +1004,7 @@
       </div>
       <!-- /.card-footer -->
     </div>
+
   </div>
 </div>
 
@@ -798,4 +1015,33 @@
 <script src="{% static 'lib/adminlte-master/plugins/chart.js/Chart.min.js' %}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{% static 'lib/adminlte-master/js/pages/dashboard3.js'%}"></script>
+<script >
+  $(function(){
+     $('.btn-detalles-curso button').on('click', function(){
+          var parentEls = $(this).parents()[1]
+          $(parentEls).toggleClass('vueltaA');
+          $(parentEls).next().toggleClass('vueltaB');
+     });
+     $('.card-back .closed-vuelta').on('click', function(){
+          var parentEls = $(this).parents()[2]
+          $(parentEls).toggleClass('vueltaB');
+          $(parentEls).prev().toggleClass('vueltaA');
+     });
+    $("#carouselExampleIndicators").carousel({ interval: 500, pause: "hover" });
+    $(".boton-pause").on('click',function(){
+     $("#carouselExampleIndicators").carousel('pause');
+     $(this).prop('disabled', true);
+     $(".boton-play").prop('disabled',false);
+    });
+    $(".boton-play").on('click',function(){
+     $("#carouselExampleIndicators").carousel('cycle');
+     $(this).prop('disabled', true);
+     $(".boton-pause").prop('disabled',false);
+
+    });
+
+  });
+  
+
+</script>
 {%endblock  %}

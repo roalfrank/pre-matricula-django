@@ -27,3 +27,39 @@ a:hover .notificaciones-a {
 .callout p a:hover {
     color: #1f875f !important;
 }
+
+.sugerencia-filp div {
+    backface-visibility: hidden;
+    transition: transform 300ms;
+    transition-timing-function: linear;
+}
+
+.card-front {
+    transform: rotateY(0deg);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    position: absolute;
+    max-width: 93%;
+    top: 0;
+
+}
+
+
+.vueltaA {
+    transform: rotateY(-180deg);
+}
+
+.vueltaB {
+    transform: rotateY(0deg);
+}
+
+.widget-user-image {
+    left: 55% !important;
+    top: 100px !important;
+}
+
+.img-curso-panel {
+    width: 50px !important;
+}

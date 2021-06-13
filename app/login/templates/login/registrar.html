@@ -139,22 +139,24 @@
             <div id="step-1" class="tab-pane p-2" role="tabpanel" aria-labelledby="step-1" >
                 <div>
                     <div class="form-group">
-                        {% for field in form %}
-                            {{field.label_tag}}*
-                            {{field|add_class:'form-control'|attr:'autocomplete:off'}}
-                                {% if field.help_text %}
-                                    <small class="help text-info">{{ field.help_text|safe }}</small>
-                                {% endif %}
-                                {% if field.errors %}
-                                    <small class="help text-danger">{{ field.errors|safe }}</small>
-                                {% endif %}
-                            
-                        {%endfor%}
+                        {{form.username.label_tag}}*
+                        {{form.username|add_class:'form-control'|attr:'autocomplete:off'}}
+                        <small class='text-danger'>{{form.username.errors}}</small>
+                        {{form.password1.label_tag}}*
+                        {{form.password1|add_class:'form-control'|attr:'autocomplete:off'}}
+                        <small class='text-danger'>{{form.password1.errors}}</small>
+                        <small class="help text-info"> <ul>
+                            <li>Más de 8 caracteres permido.</li>
+                            <li>No puede ser solo números.</li>
+                        </ul></small>
                         <br>
+                        {{form.password2.label_tag}}*
+                        {{form.password2|add_class:'form-control'|attr:'autocomplete:off'}}
+                        <small class='text-danger'>{{form.password2.errors}}</small>
                         {{formPerfil.correo.label_tag}}*
                         {{formPerfil.correo|add_class:'form-control'|attr:'autocomplete:off'}}
                         <small class="help text-info">nauta.com.cu,nauta.cu,gmail.com,cubava.cu</small>
-                        {{formPerfil.correo.errors}}
+                        <small class='text-danger'>{{formPerfil.correo.errors}}</small>
                     </div>
                 </div>
             </div>
