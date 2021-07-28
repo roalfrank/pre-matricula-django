@@ -1,0 +1,167 @@
+{% extends "base.html"%}
+{% load static%}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
+<link rel="stylesheet"
+    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
+<link rel="stylesheet" href="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.css'%}" />
+{% block head_list %}{% endblock %}
+{% endblock  %}
+
+{%block contenido%}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header pb-0">
+                <div class="card-title">
+                    <h5><i class="fa fa-search pr-2"></i>Buscar</h5>
+                </div>
+                <div class="card-tools pr-4">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="inputProvincia">Provincia:</label>
+                            <select class="form-control" id="inputProvincia">
+                                <option>La Habana</option>
+                                <option>Las Tunas</option>
+                                <option>Camaguey</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="inputMunicipio">Municipio:</label>
+                            <select class="form-control" id="inputMunicipio">
+                                <option>Regla</option>
+                                <option>Guanabacoa</option>
+                                <option>Playa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="inputJcc">JCC:</label>
+                            <select class="form-control" id="inputJcc">
+                                <option>Regla 1</option>
+                                <option>Regla 2</option>
+                                <option>Regla 3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="inputDuraccion">Duración:</label>
+                            <select class="form-control" id="inputDuracion">
+                                <option>---</option>
+                                <option>24h</option>
+                                <option>36h</option>
+                                <option>84h</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="inputDuraccion">Modalidad:</label>
+                            <select class="form-control" id="inputDuracion">
+                                <option>---</option>
+                                <option>Presencial</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group">
+                            <label for="inputDuraccion">Tipo Grupo:</label>
+                            <select class="form-control" id="inputDuracion">
+                                <option>---</option>
+                                <option>Presencial</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer p-1">
+                <button type="submit" class="btn btn-primary float-right"><i
+                        class="fa fa-search pr-2"></i>Buscar</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card ">
+
+            <div class="card-body">
+                <table class="table table-bordered" id="data">
+                    <thead>
+                        {% block columns %}
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Duración</th>
+                        <th style="width: 2%;">Frecuencia</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Capacidad</th>
+                        <th>Acción</th>
+                        {% endblock %}
+                    </thead>
+                    <tbody>
+                        {% block rows %}
+                        <tr>
+                            <td>
+                                <img class="img-circle elevation-2 img-curso-panel w-50 " src="{% static 'img/windows.png' %}" alt="User Avatar" />
+                                Aprendiendo Word
+                            </td>
+                            <td>Un curso interesante para toda la familia cubana. Con profesores capacitados aprenderas el manejo del sistema operativo más usado en el mundo.  </td>
+                            <td>
+                                <span class="badge badge-info">
+                                    <span class="text-white">
+                                        24h
+                                    </span></span>
+                            </td>
+                            <td>2</td>
+                            <td><span class="text-success">24/05/2021</span></td>
+                            <td><span class="text-danger">24/06/2021</span></td>
+                            <td>
+                                <div class="progress-group">
+                                    
+                                    <span class=""><b>5</b>/10</span>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-primary" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="#" rel="edit" class="text-info" data-toggle="tooltip" title="Ver detalles del curso"> <i class="fa fa-search text-info"></i></a> 
+                                <a href="#" rel="edit" class="text-info" data-toggle="tooltip" title="Matricular Curso"> <i class="fas fa-graduation-cap text-info" aria-hidden="true"></i></a> 
+                            </td>
+                        </tr>
+                        {% endblock %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                {% block footer_list %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{% block js %}
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'lib/jquery-validation/jquery.validate.min.js'%}"></script>
+<script src="{% static 'lib/jquery-validation/additional-methods.min.js'%}"></script>
+<script src="{% static 'js/sitio/listar_curso.js'%}"></script>
+{%block js_listar%}{%endblock%}
+{% endblock %}

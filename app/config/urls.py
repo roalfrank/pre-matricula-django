@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/', include("login.urls")),
     path('user/', include("user.urls")),
     path('sistema/', include("core.preMatricula.urls")),
+    path('estudiante/', include("core.estudiante.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

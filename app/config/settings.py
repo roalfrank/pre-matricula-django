@@ -25,7 +25,7 @@ SECRET_KEY = 'tec^p6ax4#zza=!p@bdzlfw+gn!hnd_2$bn%x!tpk91%id_flv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.3.21.17','127.0.0.1']
+ALLOWED_HOSTS = ['10.3.21.17', '127.0.0.1']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "django.contrib.humanize",
     "core.preMatricula",
+    "core.estudiante"
 ]
 
 MIDDLEWARE = [
@@ -153,7 +154,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 # EMAIL_PORT=587
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('host_smtp')
-EMAIL_HOST_USER =  os.environ.get('user_smtp')
+EMAIL_HOST_USER = os.environ.get('user_smtp')
 EMAIL_HOST_PASSWORD = os.environ.get('user_pas_smtp')
 EMAIL_FROM_USER = os.environ.get('user_mail_smtp')
 EMAIL_USE_TLS = True

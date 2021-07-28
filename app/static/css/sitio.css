@@ -35,6 +35,11 @@ a:hover {
   transition: 2s;
 }
 
+/*icono para los encabezados*/
+.icono-encabezado {
+  max-width: 2rem;
+}
+
 /*Icono de info- presentacion panel */
 .icono_panel_info {
   font-size: 50px !important;
