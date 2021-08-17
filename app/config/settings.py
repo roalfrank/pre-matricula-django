@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # app del sistema
-    "sitio",
-    "login",
-    "user",
+    "core.sitio",
+    "core.login",
+    "core.user",
     "widget_tweaks",
     "django.contrib.humanize",
     "core.preMatricula",
