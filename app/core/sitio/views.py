@@ -8,10 +8,14 @@ from config import settings
 # Create your views here.
 
 
-@login_required
 def index(request):
+    return render(request, "sitio/inicio/index.html")
+
+
+@login_required
+def enrutadorSistema(request):
     group = request.user.groups.all().first()
-    
+
     if group.name == "Admin":
         return redirect(reverse("sitio:panel-admin"))
     elif group.name == "Estudiante":
@@ -20,6 +24,7 @@ def index(request):
         return redirect(reverse("sitio:panel-gestor"))
     else:
         return HttpResponseForbidden()
+
 
 def dashBoardGestor(request):
     if not request.user.is_authenticated:
@@ -64,6 +69,7 @@ def dashBoardGestor(request):
     }
     return render(request, "sitio/panelGestor.html", context)
 
+
 def dashBoardAdmin(request):
     if not request.user.is_authenticated:
         return redirect("login:login-user")
@@ -107,6 +113,7 @@ def dashBoardAdmin(request):
     }
     return render(request, "sitio/panelAdmin.html", context)
 
+
 def dashBoardEstudiante(request):
     if not request.user.is_authenticated:
         return redirect("login:login-user")
@@ -114,8 +121,8 @@ def dashBoardEstudiante(request):
         "title": "Panel Principal",
         'notificaciones': [
             {'nombre': "Aprobada su solicitud", "municipio": "SM"},
-            {'nombre':"Verifique su perfil","municipio":"Regla"},
-            {'nombre':"dsdfsdf","municipio":"Regla"},
+            {'nombre': "Verifique su perfil", "municipio": "Regla"},
+            {'nombre': "dsdfsdf", "municipio": "Regla"},
             {'nombre': "Roaldys", "municipio": "Regla"},
             {'nombre': "Roaldys", "municipio": "Regla"}],
         'notificacioneEncabezado': [
@@ -124,7 +131,7 @@ def dashBoardEstudiante(request):
             {'nombre': "Accion"}
         ],
         'casiMatriculados': [
-            {'nombre': "Curso de Python", "municipio": "Regla",'tipo':'Corto'},
+            {'nombre': "Curso de Python", "municipio": "Regla", 'tipo': 'Corto'},
             {'nombre': "Aprendiendo Windows", "municipio": "SMP", 'tipo': 'Corto'},
             {'nombre': "Curso Tablet", "municipio": "Cerro", 'tipo': 'Largo'},
             {'nombre': "Dibujando con Paint", "municipio": "Plaza", 'tipo': 'Corto'},
@@ -136,7 +143,7 @@ def dashBoardEstudiante(request):
             {'nombre': "Accion"}
         ],
         'cursosRecientes': [
-            {'nombre': "Curso de Python", "municipio": "Regla",'tipo':'Corto'},
+            {'nombre': "Curso de Python", "municipio": "Regla", 'tipo': 'Corto'},
             {'nombre': "Aprendiendo Windows", "municipio": "SMP", 'tipo': 'Corto'},
             {'nombre': "Curso Tablet", "municipio": "Cerro", 'tipo': 'Largo'},
             {'nombre': "Dibujando con Paint", "municipio": "Plaza", 'tipo': 'Corto'},
@@ -149,4 +156,3 @@ def dashBoardEstudiante(request):
         "icono_titulo": "fas fa-tachometer-alt"
     }
     return render(request, "sitio/panelEstudiante.html", context)
-
