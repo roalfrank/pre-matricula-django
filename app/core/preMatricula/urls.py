@@ -1,6 +1,9 @@
 from django.urls import path
+# importaciones para entidades
 from core.preMatricula.logica.tbentidad.Provincia.views import ProvinciaListView, buscarMunicipios
-from core.preMatricula.logica.tbentidad.cargoinstructor.views import CargoInstructorView
+from core.preMatricula.logica.tbentidad.entidadMunicipio.views import MunicipioView
+# importaciones para instructores
+from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 # importaciones para estudiantes
 from core.preMatricula.logica.estudiante.estudianteocupacion.views import OcupacionEstudianteView
 from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import DiscapacidadEstudianteView
@@ -16,9 +19,11 @@ from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatri
 app_name = "prematricula"
 
 urlpatterns = [
-    # url de tablas  pequenas sin dependencia
+    # Enlaces de las entidades
     path("provincia/", ProvinciaListView.as_view(), name="listar-provincia"),
     path("municipio/buscar/", buscarMunicipios, name="buscar-municipios"),
+    path("entidad-municipio/", MunicipioView.as_view(), name="entidad-municipio"),
+    # --- Istructor enlaces -----
     path("cargo-instructor/", CargoInstructorView.as_view(),
          name="cargo-instructor"),
     # --Estudiante enlaces -----

@@ -37,23 +37,7 @@ var abrir_modal_nuevo = function (titulo) {
         document.getElementById('formRegistro').reset();
         $("#modal-nuevo").modal("show");
 }
-var abrir_modal_editar= function(titulo,tabla,element) {
-       //con esto obtengo el tr del boton edit de la tabla
-        var tr = tabla.cell($(element).closest('td,li')).index();
-        //paso a data una lista de los valores de la row a editar
-        var data = tabla.row(tr.row).data();
-        //itero todos los campos del fromRegirto para cargar los datos del que quiero editar
-        $('#formRegistro input[type!="hidden"]').each(function(index,element){
-           //aqui element.name me devuelve el valor name del input iterado
-           //y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor  
-            element.value = data[element.name];
-        });
-        $('input[name="action"]').val("edit");
-        id_edit = data.id;
-        modal_title.find('span').html(titulo);
-        modal_title.find('i').removeClass().addClass('fa fa-edit');
-        $('#modal-nuevo').modal('show');
-}
+
 var delete_registro=function(tabla,element,url_delete=window.location.pathname) {
     var tr = tabla.cell($(element).closest('td,li')).index();
     var data = tabla.row(tr.row).data();

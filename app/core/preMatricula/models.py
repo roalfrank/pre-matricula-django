@@ -25,6 +25,11 @@ class Municipio(models.Model):
     def __str__(self):
         return self.nombre
 
+    def toJson(self):
+        item = model_to_dict(self)
+        item['nombre_provincia'] = self.provincia.__str__()
+        return item
+
 
 class Entidad(models.Model):
     nombre = models.CharField(max_length=100, verbose_name="Entidad")
