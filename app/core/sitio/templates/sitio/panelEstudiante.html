@@ -3,12 +3,14 @@
 {% load humanize%}
 {%block head%}
 <link rel="stylesheet" href="{% static 'css/sitio/css/panelEstudiante.css' %}">
+<link rel="stylesheet" href="{% static 'inicio/vendor/aos/aos.css' %}">
+
 {%endblock%}
 
 {%block contenido%}
 <div class="row">
   <div class="col-lg-3 col-6 ">
-    <div class="small-box bg-info tamano_caja_info_panel">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="100">
       <div class="inner p-0 pl-4">
         <h3 class="mb-1">1</h3>
 
@@ -20,7 +22,7 @@
     </div>
   </div>
   <div class="col-lg-3 col-6 ">
-    <div class="small-box bg-info tamano_caja_info_panel">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="200">
       <div class="inner p-0 pl-4">
         <h3 class="mb-1">5</h3>
 
@@ -32,7 +34,7 @@
     </div>
   </div>
   <div class="col-lg-3 col-6 ">
-    <div class="small-box bg-info tamano_caja_info_panel">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="300">
       <div class="inner p-0 pl-4">
         <h3 class="mb-1">4</h3>
 
@@ -44,7 +46,7 @@
     </div>
   </div>
   <div class="col-lg-3 col-6 ">
-    <div class="small-box bg-info tamano_caja_info_panel">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="400">
       <div class="inner p-0 pl-4">
         <h3 class="mb-1">30</h3>
 
@@ -59,7 +61,7 @@
 <!--primera seccion sugerencia y +50% matriculados-->
 <div class="row">
   <div class="col-12 col-lg-6">
-    <div class="card ">
+    <div class="card " data-aos="zoom-in">
       <div class="card-header border-0">
         <h1 class="card-title">Sugerencia de la semana:</h1>
         <div class="card-tools">
@@ -623,7 +625,7 @@
   </div>
   <!-- tabla de de +50% Matriculados -->
   <div class="col-12 col-lg-6">
-    <div class="card">
+    <div class="card" data-aos="fade-right">
       <div class="card-header">
         <h3 class="card-title">Cursos +50% matriculados</h3>
 
@@ -636,7 +638,7 @@
       <!-- /.card-header -->
       <div class="card-body p-0">
         <ul class="products-list product-list-in-card pl-2 pr-2">
-          <li class="item">
+          <li class="item" data-aos="fade-left" data-aos-delay="100">
             <div class="product-img">
               <img src="{% static 'img/word.png' %}" alt="Product Image" class="img-size-50">
             </div>
@@ -661,7 +663,7 @@
             </div>
           </li>
           <!-- /.item -->
-          <li class="item">
+          <li class="item" data-aos="fade-left" data-aos-delay="200">
             <div class="product-img">
               <img src="{% static 'img/python.png' %}" alt="Product Image" class="img-size-50">
             </div>
@@ -686,7 +688,7 @@
             </div>
           </li>
           <!-- /.item -->
-          <li class="item">
+          <li class="item" data-aos="fade-left" data-aos-delay="300" >
             <div class="product-img">
               <img src="{% static 'img/excel.png' %}" alt="Product Image" class="img-size-50">
             </div>
@@ -711,7 +713,7 @@
             </div>
           </li>
           <!-- /.item -->
-          <li class="item">
+          <li class="item" data-aos="fade-left" data-aos-delay="400">
             <div class="product-img">
               <img src="{% static 'img/ecured.jpg' %}" alt="Product Image" class="img-size-50">
             </div>
@@ -750,7 +752,7 @@
 <!--primera seccion sugerencia y +50% matriculados-->
 <div class="row">
   <div class="col-12 col-lg-6">
-    <div class="card">
+    <div class="card" data-aos="zoom-in" >
       <div class="card-header">
         <h3 class="card-title">Cursos recientes</h3>
 
@@ -906,7 +908,7 @@
       {% include 'sitio/componentes/tabla_curso_base.html' with body=notificaciones encabezado=notificacioneEncabezado %}
     </div> -->
     <!-- /.card -->
-    <div class="card card-default">
+    <div class="card card-default " data-aos="zoom-out">
       <div class="card-header">
         <h3 class="card-title">
           <i class="fas fa-bullhorn"></i>
@@ -919,9 +921,9 @@
         </div>
       </div>
       <!-- /.card-header -->
-      <div class="card-body p-2 text-xs">
+      <div class="card-body p-2 text-xs"   >
 
-        <div class="callout callout-success p-2">
+        <div class="callout callout-success p-2" data-aos="fade-up" data-aos-delay="100">
           <div class="row">
             <div class="col-1 p-1">
               <img src="{% static 'img/avatar4.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
@@ -940,7 +942,7 @@
           <p class="fst-italic">Seré tu profesor del curso ¨ Aprendiendo Word ¨. Cualquier duda me puedes contactar.
           </p>
         </div>
-        <div class="callout callout-info p-2">
+        <div class="callout callout-info p-2" data-aos="fade-up" data-aos-delay="400">
           <div class="row">
             <div class="col-1 p-1">
               <img src="{% static 'img/info.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
@@ -959,7 +961,7 @@
           <p class="fst-italic">Saludos {{request.user.username}} te sugerimos este curso de <a href="">Curso sistema
               operativo Windows.</a></p>
         </div>
-        <div class="callout callout-warning p-2">
+        <div class="callout callout-warning p-2" data-aos="fade-up" data-aos-delay="500">
           <div class="row">
             <div class="col-1 p-1">
               <img src="{% static 'img/default.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
@@ -977,7 +979,7 @@
           </div>
           <p class="fst-italic">Seremos compañeros de curso saludos. Vamos a ver como sale este curso. </p>
         </div>
-        <div class="callout callout-info p-2">
+        <div class="callout callout-info p-2 " data-aos="fade-up" data-aos-delay="500">
           <div class="row">
             <div class="col-1 p-1">
               <img src="{% static 'img/info.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
@@ -1015,8 +1017,15 @@
 <script src="{% static 'lib/adminlte-master/plugins/chart.js/Chart.min.js' %}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{% static 'lib/adminlte-master/js/pages/dashboard3.js'%}"></script>
+<script src="{% static 'inicio/vendor/aos/aos.js'%}"></script>
 <script >
+  
   $(function(){
+    AOS.init({
+      duration: 800,
+      easing: "ease-in-out",
+      once: true
+    });
      $('.btn-detalles-curso button').on('click', function(){
           var parentEls = $(this).parents()[1]
           $(parentEls).toggleClass('vueltaA');

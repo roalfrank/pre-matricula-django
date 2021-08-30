@@ -63,3 +63,51 @@ a:hover .notificaciones-a {
 .img-curso-panel {
     width: 50px !important;
 }
+
+.animate {
+    animation: up-down 2s ease-in-out infinite alternate-reverse both;
+}
+
+.animate1 {
+    animation: up-down1 2s ease-in-out infinite alternate-reverse both;
+}
+
+@-webkit-keyframes up-down {
+    0% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes up-down {
+    0% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+@-webkit-keyframes up-down1 {
+    0% {
+        transform: translateY(-2px);
+    }
+
+    100% {
+        transform: translateY(10px);
+    }
+}
+
+@keyframes up-down1 {
+    0% {
+        transform: translateY(-2px);
+    }
+
+    100% {
+        transform: translateY(10px);
+    }
+}

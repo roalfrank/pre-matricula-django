@@ -1,73 +1,39 @@
 {% extends 'login/base.html' %}
 {% load static %}
 {% load widget_tweaks %}
-
+{% block titulo %}Login Matrícula Online Joven Club Cuba{% endblock %}
 {% block head %}
- <link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link rel="stylesheet" href="{% static 'login/css/login.css' %}">
 {% endblock %}
-    
-{% block content %}
-<div class="content">
-    <div class="row">
-        <div class="col-12">LOLO</div>
-        <div class="col-12"><div class="titulo">Sistema Matrícula Online JCC</div></div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-        <div class="firstinfo">
-            <div class="logo">
-            <img src="{% static 'img/logo.png'%}" />
-            </div>
-            <div class="profileinfo ">
-                <form action="." method="post">
-                    <input type="hidden" name="next" value="{{ next }}">
-                    {% csrf_token %}
-                    <div class="input-group mb-3">
-                        {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:usuario' }}
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope" style="color: white;"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3">
-                        {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:contraseña' }}
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock" style="color: white;"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <button type="submit" class="btn btn-info btn-block btn-sm">
-                                <i class="fas fa-sign-in-alt"></i> Iniciar sección
-                            </button>
-                        </div>
-                        <div class="col-lg-12">
-                            <a href="{% url 'login:registrar'%}" class="btn btn-warning btn-block btn-sm mt-2 text-white">
-                                <i class="fas fa-user-plus"></i> Crear Cuenta
-                            </a>
-                        </div>
-                    </div>
-                    
-                </form>
-            </div>
-        </div>
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="badgescard">
-                <span style="font-size: 13px;">Si no recuerdas tu contraseña puedes resetearla dando click 
-                    <strong><a href="#" style="color: rgb(231, 26, 26);">aqui </a></strong>
-                </span> 
-            </div>
+
+{% block contenido %}
+<div class="container">
+    <div class="titulo-icono">
+        <div class="icon-titulo"><img src="{% static 'img/logo.png' %}" alt="" style="width: 80px;"></div>
+        <div class="titulo">
+            <h4>Matrícula Online JCC</h4>
         </div>
     </div>
-    
+    <form class="form" action="." method="post">
+        <input type="hidden" name="next" value="{{ next }}">
+        {% csrf_token %}
+        <!--<input type="text" placeholder="Usuario"> -->
+        {{ form.username|attr:'autocomplete:off'|attr:'placeholder:Usuario'|attr:'autofocu:off' }}
+        
+        {{ form.password|attr:'autocomplete:off'|attr:'placeholder:Contraseña' }}
+        <button type="submit" id="login-button">Iniciar</button>
+    </form>
+    <div class="crear-cuenta">
+        <div> <span>¿Olvidaste la contraseña?<a href="." class="resetear">Resetear</a></span></div>
+        <hr>
+        <span><a href="{% url 'login:registrar'%}">Crear Cuenta</a> <span style="margin-left: 0.3rem;">No tienes cuenta, pues
+                creala.</span></span>
+    </div>
 </div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'login/js/main.js' %}"></script>
 <script type="application/javascript">
         
             var Toast = Swal.mixin({

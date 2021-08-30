@@ -15,11 +15,13 @@ def sitio_web():
 
 @register.simple_tag
 def activo_inicio(request):
+    lista_panel = ['panel-estudiante', 'panel-gestor', 'panel-admin']
     try:
         url_path = request.path
         lista_url = url_path.split('/')
-        if len(lista_url) == 2:
-            return 'active'
+        if len(lista_url) > 1:
+            if lista_url[1] in lista_panel:
+                return 'active'
         return ''
     except:
         return ''

@@ -38,7 +38,7 @@ class LoginFormView(LoginView):
 class RegistarUsuarioOnlineView(CreateView):
     form_class = UserRegistrationForm
     template_name = 'login/registrar.html'
-    success_url = reverse_lazy('login:registrado')
+    success_url = reverse_lazy('sitio:enrutador-sistema')
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -65,7 +65,7 @@ class RegistarUsuarioOnlineView(CreateView):
             mandar_correo(user_perfil.correo,
                           "Hola desde django con utilitario", cuerpo, html=True)
 
-            return redirect('/')
+            return redirect(reverse_lazy('sitio:enrutador-sistema'))
 
         return render(request, self.template_name, {'formPerfil': form_perfil, 'form': form_user})
 
