@@ -33,13 +33,20 @@ class Municipio(models.Model):
 
 class Entidad(models.Model):
     nombre = models.CharField(max_length=100, verbose_name="Entidad")
-    telefono = models.CharField(max_length=8, verbose_name="Telefono")
+    telefono = models.CharField(
+        max_length=8, verbose_name="Telefono", null=True, blank=True)
     direccion = models.CharField(max_length=200, verbose_name="Dirección")
     municipio = models.ForeignKey(
         Municipio, verbose_name="Municipio", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
+
+    def toJson(self):
+        item = model_to_dict(self)
+        item['nombre_provincia'] = self.municipio.provincia.nombre
+        item['provincia'] = self.municipio.provincia.pk
+        return item
 
 
 class JCP(models.Model):
@@ -50,6 +57,12 @@ class JCP(models.Model):
 
     def __str__(self):
         return f"{self.entidad} - ({self.codigo_jcp})"
+
+    def toJson(self):
+        item = self.entidad.toJson()
+        item['id_jcp'] = self.pk
+        item['codigo_jcp'] = self.codigo_jcp
+        return item
 
 
 class Region(models.Model):

@@ -58,3 +58,4 @@ var delete_registro=function(tabla,element,url_delete=window.location.pathname) 
         id_edit=null;
         });
 }
+

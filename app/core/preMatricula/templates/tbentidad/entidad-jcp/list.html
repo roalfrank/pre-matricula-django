@@ -1,0 +1,281 @@
+{% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}
+{% block head_list %}
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
+<style>
+  .select2-container {
+    background-color: #fff;
+}
+</style>
+{% endblock %}
+{% block columns %}
+<tr>
+  <th style="width: 5%;">Selecciona</th>
+  <th>Id</th>
+  <th>Id_JCP</th>
+  <th style="width: 50%;">Nombre</th>
+  <th style="width: 20%;">Código</th>
+  <th style="width: 50%;">Provincia</th>
+  <!-- {% if perms.user.change_jcp or perms.user.delete_jcp %} -->
+  <th style="width: 20%;">Acción</th>
+  <!-- {%endif%} -->
+
+</tr>
+{% endblock %}
+{% block boton_accion%}
+<!-- {% if perms.user.add_jcp%} -->
+<button type="button" class="btn btn-default btn-xs" id='btnNuevo'>
+  <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
+</button>
+<!-- {%endif%}
+  {% if perms.user.delete_jcp%} -->
+<button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll'>
+  <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
+</button>
+<!-- {% endif %} -->
+{% endblock%}
+{%block form_modal%}
+<div class="form-group">
+  {{form_jcp.codigo_jcp.label_tag}}
+  {{form_jcp.codigo_jcp|add_class:'form-control'|attr:'autocomplete:off'}}
+</div>
+{% for field in form_entidad.visible_fields%}
+
+<div class="form-group">
+  {{field.label_tag}}
+  {% if field.name == 'municipio'%}
+  {{field|add_class:'form-control select2 '|attr:'autocomplete:off'}}
+  {% else %}
+  {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+  {% endif %}
+
+</div>
+{%endfor%}
+{%endblock%}
+{%block js_listar%}
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %} "></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
+<script>
+  $(function () {
+   var select_municipio = $('#id_municipio');
+    /*select_municipio.html('');*/
+    $('.select2').select2({
+        theme: 'bootstrap4',
+        language:'es',
+    });
+    $('#id_provincia').on('change',function(){
+        var id = $(this).val();
+        $.ajax({
+            url:"{% url 'prematricula:buscar-municipios'%}",
+            type:'POST',
+            data:{
+                'id_provincia':id,
+                csrfmiddlewaretoken:function(){
+                                    return $('input[name="csrfmiddlewaretoken"]').val();
+                                },
+            },
+            dataType:'json'
+        }).done(function(data){
+            select_municipio.html('').select2({
+                theme: 'bootstrap4',
+                language:'es',
+                data:data
+            });
+        });
+    });
+
+    var tblListar = $("#data").DataTable({
+      responsive: true,
+      autoWidth: false,
+      destroy: true,
+      deferRender: true,
+      loading: true,
+      ajax: {
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+          'action': 'cargarDatos',
+          'csrfmiddlewaretoken': function () {
+            return $('input[name="csrfmiddlewaretoken"]').val();
+          },
+        },
+        dataSrc: '',
+
+      },
+      columns: [{
+          "data": 'id'
+        },
+        {
+          "data": "id"
+        },
+        {
+          "data": "id_jcp"
+        },
+        {
+          "data": "nombre"
+        },
+        {
+          "data": "codigo_jcp"
+        },
+        {
+          "data": "nombre_provincia"
+        },
+        //{% if perms.user.change_jcp or perms.user.delete_jcp %}
+        {
+          "data": "nombre"
+        }
+        //{%endif%}
+      ],
+      columnDefs: [{
+          targets: 0,
+          orderable: false,
+          class: 'text-center',
+          render: function (data, type, row) {
+            var buttons =
+              '<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div>';
+            return buttons
+          }
+        },
+        {
+          targets: [1],
+          visible: false,
+        },
+        {
+          targets: [2],
+          visible: false,
+        },
+        {
+          targets: [3],
+          class: "text-center"
+        },
+        {
+          targets: [4],
+          class: "text-center"
+        },
+        {
+          targets: [5],
+          class: "text-center"
+        },
+        //{% if perms.user.change_jcp or perms.user.delete_jcp %}
+        {
+          targets: [-1],
+          class: "text-center",
+          orderable: false,
+          render: function (data, type, row) {
+            var buttons = ''
+            //{% if perms.user.change_jcp%}
+            buttons =
+              '<a href="#" rel="edit" class="text-info" data-toggle="tooltip" title="Editar Registro"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+            //{%endif%}
+            //{% if perms.user.delete_jcp%} 
+            buttons +=
+              '<a href="#" rel="delete" class="pl-2 text-danger" data-toggle="tooltip" title="Eliminar Registro"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+            //{%endif%}
+            return buttons
+          }
+        },
+        //{%endif%}
+
+      ],
+      order: [
+        [3, 'asc']
+      ],
+      initComplete: function (settings, json) {
+        tooltip();
+      }
+    });
+
+    $('#btnDeleteAll').on('click', function () {
+      delete_select(tblListar);
+    });
+
+    $("#btnNuevo").on("click", function () {
+      abrir_modal_nuevo("Nuevo jcp");
+    });
+
+    $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+      abrir_modal_editar("Editar jcp", tblListar, element.currentTarget);
+    });
+
+    $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
+      delete_registro(tblListar, element.currentTarget);
+    });
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        var parametros = new FormData(form);
+        parametros.append('id_edit', id_edit);
+        submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
+          parametros,
+          function (data) {
+            if (data.enviado) {
+              $("#modal-nuevo").modal("hide");
+              tblListar.ajax.reload();
+              mensaje("success", "Guardado el Registro - " + data.nombre);
+              id_edit = null;
+            } else {
+              mensaje("error", "Error Guardando el Registro - " + data.error);
+            }
+          })
+      }
+    });
+    $("#formRegistro").validate({
+      rules: {
+        nombre: {
+          required: true,
+          maxlength: 100,
+        }
+        },
+      messages: {
+        nombre: {
+          required: "El jcp es necesario",
+          maxlength: "No esta permitido mas de 100 caracteres",
+        },
+        codigo_jcp:{
+          required: "El codigo es necesario",
+        },
+        direccion:{
+          required: "La dirección es necesaria",
+        },
+        provincia:{
+          required: "La provincia es necesaria"
+        }
+      },
+      errorElement: "span",
+      errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        element.closest(".form-group").append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass("is-invalid");
+      },
+    });
+  });
+</script>
+{%endblock%}
+{% block abrir_modal_editar%}
+       //resetearSelect('formRegistro');
+       //con esto obtengo el tr del boton edit de la tabla
+        var tr = tabla.cell($(element).closest('td,li')).index();
+        //paso a data una lista de los valores de la row a editar
+        var data = tabla.row(tr.row).data();
+        console.log(data)
+        //itero todos los campos del fromRegirto para cargar los datos del que quiero editar
+        $('#formRegistro input[type!="hidden"]').each(function(index,element){
+           //aqui element.name me devuelve el valor name del input iterado
+           //y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor  
+           element.value = data[element.name];
+        });
+        $('#id_provincia').val(data['provincia'].toString()).trigger("change");
+        setTimeout(() => { $('#id_municipio').val(data['municipio'].toString()).trigger("change"); }, 100);
+       // $('#id_municipio').val(data['municipio'].toString()).trigger("change");
+       
+        $('input[name="action"]').val("edit");
+        id_edit = data.id_jcp;
+        modal_title.find('span').html(titulo);
+        modal_title.find('i').removeClass().addClass('fa fa-edit');
+        $('#modal-nuevo').modal('show');
+
+{% endblock %}

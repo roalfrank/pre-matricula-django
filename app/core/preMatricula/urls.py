@@ -2,6 +2,7 @@ from django.urls import path
 # importaciones para entidades
 from core.preMatricula.logica.tbentidad.Provincia.views import ProvinciaListView, buscarMunicipios
 from core.preMatricula.logica.tbentidad.entidadMunicipio.views import MunicipioView
+from core.preMatricula.logica.tbentidad.entidadJcp.views import JcpView
 # importaciones para instructores
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 # importaciones para estudiantes
@@ -23,6 +24,7 @@ urlpatterns = [
     path("provincia/", ProvinciaListView.as_view(), name="listar-provincia"),
     path("municipio/buscar/", buscarMunicipios, name="buscar-municipios"),
     path("entidad-municipio/", MunicipioView.as_view(), name="entidad-municipio"),
+    path("entidad-jcp/", JcpView.as_view(), name="entidad-jcp"),
     # --- Istructor enlaces -----
     path("cargo-instructor/", CargoInstructorView.as_view(),
          name="cargo-instructor"),

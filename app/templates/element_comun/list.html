@@ -2,43 +2,44 @@
 {% load static %}
 {% load widget_tweaks%}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.css'%}"/>
-    {% block head_list %}{% endblock %}
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
+<link rel="stylesheet"
+  href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
+<link rel="stylesheet" href="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.css'%}" />
+{% block head_list %}{% endblock %}
 {% endblock  %}
 
 {% block contenido %}
 <div class='d-flex justify-content-end pb-2'>
-    {% block boton_accion%}
-    <button type="button" class="btn btn-default btn-xs" id='btnNuevo' >
-        <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
-    </button>
-    <button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll' >
-        <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
-    </button>
-    {% endblock%}
-    {%block boton_accion_extra%}{%endblock%}
+  {% block boton_accion%}
+  <button type="button" class="btn btn-default btn-xs" id='btnNuevo'>
+    <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
+  </button>
+  <button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll'>
+    <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
+  </button>
+  {% endblock%}
+  {%block boton_accion_extra%}{%endblock%}
 </div>
 <div class="card ">
-   
-    <div class="card-body">
-        <table class="table table-bordered" id="data">
-            <thead>
-                {% block columns %}
-                {% endblock %}
-            </thead>
-            <tbody>
-                {% block rows %}
-                {% endblock %}
-            </tbody>
-        </table>
-    </div>
-    <div class="card-footer">
-        {% block footer_list %}
-        
+
+  <div class="card-body">
+    <table class="table table-bordered" id="data">
+      <thead>
+        {% block columns %}
         {% endblock %}
-    </div>
+      </thead>
+      <tbody>
+        {% block rows %}
+        {% endblock %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    {% block footer_list %}
+
+    {% endblock %}
+  </div>
 </div>
 {%block modal_listar%}
 <div class="modal fade" id="modal-nuevo">
@@ -47,12 +48,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -90,26 +86,39 @@
 <script src="{% static 'lib/jquery-validation/additional-methods.min.js'%}"></script>
 <script src="{% static 'js/list.js'%}"></script>
 <script>
-  var abrir_modal_editar= function(titulo,tabla,element) {
+  var abrir_modal_editar = function (titulo, tabla, element) {
     //{% block abrir_modal_editar%}
-       //con esto obtengo el tr del boton edit de la tabla
-        var tr = tabla.cell($(element).closest('td,li')).index();
-        //paso a data una lista de los valores de la row a editar
-        var data = tabla.row(tr.row).data();
-        //itero todos los campos del fromRegirto para cargar los datos del que quiero editar
-        $('#formRegistro input[type!="hidden"]').each(function(index,element){
-           //aqui element.name me devuelve el valor name del input iterado
-           //y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor  
-            element.value = data[element.name];
-        });
-        $('input[name="action"]').val("edit");
-        id_edit = data.id;
-        modal_title.find('span').html(titulo);
-        modal_title.find('i').removeClass().addClass('fa fa-edit');
-        $('#modal-nuevo').modal('show');
+    //con esto obtengo el tr del boton edit de la tabla
+    var tr = tabla.cell($(element).closest('td,li')).index();
+    //paso a data una lista de los valores de la row a editar
+    var data = tabla.row(tr.row).data();
+    //itero todos los campos del fromRegirto para cargar los datos del que quiero editar
 
-        //{% endblock %}
-}
+    $('#formRegistro input[type!="hidden"]').each(function (index, element) {
+      //aqui element.name me devuelve el valor name del input iterado
+      //y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor  
+      element.value = data[element.name];
+    });
+    $('input[name="action"]').val("edit");
+    id_edit = data.id;
+    modal_title.find('span').html(titulo);
+    modal_title.find('i').removeClass().addClass('fa fa-edit');
+    $('#modal-nuevo').modal('show');
+
+    //{% endblock %}
+  }
+  /*eliminamos la clase is-valid si se cierra el modal*/
+  $('#modal-nuevo').on('hidden.bs.modal', function (e) {
+    var elements = document.getElementById("formRegistro").elements;
+
+    for (var i = 0, element; element = elements[i++];) {
+      if (element.classList.contains("is-invalid")) {
+        element.classList.remove("is-invalid");
+
+      }
+    }
+
+  });
 </script>
 {%block js_listar%}{%endblock%}
 {% endblock %}
