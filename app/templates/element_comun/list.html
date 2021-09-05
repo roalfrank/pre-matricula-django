@@ -99,6 +99,8 @@
       //y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor  
       element.value = data[element.name];
     });
+    //{%block abrir_modal_editar_add %}
+    //{% endblock%}
     $('input[name="action"]').val("edit");
     id_edit = data.id;
     modal_title.find('span').html(titulo);
