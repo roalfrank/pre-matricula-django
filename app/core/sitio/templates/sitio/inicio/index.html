@@ -1,0 +1,562 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Matricula online Joven Club</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'inicio/img/favicon.png'%}" rel="icon">
+  <link href="{% static 'inicio/img/logo-icon.png'%}" rel="apple-touch-icon">
+
+  <!-- Google Fonts 
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+  -->
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'inicio/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+  <link href="{% static 'inicio/vendor/icofont/icofont.min.css'%}" rel="stylesheet">
+  <link href="{% static 'inicio/vendor/boxicons/css/boxicons.min.css'%}" rel="stylesheet">
+  <link href="{% static 'inicio/vendor/venobox/venobox.css'%}" rel="stylesheet">
+  <link href="{% static 'inicio/vendor/owl.carousel/assets/owl.carousel.min.css'%}" rel="stylesheet">
+  <link href="{% static 'inicio/vendor/aos/aos.css'%}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'inicio/css/style.css'%}" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container-fluid d-flex">
+
+      <div class="logo mr-auto d-flex">
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <a href="index.html"><img src="{% static 'inicio/img/logo-icon.png'%}" alt="" class="img-fluid"></a>
+        <h1 class="text-light pl-2"><a href="index.html"><span>Matrícula Online JCC</span></a></h1>
+      </div>
+
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li class="active"><a href="index.html">Inicio</a></li>
+          <li><a href="#about">Sobre nosotros</a></li>
+          <li><a href="#services">Cursos</a></li>
+          <li><a href="#faq">Preguntas y Respuestas</a></li>
+          <li><a href="#clients">Estudiantes opinan</a></li>
+          <li><a href="#contact">Contáctanos</a></li>
+
+          <li class="get-started">
+            {% if user.is_authenticated %}
+              <a href="{% url 'sitio:enrutador-sistema'%}" style="background-color: #ffc107; color: #ffff;"><strong>Ver Sistema</strong></a>
+            {% else %}
+            <a href="{% url 'login:login-user'%}" style="background-color: #ffc107; color: #ffff;"><strong>Empieza Ya</strong></a>
+            {% endif %}
+          </li>
+        </ul>
+      </nav><!-- .nav-menu -->
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center"
+    style="background-image: url({% static 'inicio/img/fondo_azul.png'%}); background-size: cover;">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1">
+          <h1>Ahorra tiempo matriculándote en línea.</h1>
+          <h2>Queremos que tu proceso de matrícula en los cursos presenciales sean rápido y ágil.</h2>
+          {% if user.is_authenticated %}
+              <a href="{% url 'sitio:enrutador-sistema'%}" style="background-color: #ffc107; color: #ffff;" class="btn-get-started scrollto"><strong>Ver Sistema</strong></a>
+            {% else %}
+            <a href="{% url 'login:login-user'%}" class="btn-get-started scrollto" style="background-color: #ffc107; color: #ffff;"><strong>Empieza Ya</strong></a>
+            {% endif %}
+          
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img">
+          <img src="{% static 'inicio/img/p1.png'%}" class="img-fluid animated" alt="" style="max-width: 45%;">
+        </div>
+      </div>
+    </div>
+
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about">
+      <div class="container">
+
+        <div class="row justify-content-between">
+          <div class="col-lg-5 d-flex align-items-center justify-content-center about-img">
+            <img src="{% static 'inicio/img/about-img.svg'%}" class="img-fluid" alt="" data-aos="zoom-in">
+          </div>
+          <div class="col-lg-6 pt-5 pt-lg-0">
+            <h3 data-aos="fade-up">Joven Club de Computación</h3>
+            <p data-aos="fade-up" data-aos-delay="100">
+              Somos una organización reconocida por la calidad y el alto valor agregado de los servicios y productos que
+              se ofertan. <br> <br>Esta plataforma permite realizar el proceso de <strong> matrícula online para los
+                cursos presenciales</strong> que ofertamos.
+            </p>
+            <div class="row">
+              <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <i class="bx bx-receipt"></i>
+                <h4>Cursos Presenciales</h4>
+                <p>Servicio impartido en los locales de las instalaciones de los Joven Club de Computacion y
+                  Electrónica.</p>
+                {% if user.is_authenticated %}
+              <a href="{% url 'sitio:enrutador-sistema'%}" style="background-color: #ffc107; color: #ffff;" class="btn"><strong>Ver Sistema</strong></a>
+            {% else %}
+            <a href="{% url 'login:login-user'%}" class="btn" style="background-color: #ffc107; color: #ffff;"><strong>Empieza Ya</strong></a>
+            {% endif %}
+              </div>
+              <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <i><a href="index.html"><img src="{% static 'inicio/img/logoCursad.svg'%}" alt="" class="img-fluid"
+                      style="max-height: 25%;"></a></i>
+                <h4>Cursos Online(CURSAD)</h4>
+                <p>Sitio Formativo de los Joven Club de Computación y Electrónica de forma online.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End About Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services section-bg"
+      style="background-image: url({% static 'inicio/img/fondo_azul.png'%}); background-size: cover;">
+      <div class="container">
+
+        <div class="section-title" data-aos="fade-up">
+          <h2>CURSOS</h2>
+          <p style="color: #ffff;">NUEVOS CURSOS PRESENCIALES EN LOS JOVEN CLUB</p>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon pb-2"><img src="{% static 'inicio/img/python.png'%}" alt="" class="img-fluid"
+                  style="width: 4rem;"></div>
+              <h4 class="title"><a href="">Aprendiendo Python</a></h4>
+              <p class="description">Curso orientado a los interesados en la programación y automatización de procesos.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><img src="{% static 'inicio/img/excel.png'%}" alt="" class="img-fluid"
+                  style="width: 4rem;"></div>
+              <h4 class="title"><a href="">Aprendiendo excel desde cero.</a></h4>
+              <p class="description">Aprenda excel desde cero con nuestros profesores.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><img src="{% static 'inicio/img/word.png'%}" alt="" class="img-fluid"
+                  style="width: 4rem;"></div>
+              <h4 class="title"><a href="">De principiante a experto en Word.</a></h4>
+              <p class="description">Primeros pasos para poder enytrar al mundo de Word.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="400">
+            <div class="icon-box">
+              <div class="icon"><img src="{% static 'inicio/img/ecured.jpg'%}" alt="" class="img-fluid"
+                  style="width: 4rem;"></div>
+              <h4 class="title"><a href="">Escribir artículos para Ecured.</a></h4>
+              <p class="description">Profesores te ayudan a escribir artículos para la enciclopedia colaborativa de
+                Cuba.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+              <div class="icon-box">
+                <div class="icon pb-2"><img src="{% static 'inicio/img/python.png'%}" alt="" class="img-fluid"
+                    style="width: 4rem;"></div>
+                <h4 class="title"><a href="">Aprendiendo Python</a></h4>
+                <p class="description">Curso orientado a los interesados en la programación y automatización de
+                  procesos.</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
+              <div class="icon-box">
+                <div class="icon"><img src="{% static 'inicio/img/excel.png'%}" alt="" class="img-fluid"
+                    style="width: 4rem;"></div>
+                <h4 class="title"><a href="">Aprendiendo excel desde cero.</a></h4>
+                <p class="description">Aprenda excel desde cero con nuestros profesores.</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
+              <div class="icon-box">
+                <div class="icon"><img src="{% static 'inicio/img/word.png'%}" alt="" class="img-fluid"
+                    style="width: 4rem;"></div>
+                <h4 class="title"><a href="">De principiante a experto en Word.</a></h4>
+                <p class="description">Primeros pasos para poder enytrar al mundo de Word.</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="400">
+              <div class="icon-box">
+                <div class="icon"><img src="{% static 'inicio/img/ecured.jpg'%}" alt="" class="img-fluid"
+                    style="width: 4rem;"></div>
+                <h4 class="title"><a href="">Escribir artículos para Ecured.</a></h4>
+                <p class="description">Profesores te ayudan a escribir artículos para la enciclopedia colaborativa de
+                  Cuba.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="row pt-5">
+            <div class="col-md-6 col-lg-6 " style="color: #ffff;">Para matricular necesitas iniciar sección en nuestra
+              plataforma.</div>
+            <div class="col-md-6 col-lg-6"><a href="#about" class="btn scrollto"
+                style="background-color: #ffc107; color: #ffff;"><strong>Ver todos los cursos</strong></a></div>
+          </div>
+        </div>
+    </section><!-- End Services Section -->
+
+    <!-- ======= F.A.Q Section ======= -->
+    <section id="faq" class="faq section-bg">
+      <div class="container">
+
+        <div class="section-title" data-aos="fade-up">
+          <h2>Preguntas y Respuestas</h2>
+          <p>Respuestas a las principales preguntas de usuarios.</p>
+        </div>
+
+        <ul class="faq-list">
+
+          <li data-aos="fade-up" data-aos-delay="100">
+            <a data-toggle="collapse" class="" href="#faq1">¿Cuanto cuestan los cursos ? <i
+                class="icofont-simple-up"></i></a>
+            <div id="faq1" class="collapse show" data-parent=".faq-list">
+              <p>
+                Para las personas naturales este servicio se brinda de manera gratuita. Personas jurídicas a 60 pesos
+                por hora.
+              </p>
+            </div>
+          </li>
+
+          <li data-aos="fade-up" data-aos-delay="200">
+            <a data-toggle="collapse" href="#faq2" class="collapsed">¿Cuanto duran los cursos? <i
+                class="icofont-simple-up"></i></a>
+            <div id="faq2" class="collapse" data-parent=".faq-list">
+              <p>
+                Los cursos regulares tienen como mínimo una duración de <strong>24 horas</strong> y se clasifican
+                atendiendo a su
+                duración y profundización en: <br> a)<strong>Cursos cortos</strong>, comprenden una duración de
+                <strong>24 horas</strong> y <strong>36 horas</strong> y se imparten exclusivamente en la
+                modalidad presencial. <br> b)<strong>Cursos largos</strong>, comprenden de <strong>48 horas</strong>,
+                <strong>64 horas</strong> y más de <strong>96 horas</strong>, se imparten en las tres modalidades,
+                presencial, semipresencial y a distancia.
+              </p>
+            </div>
+          </li>
+
+          <li data-aos="fade-up" data-aos-delay="300">
+            <a data-toggle="collapse" href="#faq3" class="collapsed">¿Como realizo la matrícula? <i
+                class="icofont-simple-up"></i></a>
+            <div id="faq3" class="collapse" data-parent=".faq-list">
+              <p>
+                <ul>
+                  <li>1. Debe crearte una cuenta para acceder a nuestra plataforma.<a href="#about" class="btn scrollto"
+                      style="background-color: #ffc107; color: #ffff;"><strong>Crear cuenta</strong></a> </li>
+                  <li>2. Accede a la plataforma con tu usuario y contraseña.<a href="#about" class="btn scrollto"
+                      style="background-color: #ffc107; color: #ffff;"><strong>Iniciar sección</strong></a></li>
+                  <li>3. Es necesario completar tu perfil para poder matricularte en los cursos..</li>
+                  <li>4. Elige de los cursos que estan disponible en los Joven Club cual es de su interés.</li>
+                  <li>5. Ya puedes hacer la matrícula.</li>
+                </ul>
+              </p>
+            </div>
+          </li>
+
+          <li data-aos="fade-up" data-aos-delay="400">
+            <a data-toggle="collapse" href="#faq4" class="collapsed">¿Al terminar el curso te dan un certificado o
+              diploma? <i class="icofont-simple-up"></i></a>
+            <div id="faq4" class="collapse" data-parent=".faq-list">
+              <p>
+                Se certifican todos los cursos ofrecidos en las instalaciones de Joven Club de Computación y
+                Electrónica, una vez concluido estos, mediante el certificado que genera el Módulo de Control de
+                Servicios; la
+                entrega del certificado la garantiza el jefe máximo de cada estructura o unidad organizativa.
+              </p>
+            </div>
+          </li>
+
+          <li data-aos="fade-up" data-aos-delay="500">
+            <a data-toggle="collapse" href="#faq5" class="collapsed">¿Que hago si tengo alguna duda con un curso? <i
+                class="icofont-simple-up"></i></a>
+            <div id="faq5" class="collapse" data-parent=".faq-list">
+              <p>
+                Puede contactarnos y plantearnos su duda por diferentes vias: <br> <br>
+                Mediante el formulario de contacto. <a href="#contact" class="btn scrollto"
+                  style="background-color: #ffc107; color: #ffff;"><strong>Contactar</strong></a>
+                <br> Cada curso tiene la posibilidad de interactuar con sus profesores y poder aclarar algunas dudas.
+              </p>
+            </div>
+          </li>
+
+          <li data-aos="fade-up" data-aos-delay="600">
+            <a data-toggle="collapse" href="#faq6" class="collapsed">No encuentro cursos de mi interés. ¿Puedo sugerir
+              algun curso? <i class="icofont-simple-up"></i></a>
+            <div id="faq6" class="collapse" data-parent=".faq-list">
+              <p>
+                En nuestra plataforma usted puede sugerir algun curso que no esté contemplado en el programa del Joven
+                Club de su interés. <br>
+                Nuestros especialistas analizarán y valorarán el interés de otros estudiantes a su sugerencia. El curso
+                se avilita si hay algunos estudiantes interesado y el Joven Club disponga del personal docente necesario
+                para su realización.
+              </p>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+    </section><!-- End F.A.Q Section -->
+
+    <!-- ======= Clients Section ======= -->
+    <section id="clients" class="clients section-bg"
+      style="background-image: url({% static 'inicio/img/fondo_azul.png'%});">
+      <div class="container">
+        <div class="section-title" data-aos="fade-up">
+          <h2>Testimonios</h2>
+          <p style="color: #ffff;">Estudiantes Opinan</p>
+        </div>
+        <div class="gtco-testimonials">
+
+          <div class="owl-carousel owl-carousel1 owl-theme">
+            <div>
+              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-1.jpg'%}"
+                  alt="">
+                <div class="card-body">
+                  <h5>Roaldys Garcia <br />
+                    <span></span>
+                  </h5>
+                  <p class="card-text">“ He tenido una buena experiencia matriculandome en los cursos con esta
+                    plataforma. ” </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-2.jpg'%}"
+                  alt="">
+                <div class="card-body">
+                  <h5>Frank Alejandro<br />
+                    <span> </span>
+                  </h5>
+                  <p class="card-text">“ Aprendrí mucho en los cursos. ” </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-3.jpg'%}"
+                  alt="">
+                <div class="card-body">
+                  <h5>Juana Verdecia<br />
+                    <span> </span>
+                  </h5>
+                  <p class="card-text">“ Al principio no tenía buena prepectiva, pero me ha facinado lo bien que me fue.
+                    ” </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-4.jpg'%}"
+                  alt="">
+                <div class="card-body">
+                  <h5>Roberto Rodriguez<br />
+                    <span></span>
+                  </h5>
+                  <p class="card-text">“ Un amigo me lo recomendó y fue una buena experiencia. ” </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Clients Section -->
+
+    <!-- ======= Contact Us Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container">
+
+        <div class="section-title" data-aos="fade-up">
+          <h2>CONTÁCTENOS</h2>
+          <p>Estamos para servirle.</p>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-5 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="info">
+              <div class="address">
+                <i class="icofont-google-map"></i>
+                <h4>Dirección:</h4>
+                <p>Marti # 375 / Perdom y Aranguren, Regla , La habana ,Cuba</p>
+              </div>
+
+              <div class="email">
+                <i class="icofont-envelope"></i>
+                <h4>Correo:</h4>
+                <p>regla@cha.jovenclub.cu</p>
+              </div>
+
+              <div class="phone">
+                <i class="icofont-phone"></i>
+                <h4>Telefóno:</h4>
+                <p>7797-87-87</p>
+              </div>
+
+              <!--<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe> -->
+            </div>
+
+          </div>
+
+          <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+            <form action="#" method="post" role="form" class="php-email-form">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="name">Su Nombre</label>
+                  <input type="text" name="name" class="form-control" id="name" />
+                  <div class="validate"></div>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="name">Su Correo</label>
+                  <input type="email" class="form-control" name="email" id="email" data-rule="email"
+                    data-msg="Por favor entre un correo válido." />
+                  <div class="validate"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Asunto</label>
+                <input type="text" class="form-control" name="subject" id="subject" data-rule="minlen:4"
+                  data-msg="El asunto debe ser más de 4 caracteres." />
+                <div class="validate"></div>
+              </div>
+              <div class="form-group">
+                <label for="name">Mensaje</label>
+                <textarea class="form-control" name="message" rows="10" data-rule="required"
+                  data-msg="Por favor es requerido escribir un mensaje."></textarea>
+                <div class="validate"></div>
+              </div>
+
+              <div class="text-center"><button type="submit"
+                  style="background-color: #ffc107; color: #ffff;"><strong>Enviar</strong></button></div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Us Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-newsletter" data-aos="fade-up" style="background-color: #449ad2;">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-6">
+            <h4 style="color: #ffff;">Subscríbete.</h4>
+            <p style="color: aliceblue;">Mantente informado de los cursos y noticias.</p>
+            <form action="" method="post">
+              <input type="email" name="email" data-rule="email" data-msg="Por favor entre un correo válido."><input
+                type="submit" value="Suscríbete">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 footer-contact" data-aos="fade-up" data-aos-delay="100">
+            <h3>Matrícula Online Joven Club</h3>
+            <p>
+              Marti #237 / Agramonte y Aranguren.<br>
+              Regla, La Habana<br>
+              Cuba <br><br>
+              <strong>Teléfono:</strong> 7797-87-87<br>
+              <strong>Correo:</strong> regla@cha.jovenclub.cu<br>
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links" data-aos="fade-up" data-aos-delay="200">
+            <h4>Mapa del sitio</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Inicio</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Sobre nosotros</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Cursos</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Preguntas y Respuestas</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Estudiantes opinan</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links" data-aos="fade-up" data-aos-delay="300">
+            <h4>Sitios de interés</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Joven Club Nacional</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Joven Club La Habana</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Cursad(Cursos online)</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Ecured</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Mochila</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links" data-aos="fade-up" data-aos-delay="400">
+            <h4>Nuestras redes sociales</h4>
+            <p>Para mas información puede seguirnos en:</p>
+            <div class="social-links mt-3">
+              <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+              <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+              <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+              <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+              <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'inicio/vendor/jquery/jquery.min.js'%}"></script>
+  <script src="{% static 'inicio/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+  <script src="{% static 'inicio/vendor/jquery.easing/jquery.easing.min.js'%}"></script>
+  <!-- <script src="assets/vendor/php-email-form/validate.js"></script>-->
+  <script src="{% static 'inicio/vendor/isotope-layout/isotope.pkgd.min.js'%}"></script>
+  <script src="{% static 'inicio/vendor/venobox/venobox.min.js'%}"></script>
+  <script src="{% static 'inicio/vendor/owl.carousel/owl.carousel.min.js'%}"></script>
+  <script src="{% static 'inicio/vendor/aos/aos.js'%}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'inicio/js/main.js'%}"></script>
+
+</body>
+
+</html>

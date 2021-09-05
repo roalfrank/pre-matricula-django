@@ -1,0 +1,327 @@
+{% extends "base.html"%}
+{% load static%}
+
+{%block contenido%}
+<div class="row">
+  <div class="col-6 col-sm-6 col-md-3">
+    <div class="info-box">
+      <span class="info-box-icon bg-info elevation-1"><img src="{% static 'img/curso.png'%}"></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Curso</span>
+        <span class="info-box-number">
+          200
+        </span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-6 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-info elevation-1"><img src="{% static 'img/estudiante.png'%}"></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Estudiantes</span>
+        <span class="info-box-number">2000</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+
+  <!-- fix for small devices only -->
+  <div class="clearfix hidden-md-up"></div>
+
+  <div class="col-6 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-success elevation-1"><img src="{% static 'img/maestro.png'%}"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Profesores</span>
+        <span class="info-box-number">760</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-6 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-danger elevation-1"><img
+          src="{% static 'img/estudiante-sin-matricula.png'%}"></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">No Matriculados</span>
+        <span class="info-box-number">220</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+</div>
+<!-- seccion de graficos  -->
+<div class="row">
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="d-flex justify-content-between">
+          <h3 class="card-title"><img class='icono-encabezado' src="{% static 'img/estudiante.png'%}" /> Nuevos
+            estudiantes en la semana</h3>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-flex">
+          <p class="d-flex flex-column">
+            <span class="badge badge-success">20</span>
+            <span>Estudiantes</span>
+          </p>
+          <p class="ml-auto d-flex flex-column text-right">
+            <span class="badge badge-danger"><span class="text-white">
+              <i class="fas fa-arrow-down"></i> -2%
+            </span></span>
+            
+            <span class="text-perfil">Esta semana.</span>
+          </p>
+        </div>
+        <!-- /.d-flex -->
+
+        <div class="position-relative mb-4">
+          <canvas id="estudiantes-semana-chart" height="200"></canvas>
+        </div>
+
+        <div class="d-flex flex-row justify-content-end">
+          <span class="mr-2">
+            <i class="fas fa-square text-primary"></i> Esta semana
+          </span>
+
+          <span>
+            <i class="fas fa-square text-gray"></i> Semana pasada
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="d-flex justify-content-between">
+          <h3 class="card-title"><img class='icono-encabezado' src="{% static 'img/estudiante.png'%}" /> Estudiantes
+            matriculados en la semana </h3>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-flex">
+          <p class="d-flex flex-column">
+            <span class="badge badge-success">100</span>
+            <span>Matriculados</span>
+          </p>
+          <p class="ml-auto d-flex flex-column text-right">
+            <span class="badge badge-success">
+              <i class="fas fa-arrow-up"></i> 5%
+          </span>
+            <span class="text-perfil">Esta semana</span>
+          </p>
+        </div>
+        <!-- /.d-flex -->
+
+        <div class="position-relative mb-4">
+          <canvas id="estudiantes-matriculados-semana-chart" height="200"></canvas>
+        </div>
+
+        <div class="d-flex flex-row justify-content-end">
+          <span class="mr-2">
+            <i class="fas fa-square text-primary"></i> Esta semana
+          </span>
+
+          <span>
+            <i class="fas fa-square text-gray"></i> Semana pasada
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="card ">
+      <div class="card-header border-0">
+        <div class="d-flex justify-content-between">
+          <h3 class="card-title"><img class='icono-encabezado' src="{% static 'img/estudiante-sin-matricula.png'%}" /> Estudiantes NO
+            matriculados + de 7 dias registrados. </h3>
+        </div>
+      </div>
+      <div class="card-body ">
+        <div class="position-relative mb-4">
+          <canvas id="estudiantes-NoMatriculados-chart" height="200"></canvas>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="row">
+          <div class="col-sm-3 col-6">
+            <div class="description-block border-right">
+              <h5 class="description-header">MUNICIPOS CON MAYOR NUMEROS DE ESTUDIANTES NO MATRICULADOS</h5>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-3 col-6">
+            <div class="description-block border-right">
+              <span class="description-percentage text-danger"> 1</span>
+              <h4 class="description-header"><img style="max-width: 25px;" src="{% static 'img/estudiante-sin-matricula.png'%}" />100</h4>
+              <span class="description-text">San Miguel del Padrón</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-3 col-6">
+            <div class="description-block border-right">
+              <span class="description-percentage text-danger">2</span>
+              <h5 class="description-header"><img style="max-width: 25px;" src="{% static 'img/estudiante-sin-matricula.png'%}" />50</h5>
+              <span class="description-text">Guanabacoa</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-3 col-6">
+            <div class="description-block">
+              <span class="description-percentage text-danger">3</span>
+              <h5 class="description-header"><img style="max-width: 25px;" src="{% static 'img/estudiante-sin-matricula.png'%}" />32</h5>
+              <span class="description-text">Cotorro</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="d-flex justify-content-between">
+          <h3 class="card-title"><img class='icono-encabezado mr-2' src="{% static 'img/curso.png'%}" />Municipios con más cursos</h3>
+        </div>
+      </div>
+      <div class="card-body">
+        
+
+        <div class="position-relative mb-4">
+          <canvas id="municipios-cursos-chart" height="200"></canvas>
+        </div>
+        <div class="d-flex">
+          <p class="d-flex flex-column">
+             <span class="badge badge-success">60</span>
+            <span>San Miguel del Padrón</span>
+          </p>
+          <p class="ml-auto d-flex flex-column text-right">
+            <span class="text-danger">
+              <span class="badge badge-danger">1</span> 
+            </span>
+            <span>Guanabacoa</span>
+          </p>
+        </div>
+        <!-- /.d-flex -->
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title"><img class='icono-encabezado mr-2' src="{% static 'img/curso.png'%}" />Cursos Interés más populares</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <ul class="products-list product-list-in-card pl-2 pr-2">
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/word.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Aprendiendo Word Avanzado
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-12">
+                    <span class="badge badge-success text-white"><i class='fa fa-user mr-2'></i>:<span class="ml-2">10</span></span>
+                    <span class="badge badge-info text-white float-right mr-2">Municipio:<span class="ml-2">Marianao</span></span>
+                  </div>
+                  <div class="col-6"></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/python.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Python avanzado.
+                <span class="badge badge-info float-right">36h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-12">
+                     <span class="badge badge-warning text-white"><i class='fa fa-user mr-2'></i>:<span class="ml-2">5</span></span>
+                    <span class="badge badge-info text-white float-right mr-2">Municipio:<span class="ml-2">San Miguel del Padrón</span></span>
+                  </div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/wordpress.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Crear Blog.
+                <span class="badge badge-success float-right">64h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-12">
+                    <span class="badge badge-warning text-white"><i class='fa fa-user mr-2'></i>:<span class="ml-2">5</span></span>
+                    <span class="badge badge-info text-white float-right mr-2">Municipio:<span class="ml-2">Regla</span></span>
+                  </div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/ecured.jpg' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Colabora con Ecured
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-12">
+                     <span class="badge badge-warning text-white"><i class='fa fa-user mr-2'></i>:<span class="ml-2">4</span></span>
+                    <span class="badge badge-info text-white float-right mr-2">Municipio:<span class="ml-2">Guanabacoa</span></span>
+                  </div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+        </ul>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer text-center">
+        <a href="javascript:void(0)" class="uppercase">Ver todo los cursos de interés</a>
+      </div>
+      <!-- /.card-footer -->
+    </div>
+  </div>
+</div>
+{%endblock%}
+
+{%block js %}
+<!-- OPTIONAL SCRIPTS -->
+<script src="{% static 'lib/adminlte-master/plugins/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'js/panel-admin.js'%}"></script>
+{%endblock  %}

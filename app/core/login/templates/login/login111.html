@@ -1,0 +1,96 @@
+{% extends 'login/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head %}
+ <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+    
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-12">LOLO</div>
+        <div class="col-12"><div class="titulo">Sistema Matrícula Online JCC</div></div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+        <div class="firstinfo">
+            <div class="logo">
+            <img src="{% static 'img/logo.png'%}" />
+            </div>
+            <div class="profileinfo ">
+                <form action="." method="post">
+                    <input type="hidden" name="next" value="{{ next }}">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:usuario' }}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope" style="color: white;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:contraseña' }}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock" style="color: white;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-info btn-block btn-sm">
+                                <i class="fas fa-sign-in-alt"></i> Iniciar sección
+                            </button>
+                        </div>
+                        <div class="col-lg-12">
+                            <a href="{% url 'login:registrar'%}" class="btn btn-warning btn-block btn-sm mt-2 text-white">
+                                <i class="fas fa-user-plus"></i> Crear Cuenta
+                            </a>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="badgescard">
+                <span style="font-size: 13px;">Si no recuerdas tu contraseña puedes resetearla dando click 
+                    <strong><a href="#" style="color: rgb(231, 26, 26);">aqui </a></strong>
+                </span> 
+            </div>
+        </div>
+    </div>
+    
+</div>
+<script type="application/javascript">
+        
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timerProgressBar:true,
+                timer: 10000
+            });
+            {% if form.errors %}
+                var errors = '';
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        errors += '{ error }}<br>';
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    errors += '{{ error }}<br>Recuerde la cuenta debe estas activa para poder entrar.';
+                {% endfor %}
+                Toast.fire({
+                icon: 'error',
+                html: errors,
+                });
+            {% endif %}
+        </script>
+{% endblock %}

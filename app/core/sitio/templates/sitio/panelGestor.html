@@ -1,0 +1,13 @@
+{% extends "base.html"%}
+{% load static%}
+
+{%block contenido%}
+<h1>Panel gestor</h1>
+{%endblock%}
+
+{%block js %}
+  <!-- OPTIONAL SCRIPTS -->
+  <script src="{% static 'lib/adminlte-master/plugins/chart.js/Chart.min.js' %}"></script>
+  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <script src="{% static 'lib/adminlte-master/js/pages/dashboard3.js'%}"></script>
+{%endblock  %}

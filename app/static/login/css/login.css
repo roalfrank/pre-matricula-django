@@ -1,0 +1,135 @@
+.wrapper {
+    background: #0606062b;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 350px;
+    margin-top: -200px;
+}
+
+.wrapper.form-success .container h4 {
+    transform: translateY(85px);
+}
+
+.wrapper.form-success .container img {
+    transform: translateY(85px);
+}
+
+.titulo-icono {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 50%;
+    margin-left: 30%;
+}
+
+@media (max-width:430px) {
+    .titulo-icono {
+        margin-left: 20%;
+    }
+}
+
+.crear-cuenta {
+    position: relative;
+    margin-top: 0.5rem;
+    z-index: 999;
+}
+
+.crear-cuenta a {
+    outline: none;
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    background-color: #fff;
+    border-radius: 1rem 1rem 1rem 1rem;
+    width: 20%;
+    display: inline-block;
+}
+
+.resetear {
+    margin-left: 2rem;
+    width: 5rem !important;
+}
+
+hr {
+    color: #ffff;
+    margin: 0.5rem 0 1.8rem 0;
+}
+
+.crear-cuenta a:hover {
+    background-color: rgba(0, 0, 255, 0.123);
+    color: #ffff;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    height: 400px;
+    text-align: center;
+}
+
+.container h4 {
+    transition-duration: 1s;
+    transition-timing-function: ease-in-put;
+}
+
+.container img {
+    transition-duration: 1s;
+    transition-timing-function: ease-in-put;
+}
+
+form {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1rem;
+}
+
+form input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.2);
+    width: 250px;
+    border-radius: 3px;
+    padding: 10px 15px;
+    margin: 0 auto 10px auto;
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    transition-duration: 0.25s;
+    font-weight: 300;
+}
+
+form input:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+form input:focus {
+    background-color: white;
+    width: 300px;
+    color: #000000;
+}
+
+form button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+    background-color: white;
+    border: 0;
+    padding: 10px 15px;
+    color: #080808;
+    border-radius: 3px;
+    width: 250px;
+    cursor: pointer;
+    font-size: 18px;
+    transition-duration: 0.25s;
+}
+
+form button:hover {
+    background-color: #f5f7f9;
+}

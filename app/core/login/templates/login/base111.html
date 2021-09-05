@@ -1,0 +1,43 @@
+{% load static %}
+{% load sitio_confi%}
+{% sitio_web as sitio%}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ title }}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-master/plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-master/css/adminlte.min.css' %}">
+    {% block head %}
+
+    {% endblock %}
+    
+    <script src="{% static 'lib/adminlte-master/plugins/jquery/jquery.min.js' %}"></script>
+    <!-- Bootstrap 4 -->
+    <!-- AdminLTE App -->
+    <script src="{% static 'lib/popper/umd/popper.min.js' %} "></script>
+    <script src="{% static 'lib/adminlte-master/js/adminlte.min.js' %}"></script>
+    <!-- Sweetalert2 -->
+    <script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <!-- Jquery Confirm -->
+    {% block  js%}
+    
+    {% endblock  %}
+    <!-- Functions -->
+    <!--<script src="{% static 'js/functions.js' %}"></script>-->
+
+</head>
+<body class="hold-transition login-page" style='background-size: cover; background-image: url("{% static 'img/login.png' %} ");'>
+{% block content %}
+
+{% endblock %}
+
+
+    
+</body>
+</html>
