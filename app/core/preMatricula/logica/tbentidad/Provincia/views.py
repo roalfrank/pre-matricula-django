@@ -4,10 +4,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.db.models import  Q
 from django.db.models.deletion import RestrictedError
-from core.preMatricula.models import Provincia
+from core.preMatricula.models import Provincia,Municipio
 from .form import ProvinciaForm
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 
+def buscarMunicipios(request):
+    if request.method == "POST":
+        id_provincia = int(request.POST['id_provincia'])
+        municipios = [{'id':i.id,'text':i.nombre} for i in Municipio.objects.filter(provincia__id=id_provincia)]
+        return JsonResponse(municipios,safe=False)
+    return JsonResponse([],safe=False)
     
 class ProvinciaListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
     template_name = "tbentidad/provincia/list.html"

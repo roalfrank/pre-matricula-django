@@ -25,7 +25,7 @@ SECRET_KEY = 'tec^p6ax4#zza=!p@bdzlfw+gn!hnd_2$bn%x!tpk91%id_flv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.3.21.17']
+ALLOWED_HOSTS = ['192.168.43.45', '127.0.0.1']
 
 
 # Application definition
@@ -38,12 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # app del sistema
-    "sitio",
-    "login",
-    "user",
+    "core.sitio",
+    "core.login",
+    "core.user",
     "widget_tweaks",
     "django.contrib.humanize",
     "core.preMatricula",
+    "core.estudiante"
 ]
 
 MIDDLEWARE = [
@@ -120,7 +121,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = "user.User"
+#AUTH_USER_MODEL = "user.User"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -134,7 +135,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/enrutador-sistema/'
 
 LOGOUT_REDIRECT_URL = '/login/'
 
@@ -146,13 +147,14 @@ SESSION_SAVE_EVERY_REQUEST = True
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST='smtp.gmail.com'
-# EMAIL_HOST_USER =  os.environ.get('user_smtp')
-# EMAIL_HOST_PASSWORD = os.environ.get('user_pas_smtp')
+# EMAIL_HOST_USER =  'roaldys@gmail.com'
+# EMAIL_FROM_USER = 'roaldys@gmail.com'
+# EMAIL_HOST_PASSWORD = ''
 # EMAIL_USE_TLS=True
 # EMAIL_PORT=587
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('host_smtp')
-EMAIL_HOST_USER =  os.environ.get('user_smtp')
+EMAIL_HOST_USER = os.environ.get('user_smtp')
 EMAIL_HOST_PASSWORD = os.environ.get('user_pas_smtp')
 EMAIL_FROM_USER = os.environ.get('user_mail_smtp')
 EMAIL_USE_TLS = True

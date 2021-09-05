@@ -1,0 +1,1056 @@
+{% extends "base.html"%}
+{% load static%}
+{% load humanize%}
+{%block head%}
+<link rel="stylesheet" href="{% static 'css/sitio/css/panelEstudiante.css' %}">
+<link rel="stylesheet" href="{% static 'inicio/vendor/aos/aos.css' %}">
+
+{%endblock%}
+
+{%block contenido%}
+<div class="row">
+  <div class="col-lg-3 col-6 ">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="100">
+      <div class="inner p-0 pl-4">
+        <h3 class="mb-1">1</h3>
+
+        <p>Curso(s) Activo(s)</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-check-square icono_panel_info"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6 ">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="200">
+      <div class="inner p-0 pl-4">
+        <h3 class="mb-1">5</h3>
+
+        <p>Curso(s) Matriculado(s)</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-id-card icono_panel_info"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6 ">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="300">
+      <div class="inner p-0 pl-4">
+        <h3 class="mb-1">4</h3>
+
+        <p>Curso(s) Completado(s)</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-graduation-cap icono_panel_info"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6 ">
+    <div class="small-box bg-info tamano_caja_info_panel" data-aos="flip-up" data-aos-delay="400">
+      <div class="inner p-0 pl-4">
+        <h3 class="mb-1">30</h3>
+
+        <p>Curso(s) Nuevo(s)</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-plus icono_panel_info"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--primera seccion sugerencia y +50% matriculados-->
+<div class="row">
+  <div class="col-12 col-lg-6">
+    <div class="card " data-aos="zoom-in">
+      <div class="card-header border-0">
+        <h1 class="card-title">Sugerencia de la semana:</h1>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool boton-pause" >
+            <i class="fa fa-pause" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-tool boton-play" >
+            <i class="fa fa-play" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div id="carouselExampleIndicators" class="carousel slide p-2" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="row">
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/windows.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success ">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger ">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
+                    </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Aprende Windows"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">San Miguel del Padrón</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">SMP1</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-success">Nuevo</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-info">
+                        <h3 class="widget-user-username">Aprende Word Básico</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/word.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
+                    </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-info">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Aprende Word Básico"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">San Miguel del Padrón</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">SMP1</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row">
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-success">Nuevo</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-info">
+                        <h3 class="widget-user-username">Aprendiendo excel como un profesional</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/excel.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
+                    </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-info">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Aprendiendo excel como un profesional"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guanabacoa</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guanabacoa 1</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Automatización con python</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/python.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
+                    </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Automatización con python"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Cotorro</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Cotorro 3</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="row">
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Colaborar con Ecured</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/ecured.jpg' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">64h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
+                    </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Colaborar con Ecured"</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Marianao</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Marianao 3</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+                <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                  <span class='sugerencia-filp'>
+                    <div class="card card-widget widget-user card-front">
+                      <div class="ribbon-wrapper ">
+                        <div class="ribbon bg-danger">+ 50 %</div>
+                      </div>
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-warning">
+                        <h3 class="widget-user-username">Plataforma Wordpress para hacer blog.</h3>
+                        <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+                      </div>
+                      <div class="btn-detalles-curso">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+                      </div>
+                      <div class="btn-matricular">
+                        <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                            aria-hidden="true"></i></button>
+                      </div>
+                      <div class="widget-user-image">
+                        <img class="img-circle elevation-2 img-curso-panel " src="{% static 'img/wordpress.png' %}" alt="User Avatar" />
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">24h</h5>
+                              <span class="description-text text-xs"><i class="fa fa-clock"
+                                  aria-hidden="true"></i></span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4 border-right">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/05/21</h5>
+                              <span class="description-text text-xs text-success">Inicio</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-4">
+                            <div class="description-block">
+                              <h5 class="description-header text-xs">04/06/21</h5>
+                              <span class="description-text text-xs text-danger">fin</span>
+                            </div>
+                            <!-- /.description-block -->
+                          </div>
+                          <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                      </div>
+                    </div>
+                    <div class="card card-widget widget-user card-back  ">
+                      <div class="card-header bg-warning">
+                        <h3 class="card-title text-white">
+                          <i class="fas fa-info"></i>
+                          Más información
+                        </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool closed-vuelta">
+                            <i class="fas fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body bg-light p-2">
+                        <div class="row text-xs">
+                          <div class="col-12"><strong>"Plataforma Wordpress para hacer blog."</strong> tratará los temas más importante sobre este sistema operativo. Aprenderás a trabajar con un PC para realizar tareas diversas.</div>
+                          <div class="col-4"><strong> Municipio</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Playa</div>
+                          <div class="col-4"><strong> JCC</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Playa 6</div>
+                          <div class="col-4"><strong> Dirección</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Maximo Gomez #188a /Ambron y La Piedra</div>
+                          <div class="col-4"><strong> Teléfono</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">7797-8787</div>
+                          <div class="col-4"><strong> Profesor</strong></div>
+                          <div class="col-1"><i class="fa fa-arrow-right p-1" aria-hidden="true"></i></div>
+                          <div class="col-7">Guillermo Constantin</div>
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- tabla de de +50% Matriculados -->
+  <div class="col-12 col-lg-6">
+    <div class="card" data-aos="fade-right">
+      <div class="card-header">
+        <h3 class="card-title">Cursos +50% matriculados</h3>
+
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <ul class="products-list product-list-in-card pl-2 pr-2">
+          <li class="item" data-aos="fade-left" data-aos-delay="100">
+            <div class="product-img">
+              <img src="{% static 'img/word.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Aprendiendo Word Avanzado
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">70%</span></div>
+                  <div class="col-5 text-center d-none d-sm-block"><span class="">Playa</span></div>
+                  <div class="col-4 ">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-2"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item" data-aos="fade-left" data-aos-delay="200">
+            <div class="product-img">
+              <img src="{% static 'img/python.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Automatización con python.
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">55%</span></div>
+                  <div class="col-5 text-center d-none d-sm-block"><span>10 de octubre</span></div>
+                  <div class="col-4 ">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-2"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item" data-aos="fade-left" data-aos-delay="300" >
+            <div class="product-img">
+              <img src="{% static 'img/excel.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Excel para niños.
+                <span class="badge badge-info float-right">64h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">80%</span></div>
+                  <div class="col-5 text-center d-none d-sm-block"><span>Habana del este</span></div>
+                  <div class="col-4">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-2"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item" data-aos="fade-left" data-aos-delay="400">
+            <div class="product-img">
+              <img src="{% static 'img/ecured.jpg' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Colabora con Ecured
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">70%</span></div>
+                  <div class="col-5 d-none d-sm-block"><span>San Miguel del padron</span></div>
+                  <div class="col-4">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-1"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+        </ul>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer text-center">
+        <a href="javascript:void(0)" class="uppercase">Ver todo los cursos +50%</a>
+      </div>
+      <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+  </div>
+</div>
+<!--primera seccion sugerencia y +50% matriculados-->
+<div class="row">
+  <div class="col-12 col-lg-6">
+    <div class="card" data-aos="zoom-in" >
+      <div class="card-header">
+        <h3 class="card-title">Cursos recientes</h3>
+
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <ul class="products-list product-list-in-card pl-2 pr-2">
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/word.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Aprendiendo Word Avanzado
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">1%</span></div>
+                  <div class="col-5 text-center d-none d-sm-block"><span class="">Marianao</span></div>
+                  <div class="col-4 ">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-2"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/python.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Python avanzado.
+                <span class="badge badge-info float-right">36h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">0%</span></div>
+                  <div class="col-5 text-center d-none d-sm-block"><span>Cotorro</span></div>
+                  <div class="col-4 ">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-2"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/wordpress.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Crear Blog.
+                <span class="badge badge-success float-right">64h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">5%</span></div>
+                  <div class="col-5 text-center d-none d-sm-block"><span>Guanabacoa</span></div>
+                  <div class="col-4">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-2"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/ecured.jpg' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Colabora con Ecured
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">10%</span></div>
+                  <div class="col-5 d-none d-sm-block"><span>San Miguel del padron</span></div>
+                  <div class="col-4">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-1"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+          <li class="item">
+            <div class="product-img">
+              <img src="{% static 'img/tablet.png' %}" alt="Product Image" class="img-size-50">
+            </div>
+            <div class="product-info">
+              <a href="javascript:void(0)" class="product-title">Aprende a usar Tablet.
+                <span class="badge badge-warning float-right">24h</span></a>
+              <span class="product-description text-xs ">
+                <div class="row">
+                  <div class="col-5 col-xl-1 col-lg-1 col-md-1 col-sm-1"><span class="text-info">8%</span></div>
+                  <div class="col-5 d-none d-sm-block"><span>San Miguel del padron</span></div>
+                  <div class="col-4">
+                    <div class="float-right">
+                      <span class="text-success">24/05/2021</span>
+                      <i class="fa fa-arrow-right p-1" aria-hidden="true"></i>
+                      <span class="text-danger">24/06/2021</span>
+                    </div>
+                  </div>
+                  <div class="col-1"><button class="btn btn-xs btn-success"><i class="fas fa-graduation-cap"
+                        aria-hidden="true"></i></button></div>
+                </div>
+              </span>
+            </div>
+          </li>
+          <!-- /.item -->
+        </ul>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer text-center">
+        <a href="javascript:void(0)" class="uppercase">Ver todo los cursos reciente</a>
+      </div>
+      <!-- /.card-footer -->
+    </div>
+  </div>
+  <!-- tabla de de +50% Matriculados -->
+  <div class="col-12 col-lg-6">
+    <!-- <div class="card">
+      <div class="card-header border-0">
+        <h3 class="card-title">Notificaciones</h3>
+      </div>
+      {% include 'sitio/componentes/tabla_curso_base.html' with body=notificaciones encabezado=notificacioneEncabezado %}
+    </div> -->
+    <!-- /.card -->
+    <div class="card card-default " data-aos="zoom-out">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-bullhorn"></i>
+          Notificaciones
+        </h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-2 text-xs"   >
+
+        <div class="callout callout-success p-2" data-aos="fade-up" data-aos-delay="100">
+          <div class="row">
+            <div class="col-1 p-1">
+              <img src="{% static 'img/avatar4.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
+            </div>
+            <div class="col-8">
+              <h6 class="ml-2">Hola {{request.user.username}}, te saluda tu profesor.</h6>
+            </div>
+            <div class="col-3">
+              <div class="d-flex justify-content-end">
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
+              </div>
+              <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 20 minutos</span>
+            </div>
+          </div>
+          <p class="fst-italic">Seré tu profesor del curso ¨ Aprendiendo Word ¨. Cualquier duda me puedes contactar.
+          </p>
+        </div>
+        <div class="callout callout-info p-2" data-aos="fade-up" data-aos-delay="400">
+          <div class="row">
+            <div class="col-1 p-1">
+              <img src="{% static 'img/info.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
+            </div>
+            <div class="col-8">
+              <h6 class="ml-2">Sugerencia para ti.</h6>
+            </div>
+            <div class="col-3">
+              <div class="d-flex justify-content-end">
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
+              </div>
+              <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 1 horas</span>
+            </div>
+          </div>
+          <p class="fst-italic">Saludos {{request.user.username}} te sugerimos este curso de <a href="">Curso sistema
+              operativo Windows.</a></p>
+        </div>
+        <div class="callout callout-warning p-2" data-aos="fade-up" data-aos-delay="500">
+          <div class="row">
+            <div class="col-1 p-1">
+              <img src="{% static 'img/default.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
+            </div>
+            <div class="col-8">
+              <h6 class="ml-2">Hola {{request.user.username}}, estamos en el mismo curso.</h6>
+            </div>
+            <div class="col-3">
+              <div class="d-flex justify-content-end">
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
+              </div>
+              <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 2 hora</span>
+            </div>
+          </div>
+          <p class="fst-italic">Seremos compañeros de curso saludos. Vamos a ver como sale este curso. </p>
+        </div>
+        <div class="callout callout-info p-2 " data-aos="fade-up" data-aos-delay="500">
+          <div class="row">
+            <div class="col-1 p-1">
+              <img src="{% static 'img/info.png' %}" class="img-size-32 img-circle" alt="Imagen Usuario">
+            </div>
+            <div class="col-8">
+              <h6 class="ml-2">Matriculado Correctamente.</h6>
+            </div>
+            <div class="col-3">
+              <div class="d-flex justify-content-end">
+                <a href="" class="float-right"><span
+                    class="badge badge-success float-right notificaciones-a ">leer</span></a>
+              </div>
+              <span class="pr-1 float-right"><i class='fa fa-clock'></i> hace 3 horas</span>
+            </div>
+          </div>
+          <p class="fst-italic">Usted ha matriculado en el curso <a href="">Aprendiendo Word.</a></p>
+        </div>
+
+      </div>
+      <!-- /.card-body -->
+      <!-- /.card-body -->
+      <div class="card-footer text-center">
+        <a href="javascript:void(0)" class="uppercase">Ver todas las notificaciones</a>
+      </div>
+      <!-- /.card-footer -->
+    </div>
+
+  </div>
+</div>
+
+{%endblock%}
+
+{%block js %}
+<!-- OPTIONAL SCRIPTS -->
+<script src="{% static 'lib/adminlte-master/plugins/chart.js/Chart.min.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'lib/adminlte-master/js/pages/dashboard3.js'%}"></script>
+<script src="{% static 'inicio/vendor/aos/aos.js'%}"></script>
+<script >
+  
+  $(function(){
+    AOS.init({
+      duration: 800,
+      easing: "ease-in-out",
+      once: true
+    });
+     $('.btn-detalles-curso button').on('click', function(){
+          var parentEls = $(this).parents()[1]
+          $(parentEls).toggleClass('vueltaA');
+          $(parentEls).next().toggleClass('vueltaB');
+     });
+     $('.card-back .closed-vuelta').on('click', function(){
+          var parentEls = $(this).parents()[2]
+          $(parentEls).toggleClass('vueltaB');
+          $(parentEls).prev().toggleClass('vueltaA');
+     });
+    $("#carouselExampleIndicators").carousel({ interval: 500, pause: "hover" });
+    $(".boton-pause").on('click',function(){
+     $("#carouselExampleIndicators").carousel('pause');
+     $(this).prop('disabled', true);
+     $(".boton-play").prop('disabled',false);
+    });
+    $(".boton-play").on('click',function(){
+     $("#carouselExampleIndicators").carousel('cycle');
+     $(this).prop('disabled', true);
+     $(".boton-pause").prop('disabled',false);
+
+    });
+
+  });
+  
+
+</script>
+{%endblock  %}

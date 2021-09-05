@@ -1,0 +1,62 @@
+{% extends 'login/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block titulo %}Login Matrícula Online Joven Club Cuba{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'login/css/login.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="container">
+    <div class="titulo-icono">
+        <div class="icon-titulo"><img src="{% static 'img/logo.png' %}" alt="" style="width: 80px;"></div>
+        <div class="titulo">
+            <h4>Matrícula Online JCC</h4>
+        </div>
+    </div>
+    <form class="form" action="." method="post">
+        <input type="hidden" name="next" value="{{ next }}">
+        {% csrf_token %}
+        <!--<input type="text" placeholder="Usuario"> -->
+        {{ form.username|attr:'autocomplete:off'|attr:'placeholder:Usuario'|attr:'autofocu:off' }}
+        
+        {{ form.password|attr:'autocomplete:off'|attr:'placeholder:Contraseña' }}
+        <button type="submit" id="login-button">Iniciar</button>
+    </form>
+    <div class="crear-cuenta">
+        <div> <span>¿Olvidaste la contraseña?<a href="." class="resetear">Resetear</a></span></div>
+        <hr>
+        <span><a href="{% url 'login:registrar'%}">Crear Cuenta</a> <span style="margin-left: 0.3rem;">No tienes cuenta, pues
+                creala.</span></span>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'lib/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'login/js/main.js' %}"></script>
+<script type="application/javascript">
+        
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timerProgressBar:true,
+                timer: 10000
+            });
+            {% if form.errors %}
+                var errors = '';
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        errors += '{ error }}<br>';
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    errors += '{{ error }}<br>Recuerde la cuenta debe estas activa para poder entrar.';
+                {% endfor %}
+                Toast.fire({
+                icon: 'error',
+                html: errors,
+                });
+            {% endif %}
+        </script>
+{% endblock %}

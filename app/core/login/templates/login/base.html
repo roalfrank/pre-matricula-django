@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block titulo %}{% endblock %}</title>
+	<link href="{% static 'login/css/styles.css' %}" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Source Sans Pro', sans-serif;
+			color: white;
+			font-weight: 300;
+			background-image: url({% static 'img/fondo_azul.png'%});
+			background-size: cover;
+		}
+	</style>
+	{% block head %}
+	{% endblock %}
+</head>
+
+<body>
+	<div class="wrapper">
+		{% block contenido %}
+		{% endblock %}
+		<ul class="bg-bubbles">
+			<li><img src="{% static 'img/icon-cursos/ecured.jpg' %}" alt="" style="width: 40px; height: 40px;"></li>
+			<li><img src="{% static 'img/icon-cursos/excel.png' %}" alt="" style="width: 80px; height: 80px;"></li>
+			<li></li>
+			<li><img src="{% static 'img/icon-cursos/jcc.png' %} " alt="" style="width: 80px; height: 60px;"></li>
+			<li><img src="{% static 'img/icon-cursos/word.png' %} " alt="" style="width: 40px; height: 40px;"></li>
+			<li></li>
+			<li></li>
+			<li><img src="{% static 'img/icon-cursos/python.png' %}" alt="" style="width: 20px; height: 20px;"></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<script src="{% static 'lib/adminlte-master/plugins/jquery/jquery.min.js' %}"></script>
+	{% block js %}
+	{% endblock %}
+</body>
+
+</html>

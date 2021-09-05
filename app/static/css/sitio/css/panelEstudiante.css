@@ -1,0 +1,113 @@
+.btn-detalles-curso:hover i {
+    color: black;
+}
+
+.btn-matricular:hover i {
+    color: black;
+}
+
+/*-color del a del +50% */
+.product-title {
+    color: #7b8e95 !important;
+}
+
+.product-title:hover {
+    color: #1f875f !important;
+}
+
+a:hover .notificaciones-a {
+    background-color: rgb(58, 226, 226);
+    color: black;
+}
+
+.fst-italic {
+    font-style: italic !important
+}
+
+.callout p a:hover {
+    color: #1f875f !important;
+}
+
+.sugerencia-filp div {
+    backface-visibility: hidden;
+    transition: transform 300ms;
+    transition-timing-function: linear;
+}
+
+.card-front {
+    transform: rotateY(0deg);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    position: absolute;
+    max-width: 93%;
+    top: 0;
+
+}
+
+
+.vueltaA {
+    transform: rotateY(-180deg);
+}
+
+.vueltaB {
+    transform: rotateY(0deg);
+}
+
+.widget-user-image {
+    left: 55% !important;
+    top: 100px !important;
+}
+
+.img-curso-panel {
+    width: 50px !important;
+}
+
+.animate {
+    animation: up-down 2s ease-in-out infinite alternate-reverse both;
+}
+
+.animate1 {
+    animation: up-down1 2s ease-in-out infinite alternate-reverse both;
+}
+
+@-webkit-keyframes up-down {
+    0% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes up-down {
+    0% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+@-webkit-keyframes up-down1 {
+    0% {
+        transform: translateY(-2px);
+    }
+
+    100% {
+        transform: translateY(10px);
+    }
+}
+
+@keyframes up-down1 {
+    0% {
+        transform: translateY(-2px);
+    }
+
+    100% {
+        transform: translateY(10px);
+    }
+}
