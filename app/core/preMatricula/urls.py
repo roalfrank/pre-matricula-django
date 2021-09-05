@@ -3,6 +3,8 @@ from django.urls import path
 from core.preMatricula.logica.tbentidad.Provincia.views import ProvinciaListView, buscarMunicipios
 from core.preMatricula.logica.tbentidad.entidadMunicipio.views import MunicipioView
 from core.preMatricula.logica.tbentidad.entidadJcp.views import JcpView
+from core.preMatricula.logica.tbentidad.entidadRegion.views import RegionListView
+from core.preMatricula.logica.tbentidad.entidadJcm.views import JcmView
 # importaciones para instructores
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 # importaciones para estudiantes
@@ -23,8 +25,12 @@ urlpatterns = [
     # Enlaces de las entidades
     path("provincia/", ProvinciaListView.as_view(), name="listar-provincia"),
     path("municipio/buscar/", buscarMunicipios, name="buscar-municipios"),
+    path("municipio/buscar/region<int:region>",
+         buscarMunicipios, name="buscar-municipios-region"),
     path("entidad-municipio/", MunicipioView.as_view(), name="entidad-municipio"),
     path("entidad-jcp/", JcpView.as_view(), name="entidad-jcp"),
+    path("entidad-region/", RegionListView.as_view(), name="entidad-region"),
+    path("entidad-jcm/", JcmView.as_view(), name="entidad-jcm"),
     # --- Istructor enlaces -----
     path("cargo-instructor/", CargoInstructorView.as_view(),
          name="cargo-instructor"),

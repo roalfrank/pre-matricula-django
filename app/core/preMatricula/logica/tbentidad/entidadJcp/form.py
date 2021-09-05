@@ -1,5 +1,4 @@
-from django import forms
-from core.preMatricula.models import Entidad, JCP, Provincia
+from core.preMatricula.models import Entidad, JCP, Provincia, Municipio
 from django.forms import ModelForm, ModelChoiceField, Select
 
 

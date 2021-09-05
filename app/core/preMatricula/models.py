@@ -46,6 +46,7 @@ class Entidad(models.Model):
         item = model_to_dict(self)
         item['nombre_provincia'] = self.municipio.provincia.nombre
         item['provincia'] = self.municipio.provincia.pk
+        item['nombre_municipio'] = self.municipio.nombre
         return item
 
 
@@ -73,7 +74,12 @@ class Region(models.Model):
         JCP, verbose_name="Joven Club Provincial", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.nombre} - ({self.codigo_region})"
+        return f"({self.jcp.entidad.nombre})-{self.nombre}- ({self.codigo_region})"
+
+    def toJson(self):
+        item = model_to_dict(self)
+        item['nombre_jcp'] = self.jcp.entidad.nombre
+        return item
 
 
 class JCM(models.Model):
@@ -86,6 +92,14 @@ class JCM(models.Model):
 
     def __str__(self):
         return f"{self.entidad.nombre}-({self.codigo_jcm})"
+
+    def toJson(self):
+        item = self.entidad.toJson()
+        item['id_jcm'] = self.pk
+        item['codigo_jcm'] = self.codigo_jcm
+        item['region'] = self.region.pk
+        item['nombre_region'] = self.region.nombre
+        return item
 
 
 class JCB(models.Model):
