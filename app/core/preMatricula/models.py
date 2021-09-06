@@ -68,7 +68,7 @@ class JCP(models.Model):
 
 class Region(models.Model):
     codigo_region = models.CharField(
-        max_length=10, verbose_name="Código Región")
+        max_length=10, verbose_name="Código Región", unique=True)
     nombre = models.CharField(max_length=50, verbose_name="Nombre Región")
     jcp = models.ForeignKey(
         JCP, verbose_name="Joven Club Provincial", on_delete=models.CASCADE)
@@ -84,7 +84,7 @@ class Region(models.Model):
 
 class JCM(models.Model):
     codigo_jcm = models.CharField(
-        max_length=10, verbose_name="Código Joven Club Municipal")
+        max_length=10, verbose_name="Código Joven Club Municipal", unique=True)
     entidad = models.OneToOneField(
         Entidad, on_delete=models.CASCADE, verbose_name="Entidad")
     region = models.ForeignKey(

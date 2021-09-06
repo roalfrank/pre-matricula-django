@@ -5,7 +5,7 @@
 <style>
   .select2-container {
     background-color: #fff;
-}
+  }
 </style>
 {% endblock %}
 {% block columns %}
@@ -64,38 +64,38 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
-   var select_municipio = $('#id_municipio');
-   var select_region = $('#id_region');
+    var select_municipio = $('#id_municipio');
+    var select_region = $('#id_region');
 
-   $('.select2').select2({
-        theme: 'bootstrap4',
-        language:'es',
+    $('.select2').select2({
+      theme: 'bootstrap4',
+      language: 'es',
     });
-    $('#id_provincia').on('change',function(){
-        var id = $(this).val();
-        $.ajax({
-            url:"{% url 'prematricula:buscar-municipios-region' 1 %}",
-            type:'POST',
-            data:{
-                'id_provincia':id,
-                csrfmiddlewaretoken:function(){
-                                    return $('input[name="csrfmiddlewaretoken"]').val();
-                                },
-            },
-            dataType:'json'
-        }).done(function(data){
-          console.log(data);
-            select_municipio.html('').select2({
-                theme: 'bootstrap4',
-                language:'es',
-                data:data.municipios
-            });
-            select_region.html('').select2({
-                theme: 'bootstrap4',
-                language:'es',
-                data:data.region
-            });
+    $('#id_provincia').on('change', function () {
+      var id = $(this).val();
+      $.ajax({
+        url: "{% url 'prematricula:buscar-municipios-region' 1 %}",
+        type: 'POST',
+        data: {
+          'id_provincia': id,
+          csrfmiddlewaretoken: function () {
+            return $('input[name="csrfmiddlewaretoken"]').val();
+          },
+        },
+        dataType: 'json'
+      }).done(function (data) {
+        console.log(data);
+        select_municipio.html('').select2({
+          theme: 'bootstrap4',
+          language: 'es',
+          data: data.municipios
         });
+        select_region.html('').select2({
+          theme: 'bootstrap4',
+          language: 'es',
+          data: data.region
+        });
+      });
     });
 
     var tblListar = $("#data").DataTable({
@@ -160,11 +160,11 @@
           }
         },
         {
-          targets: [1,2,8],
+          targets: [1, 2, 8],
           visible: false,
         },
         {
-          targets: [3,7],
+          targets: [3, 7],
           class: "text-center"
         },
         //{% if perms.user.change_jcm or perms.user.delete_jcm %}
@@ -225,6 +225,13 @@
               id_edit = null;
             } else {
               mensaje("error", "Error Guardando el Registro - " + data.error);
+              var error =JSON.parse(data.error)
+              for (const key in error) {
+                var element = $( `#formRegistro [name="${key}"]`)
+                element.addClass("is-invalid");
+                var html = `<span class='invalid-feedback'>${error[key][0]['message']}</span>`
+                element.closest(".form-group").append(html);
+              }
             }
           })
       }
@@ -235,19 +242,19 @@
           required: true,
           maxlength: 100,
         }
-        },
+      },
       messages: {
         nombre: {
           required: "El jcm es necesario",
           maxlength: "No esta permitido mas de 100 caracteres",
         },
-        codigo_jcm:{
+        codigo_jcm: {
           required: "El codigo es necesario",
         },
-        direccion:{
+        direccion: {
           required: "La dirección es necesaria",
         },
-        provincia:{
+        provincia: {
           required: "La provincia es necesaria"
         }
       },
@@ -267,26 +274,26 @@
 </script>
 {%endblock%}
 {% block abrir_modal_editar%}
-       //resetearSelect('formRegistro');
-       //con esto obtengo el tr del boton edit de la tabla
-        var tr = tabla.cell($(element).closest('td,li')).index();
-        //paso a data una lista de los valores de la row a editar
-        var data = tabla.row(tr.row).data();
-        console.log(data)
-        //itero todos los campos del fromRegirto para cargar los datos del que quiero editar
-        $('#formRegistro input[type!="hidden"]').each(function(index,element){
-           //aqui element.name me devuelve el valor name del input iterado
-           //y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor  
-           element.value = data[element.name];
-        });
-        $('#id_provincia').val(data['provincia'].toString()).trigger("change");
-        setTimeout(() => { $('#id_municipio').val(data['municipio'].toString()).trigger("change"); }, 100);
-       // $('#id_municipio').val(data['municipio'].toString()).trigger("change");
-       
-        $('input[name="action"]').val("edit");
-        id_edit = data.id_jcm;
-        modal_title.find('span').html(titulo);
-        modal_title.find('i').removeClass().addClass('fa fa-edit');
-        $('#modal-nuevo').modal('show');
+//resetearSelect('formRegistro');
+//con esto obtengo el tr del boton edit de la tabla
+var tr = tabla.cell($(element).closest('td,li')).index();
+//paso a data una lista de los valores de la row a editar
+var data = tabla.row(tr.row).data();
+console.log(data)
+//itero todos los campos del fromRegirto para cargar los datos del que quiero editar
+$('#formRegistro input[type!="hidden"]').each(function(index,element){
+//aqui element.name me devuelve el valor name del input iterado
+//y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor
+element.value = data[element.name];
+});
+$('#id_provincia').val(data['provincia'].toString()).trigger("change");
+setTimeout(() => { $('#id_municipio').val(data['municipio'].toString()).trigger("change"); }, 100);
+// $('#id_municipio').val(data['municipio'].toString()).trigger("change");
+
+$('input[name="action"]').val("edit");
+id_edit = data.id_jcm;
+modal_title.find('span').html(titulo);
+modal_title.find('i').removeClass().addClass('fa fa-edit');
+$('#modal-nuevo').modal('show');
 
 {% endblock %}
