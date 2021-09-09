@@ -27,6 +27,8 @@ class JcmView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
             if action == 'add':
                 form_entidad = EntidadForm(request.POST)
                 form_jcm = JcmForm(request.POST)
+                print(form_jcm)
+                print(request.POST)
                 if all([form_entidad.is_valid(), form_jcm.is_valid()]):
                     entidad = form_entidad.save(commit=False)
                     entidad.save()
@@ -37,7 +39,7 @@ class JcmView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
                     data['nombre'] = entidad.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = "Error insertando dato"
+                    data['error'] = form_jcm.errors.as_json()
 
             elif action == "cargarDatos":
                 data = [i.toJson() for i in JCM.objects.all()]
@@ -60,7 +62,7 @@ class JcmView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
                     data['nombre'] = entidad.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = "Error editando datos"
+                    data['error'] = form_jcm.errors.as_json()
 
             # action delete, eliminar una registro
             elif action == "delete":
