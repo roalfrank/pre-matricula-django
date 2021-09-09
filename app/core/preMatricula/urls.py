@@ -5,6 +5,7 @@ from core.preMatricula.logica.tbentidad.entidadMunicipio.views import MunicipioV
 from core.preMatricula.logica.tbentidad.entidadJcp.views import JcpView
 from core.preMatricula.logica.tbentidad.entidadRegion.views import RegionListView
 from core.preMatricula.logica.tbentidad.entidadJcm.views import JcmView
+from core.preMatricula.logica.tbentidad.entidadJcb.views import JcbView
 # importaciones para instructores
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 # importaciones para estudiantes
@@ -31,6 +32,7 @@ urlpatterns = [
     path("entidad-jcp/", JcpView.as_view(), name="entidad-jcp"),
     path("entidad-region/", RegionListView.as_view(), name="entidad-region"),
     path("entidad-jcm/", JcmView.as_view(), name="entidad-jcm"),
+    path("entidad-jcb/", JcbView.as_view(), name="entidad-jcb"),
     # --- Istructor enlaces -----
     path("cargo-instructor/", CargoInstructorView.as_view(),
          name="cargo-instructor"),

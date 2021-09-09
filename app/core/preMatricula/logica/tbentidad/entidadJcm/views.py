@@ -62,7 +62,7 @@ class JcmView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
                     data['nombre'] = entidad.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = "Error editando datos"
+                    data['error'] = form_jcm.errors.as_json()
 
             # action delete, eliminar una registro
             elif action == "delete":

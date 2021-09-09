@@ -1,11 +1,21 @@
-from core.preMatricula.models import Region
+from core.preMatricula.models import JCM, Region
 
 
 def regionProvincia(id_provincia, formato='default'):
     if formato == 'select2':
-        region = [{'id': i.id, 'text': i.__str__()}
-                  for i in Region.objects.filter(jcp__entidad__municipio__provincia__pk=id_provincia)]
+        regiones = [{'id': i.id, 'text': i.__str__()}
+                    for i in Region.objects.filter(jcp__entidad__municipio__provincia__pk=id_provincia)]
     else:
-        region = Region.objects.filter(
+        regiones = Region.objects.filter(
             jcp__entidad__municipio__provincia__pk=id_provincia)
-    return region
+    return regiones
+
+
+def jcmProvincia(id_provincia, formato='default'):
+    if formato == 'select2':
+        jcms = [{'id': i.id, 'text': i.__str__()}
+                for i in JCM.objects.filter(entidad__municipio__provincia__pk=id_provincia)]
+    else:
+        jcms = JCM.objects.filter(
+            entidad__municipio__provincia__pk=id_provincia)
+    return jcms

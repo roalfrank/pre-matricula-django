@@ -104,7 +104,7 @@ class JCM(models.Model):
 
 class JCB(models.Model):
     codigo_jcb = models.CharField(
-        max_length=10, verbose_name="Código Joven Club")
+        max_length=10, verbose_name="Código Joven Club", unique=True)
     entidad = models.OneToOneField(
         Entidad, on_delete=models.CASCADE, verbose_name="Entidad")
     jcm = models.ForeignKey(
@@ -112,6 +112,14 @@ class JCB(models.Model):
 
     def __str__(self):
         return f"{self.entidad.nombre}-({self.codigo_jcb})"
+
+    def toJson(self):
+        item = self.entidad.toJson()
+        item['id_jcb'] = self.pk
+        item['codigo_jcb'] = self.codigo_jcb
+        item['jcm'] = self.jcm.pk
+        item['nombre_jcm'] = self.jcm.entidad.nombre
+        return item
 
 # Todos sobre Instructor
 
@@ -154,7 +162,8 @@ class Maestro(models.Model):
 
 
 class Ocupacion(models.Model):
-    nombre = models.CharField(max_length=100, verbose_name='Nombre Ocupación')
+    nombre = models.CharField(
+        max_length=100, verbose_name='Nombre Ocupación', unique=True)
 
     def __str__(self):
         return self.nombre
@@ -166,7 +175,7 @@ class Ocupacion(models.Model):
 
 class Discapacidad(models.Model):
     nombre = models.CharField(
-        max_length=100, verbose_name='Nombre Discapacidad')
+        max_length=100, verbose_name='Nombre Discapacidad', unique=True)
 
     def __str__(self):
         return self.nombre
@@ -178,7 +187,7 @@ class Discapacidad(models.Model):
 
 class CategoriaOcupacional(models.Model):
     nombre = models.CharField(
-        max_length=100, verbose_name='Nombre Categoría Ocupacional')
+        max_length=100, verbose_name='Nombre Categoría Ocupacional', unique=True)
 
     def __str__(self):
         return self.nombre

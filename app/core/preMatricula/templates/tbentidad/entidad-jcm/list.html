@@ -13,6 +13,7 @@
   <th style="width: 5%;">Selecciona</th>
   <th>Id</th>
   <th>Id_JCM</th>
+  <th>Id_region</th>
   <th style="width: 50%;">Nombre</th>
   <th style="width: 20%;">Código</th>
   <th style="width: 50%;">Provincia</th>
@@ -126,6 +127,9 @@
           "data": "id_jcm"
         },
         {
+          "data": "region"
+        },
+        {
           "data": "nombre"
         },
         {
@@ -160,11 +164,11 @@
           }
         },
         {
-          targets: [1, 2, 8],
+          targets: [1,2,3,9],
           visible: false,
         },
         {
-          targets: [3, 7],
+          targets: [4,5,6,7],
           class: "text-center"
         },
         //{% if perms.user.change_jcm or perms.user.delete_jcm %}
@@ -218,20 +222,23 @@
         submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
           parametros,
           function (data) {
+            $('span').remove('.invalid-feedback');
             if (data.enviado) {
               $("#modal-nuevo").modal("hide");
               tblListar.ajax.reload();
               mensaje("success", "Guardado el Registro - " + data.nombre);
               id_edit = null;
             } else {
-              mensaje("error", "Error Guardando el Registro - " + data.error);
               var error =JSON.parse(data.error)
+              var listado_error= []
               for (const key in error) {
+                listado_error.push(`${key}: ${error[key][0]['message']}`)
                 var element = $( `#formRegistro [name="${key}"]`)
                 element.addClass("is-invalid");
                 var html = `<span class='invalid-feedback'>${error[key][0]['message']}</span>`
                 element.closest(".form-group").append(html);
               }
+              mensaje("error", "Error Guardando el Registro - " + listado_error);
             }
           })
       }
@@ -287,7 +294,10 @@ $('#formRegistro input[type!="hidden"]').each(function(index,element){
 element.value = data[element.name];
 });
 $('#id_provincia').val(data['provincia'].toString()).trigger("change");
-setTimeout(() => { $('#id_municipio').val(data['municipio'].toString()).trigger("change"); }, 100);
+setTimeout(() => { 
+  $('#id_municipio').val(data['municipio'].toString()).trigger("change"); 
+  $('#id_region').val(data['region'].toString()).trigger("change"); 
+}, 100);
 // $('#id_municipio').val(data['municipio'].toString()).trigger("change");
 
 $('input[name="action"]').val("edit");
