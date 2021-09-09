@@ -4,10 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.db.models import Q
 from django.db.models.deletion import RestrictedError
-from core.preMatricula.models import Provincia, Municipio, Region
+from core.preMatricula.models import Provincia, Municipio
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import ProvinciaForm
-from core.preMatricula.utils.general import RegionProvincia
+from core.preMatricula.utils.general import regionProvincia, jcmProvincia
 
 
 def buscarMunicipios(request, region=None):
@@ -16,9 +16,13 @@ def buscarMunicipios(request, region=None):
         id_provincia = int(request.POST['id_provincia'])
         municipios = [{'id': i.id, 'text': i.nombre}
                       for i in Municipio.objects.filter(provincia__id=id_provincia)]
-        if region:
-            regiones = RegionProvincia(id_provincia, formato='select2')
+        if region == 1:
+            regiones = regionProvincia(id_provincia, formato='select2')
             resultado = {'municipios': municipios, 'region': regiones}
+            return JsonResponse(resultado, safe=False)
+        elif region == 2:
+            jcms = jcmProvincia(id_provincia, formato='select2')
+            resultado = {'municipios': municipios, 'jcm': jcms}
             return JsonResponse(resultado, safe=False)
         return JsonResponse(municipios, safe=False)
 
