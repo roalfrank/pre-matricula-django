@@ -43,8 +43,7 @@ urlpatterns = [
          name="estudiante-discapacidad"),
     path("estudiante-categoria-ocupacional/", CategoriaOcupacionalEstudianteView.as_view(),
          name="estudiante-cat-ocupacional"),
-    path("estudiante/", EstudianteView.as_view(),
-         name="estudiante"),
+    path("estudiante/", EstudianteView.as_view(), name="estudiante"),
     # --- Todo relacionado con los cursos
     path("curso-tipo/", TipoCursoView.as_view(),
          name="curso-tipo"),

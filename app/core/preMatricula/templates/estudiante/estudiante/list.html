@@ -6,58 +6,142 @@
   .select2-container {
     background-color: #fff;
   }
+  .modal-header{
+    padding: 0.5rem 1.2rem !important;
+  }
+  .modal-body{
+    padding: 0 1rem;
+  }
+  .select2-container--bootstrap4 .select2-selection--single{
+    height: calc(1.8125rem + 2px) !important;
+  }
+  
 </style>
 {% endblock %}
 {% block columns %}
 <tr>
   <th style="width: 5%;">Selecciona</th>
   <th>Id</th>
-  <th>Id_jcb</th>
-  <th>JCM</th>
   <th style="width: 50%;">Nombre</th>
-  <th style="width: 20%;">Código</th>
-  <th style="width: 50%;">JCM</th>
+  <th style="width: 15%;">Usuario</th>
+  <th style="width: 20%;">Carnet</th>
   <th style="width: 50%;">Provincia</th>
-  <th style="width: 50%;">Municipio</th>
-  <th style="width: 50%;">id_Municipio</th>
-  <!-- {% if perms.user.change_jcb or perms.user.delete_jcb %} -->
+  <th style="width: 50%;">Creado por</th>
+  <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
   <th style="width: 20%;">Acción</th>
   <!-- {%endif%} -->
 
 </tr>
 {% endblock %}
 {% block boton_accion%}
-<!-- {% if perms.user.add_jcb%} -->
+<!-- {% if perms.user.add_estudiante%} -->
 <button type="button" class="btn btn-default btn-xs" id='btnNuevo'>
   <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
 </button>
 <!-- {%endif%}
-  {% if perms.user.delete_jcb%} -->
+  {% if perms.user.delete_estudiante%} -->
 <button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll'>
   <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
 </button>
 <!-- {% endif %} -->
 {% endblock%}
-
+{%block class_modal%}modal-lg{% endblock %}
 {%block form_modal%}
-<div class="form-group">
-  {{form_jcb.codigo_jcb.label_tag}}
-  {{form_jcb.codigo_jcb|add_class:'form-control'|attr:'autocomplete:off'}}
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.nombre.label_tag}}
+      {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+     <div class="form-group">
+      {{form_perfil.apellido1.label_tag}}
+      {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+     <div class="form-group">
+      {{form_perfil.apellido2.label_tag}}
+      {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
 </div>
-{% for field in form_entidad.visible_fields%}
-<div class="form-group">
-  {{field.label_tag}}
-  {% if field.name == 'municipio'%}
-  {{field|add_class:'form-control select2 '|attr:'autocomplete:off'}}
-  {% else %}
-  {{field|add_class:'form-control'|attr:'autocomplete:off'}}
-  {% endif %}
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.ci.label_tag}}
+      {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+     <div class="form-group">
+      {{form_user.username.label_tag}}
+      {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+     <div class="form-group">
+      {{form_perfil.correo.label_tag}}
+      {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
 </div>
-{%endfor%}
-<div class="form-group">
-  {{form_jcb.jcm.label_tag}}
-  {{form_jcb.jcm|add_class:'form-control select2'|attr:'autocomplete:off'}}
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.telefono.label_tag}}
+      {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+     <div class="form-group">
+      {{form_perfil.provincia.label_tag}}
+      {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+     <div class="form-group">
+      {{form_perfil.municipio.label_tag}}
+      {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
+    </div>
+  </div>
 </div>
+<div class="row">
+  <div class="col-6">
+    <div class="form-group">
+      {{form_perfil.direccion.label_tag}}
+      {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="form-group">
+      {{form_estudiante.usuario_sisce.label_tag}}
+      {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-4">
+      <div class="form-group">
+      {{form_estudiante.ocupacion.label_tag}}
+      {{form_estudiante.ocupacion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+      <div class="form-group">
+      {{form_estudiante.categoria_ocupacional.label_tag}}
+      {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+      <div class="form-group">
+      {{form_estudiante.discapacidad.label_tag}}
+      {{form_estudiante.discapacidad|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+
 {%endblock%}
 
 {%block js_listar%}
@@ -66,7 +150,6 @@
 <script>
   $(function () {
     var select_municipio = $('#id_municipio');
-    var select_region = $('#id_jcm');
 
     $('.select2').select2({
       theme: 'bootstrap4',
@@ -75,7 +158,7 @@
     $('#id_provincia').on('change', function () {
       var id = $(this).val();
       $.ajax({
-        url: "{% url 'prematricula:buscar-municipios-region' 2 %}",
+        url: "{% url 'prematricula:buscar-municipios'  %}",
         type: 'POST',
         data: {
           'id_provincia': id,
@@ -89,13 +172,9 @@
         select_municipio.html('').select2({
           theme: 'bootstrap4',
           language: 'es',
-          data: data.municipios
+          data: data
         });
-        select_region.html('').select2({
-          theme: 'bootstrap4',
-          language: 'es',
-          data: data.jcm
-        });
+
       });
     });
 
@@ -118,36 +197,28 @@
 
       },
       columns: [{
-          "data": 'id'
+          "data": 'usuario'
         },
         {
-          "data": "id"
+          "data": "usuario"
         },
         {
-          "data": "id_jcb"
+          "data": "nombre_usuario"
         },
         {
-          "data": "jcm"
+          "data": "username"
         },
         {
-          "data": "nombre"
+          "data": "ci"
         },
         {
-          "data": "codigo_jcb"
+          "data": "provincia"
         },
         {
-          "data": "nombre_jcm"
+          "data": "creado_por"
         },
-        {
-          "data": "nombre_provincia"
-        },
-        {
-          "data": "nombre_municipio"
-        },
-        {
-          "data": "municipio"
-        },
-        //{% if perms.user.change_jcb or perms.user.delete_jcb %}
+
+        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
           "data": "nombre"
         }
@@ -164,25 +235,25 @@
           }
         },
         {
-          targets: [1,3,2,9],
+          targets: [1],
           visible: false,
         },
         {
-          targets: [3,4,5,6,7],
+          targets: [2, 4, 5, 6],
           class: "text-center"
         },
-        //{% if perms.user.change_jcb or perms.user.delete_jcb %}
+        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
           targets: [-1],
           class: "text-center",
           orderable: false,
           render: function (data, type, row) {
             var buttons = ''
-            //{% if perms.user.change_jcb%}
+            //{% if perms.user.change_estudiante%}
             buttons =
               '<a href="#" rel="edit" class="text-info" data-toggle="tooltip" title="Editar Registro"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
             //{%endif%}
-            //{% if perms.user.delete_jcb%} 
+            //{% if perms.user.delete_estudiante%} 
             buttons +=
               '<a href="#" rel="delete" class="pl-2 text-danger" data-toggle="tooltip" title="Eliminar Registro"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
             //{%endif%}
@@ -193,7 +264,7 @@
 
       ],
       order: [
-        [7, 'asc']
+        [4, 'asc']
       ],
       initComplete: function (settings, json) {
         tooltip();
@@ -205,11 +276,11 @@
     });
 
     $("#btnNuevo").on("click", function () {
-      abrir_modal_nuevo("Nuevo jcb");
+      abrir_modal_nuevo("Nuevo Estudiante");
     });
 
     $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
-      abrir_modal_editar("Editar jcb", tblListar, element.currentTarget);
+      abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
     });
 
     $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
@@ -229,11 +300,11 @@
               mensaje("success", "Guardado el Registro - " + data.nombre);
               id_edit = null;
             } else {
-              var error =JSON.parse(data.error)
-              var listado_error= []
+              var error = JSON.parse(data.error)
+              var listado_error = []
               for (const key in error) {
                 listado_error.push(`${key}: ${error[key][0]['message']}`)
-                var element = $( `#formRegistro [name="${key}"]`)
+                var element = $(`#formRegistro [name="${key}"]`)
                 element.addClass("is-invalid");
                 var html = `<span class='invalid-feedback'>${error[key][0]['message']}</span>`
                 element.closest(".form-group").append(html);
@@ -248,21 +319,69 @@
         nombre: {
           required: true,
           maxlength: 100,
-        }
+        },
+        direccion: {
+          required: true,
+        },
+        ci: {
+          required: true,
+          minlength:11,
+          maxlength:11,
+          number:true,
+          digits:true,
+        },
+        correo: {
+          email: true,
+        },
+         telefono: {
+          digits:true
+        },
       },
       messages: {
+        telefono: {
+          digits:'Solo dígitos'
+        },
         nombre: {
-          required: "El jcb es necesario",
+          required: "El  nombre del estudiante es necesario",
           maxlength: "No esta permitido mas de 100 caracteres",
         },
-        codigo_jcb: {
-          required: "El codigo es necesario",
+        apellido1: {
+          required: "El apellido paterno es necesario",
+        },
+        apellido2: {
+          required: "El apellido materno es necesario",
+        },
+        correo: {
+          required: "El correo es necesario",
+          email: 'No es válido el correo',
+        },
+        ocupacion: {
+          required: "La ocupación es necesario",
+        },
+        categoria_ocupacional: {
+          required: "La categoria ocupacional es necesario",
+        },
+        discapacidad: {
+          required: "La discapacidad es necesaria",
+        },
+        ci: {
+          required: "El carnet es necesario",
+          minlength:'11 numeros son necesarios',
+          maxlength:'Hay más de 11 números',
+          number:'El carnet es solo números',
+          digits:'Solo números',
+        },
+        username: {
+          required: "El usuario es necesario",
         },
         direccion: {
           required: "La dirección es necesaria",
         },
         provincia: {
           required: "La provincia es necesaria"
+        },
+        municipio: {
+          required: "El municipio es necesario"
         }
       },
       errorElement: "span",
@@ -280,6 +399,12 @@
   });
 </script>
 {%endblock%}
+{% block delete_registro_varios%}
+select_item.push(data.usuario);
+{% endblock %}
+{% block delete_registro%}
+id: data.usuario,
+{% endblock%}
 {% block abrir_modal_editar%}
 //resetearSelect('formRegistro');
 //con esto obtengo el tr del boton edit de la tabla
@@ -287,21 +412,37 @@ var tr = tabla.cell($(element).closest('td,li')).index();
 //paso a data una lista de los valores de la row a editar
 var data = tabla.row(tr.row).data();
 console.log(data)
-//itero todos los campos del fromRegirto para cargar los datos del que quiero editar
-$('#formRegistro input[type!="hidden"]').each(function(index,element){
-//aqui element.name me devuelve el valor name del input iterado
-//y data[element.name] me devuelve el valor de la key element.name e inicializo el camo con ese valor
-element.value = data[element.name];
-});
-$('#id_provincia').val(data['provincia'].toString()).trigger("change");
-setTimeout(() => { 
-  $('#id_municipio').val(data['municipio'].toString()).trigger("change"); 
-  $('#id_jcm').val(data['jcm'].toString()).trigger("change"); 
-}, 100);
+var elements = document.getElementById("formRegistro").elements;
+$.ajax({
+        url: "{% url 'prematricula:buscar-municipios'  %}",
+        type: 'POST',
+        data: {
+          'id_estudiante': data.usuario,
+          csrfmiddlewaretoken: function () {
+            return $('input[name="csrfmiddlewaretoken"]').val();
+          },
+        },
+        dataType: 'json'
+      }).done(function (data) {
+        
+      });
+      
+    for (var i = 0, element; element = elements[i++];) {
+      if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
+
+        console.log(element)
+        element.value='qwer'
+      }
+    }
+//$('#id_provincia').val(data['provincia'].toString()).trigger("change");
+//setTimeout(() => {
+//$('#id_municipio').val(data['municipio'].toString()).trigger("change");
+//$('#id_jcm').val(data['jcm'].toString()).trigger("change");
+//}, 100);
 // $('#id_municipio').val(data['municipio'].toString()).trigger("change");
 
 $('input[name="action"]').val("edit");
-id_edit = data.id_jcb;
+id_edit = data.id_estudiante;
 modal_title.find('span').html(titulo);
 modal_title.find('i').removeClass().addClass('fa fa-edit');
 $('#modal-nuevo').modal('show');

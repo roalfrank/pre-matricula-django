@@ -1,22 +1,24 @@
 import json
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http import JsonResponse
-from django.db.models import Q
 from django.db.models.deletion import RestrictedError
-from core.preMatricula.models import Entidad, JCB
-from .form import JcbForm
-from core.preMatricula.logica.tbentidad.entidadJcp.form import EntidadForm
+from django.contrib.auth.models import User, Group
+from core.preMatricula.models import Estudiante
+from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
+from .form import UserCrearAutomaticoForm, EstudianteForm
+from core.login.form import UserPerfilRegistrationForm
 
 
-class JcbView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
-    template_name = "tbentidad/entidad-jcb/list.html"
-    permiso_vista = 'view_jcb'
+class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
+    template_name = "estudiante/estudiante/list.html"
+    permiso_vista = 'view_estudiante'
     permiso_crud = {
-        'add': 'add_jcb',
-        'change': 'change_jcb',
-        'delete': 'delete_jcb',
+        'add': 'add_estudiante',
+        'change': 'change_estudiante',
+        'delete': 'delete_estudiante',
     }
 
     def post(self, request, *args, **kwargs):
@@ -25,44 +27,58 @@ class JcbView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
             action = request.POST['action']
             # action addd para adicionar registro
             if action == 'add':
-                form_entidad = EntidadForm(request.POST)
-                form_jcb = JcbForm(request.POST)
-                print(form_jcb)
-                print(request.POST)
-                if all([form_entidad.is_valid(), form_jcb.is_valid()]):
-                    entidad = form_entidad.save(commit=False)
-                    entidad.save()
-                    jcb = form_jcb.save(commit=False)
-                    jcb.entidad = entidad
-                    jcb.save()
-                    data['enviado'] = True
-                    data['nombre'] = entidad.nombre
+                form_user = UserCrearAutomaticoForm(request.POST)
+                form_perfil = UserPerfilRegistrationForm(request.POST)
+                form_estudiante = EstudianteForm(request.POST)
+                if all([form_user.is_valid(), form_estudiante.is_valid(), form_perfil.is_valid()]):
+                    with transaction.atomic():
+                        user = form_user.save(commit=False)
+                        user.save()
+                        grupo_estudiante = Group.objects.filter(
+                            name='Estudiante')[0]
+                        user.groups.add(grupo_estudiante)
+                        perfil = form_perfil.save(commit=False)
+                        perfil.user = user
+                        perfil.save()
+                        estudiante = form_estudiante.save(commit=False)
+                        estudiante.usuario = user
+                        estudiante.creado_por = request.user
+                        estudiante.save()
+                        data['enviado'] = True
+                        data['nombre'] = perfil.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = form_jcb.errors.as_json()
+                    data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
-                data = [i.toJson() for i in JCB.objects.all()]
+                data = [i.toJson() for i in Estudiante.objects.all()]
+                print('cargando', data)
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             # action edit - editando una entidad.
             elif action == 'edit':
-                print(request.POST)
-                registro = JCB.objects.get(
+                estudiante = Estudiante.objects.get(
                     pk=int(request.POST['id_edit']))
-                entidad_instancia = Entidad.objects.get(pk=registro.entidad.pk)
-                form_entidad = EntidadForm(
-                    request.POST, instance=entidad_instancia)
-                form_jcb = JcbForm(
-                    request.POST, instance=registro)
-                if all([form_entidad.is_valid(), form_jcb.is_valid()]):
-                    entidad = form_entidad.save()
-                    form_jcb.save()
+                user_instancia = User.objects.get(
+                    pk=estudiante.usuario.pk)
+                perfil_instancia = Perfil.objects.get(
+                    pk=estudiante.usuario.perfil.pk)
+
+                form_user = UserCrearAutomaticoForm(
+                    request.POST, instance=user_instancia)
+                form_perfil = UserPerfilRegistrationForm(
+                    request.POST, instance=perfil_instancia)
+                form_estudiante = EstudianteForm(
+                    request.POST, instance=estudiante)
+                if all([form_user.is_valid(), form_estudiante.is_valid(), form_perfil.is_valid()]):
+                    form_user.save()
+                    perfil = form_perfil.save()
+                    form_estudiante.save()
                     data['enviado'] = True
-                    data['nombre'] = entidad.nombre
+                    data['nombre'] = perfil.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = form_jcb.errors.as_json()
+                    data['error'] = form_estudiante.errors.as_json()
 
             # action delete, eliminar una registro
             elif action == "delete":
@@ -74,13 +90,16 @@ class JcbView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
                         id_deletes.append(id)
                     else:
                         id_deletes.extend(id)
-                    delet_registro = Entidad.objects.filter(
+                    print('id usuarios a borrar', id_deletes)
+                    delet_registro = User.objects.filter(
                         pk__in=id_deletes)
+                    print('enditades usarios a borrar', delet_registro)
                     for registro in delet_registro:
                         try:
                             registro.delete()
-                        except:
-                            error.append(f"{registro.nombre}")
+                        except Exception as e:
+                            print('error borrar', e)
+                            error.append(f"{registro.username}")
                     if len(error) > 0:
                         data['error'] = error
                 except Exception as e:
@@ -95,14 +114,16 @@ class JcbView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, Tem
             print(e.args)
             print(type(e))
             print('type(e) ver si es aqui')
-
+            data['enviado'] = False
             data['error'] = 'Error en las operaciones con los registros'
+        print(data)
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "Lista de Joven Club de Base"
+        context['title'] = "Lista de Estudiantes"
         context['icono_titulo'] = "fas fa-tachometer-alt"
-        context['form_entidad'] = EntidadForm()
-        context['form_jcb'] = JcbForm()
+        context['form_perfil'] = UserPerfilRegistrationForm()
+        context['form_estudiante'] = EstudianteForm()
+        context['form_user'] = UserCrearAutomaticoForm()
         return context

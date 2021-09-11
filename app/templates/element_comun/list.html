@@ -44,7 +44,7 @@
 {%block modal_listar%}
 <div class="modal fade" id="modal-nuevo">
   <form action="post" id='formRegistro'>
-    <div class="modal-dialog">
+    <div class="modal-dialog {%block class_modal%}{% endblock %}">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
@@ -86,6 +86,56 @@
 <script src="{% static 'lib/jquery-validation/additional-methods.min.js'%}"></script>
 <script src="{% static 'js/list.js'%}"></script>
 <script>
+  var delete_select = function (tabla,url_deletes=window.location.pathname) {
+        var select_item = new Array();
+        $('#data input[type="checkbox"]:checked').each(function(){
+            var tr = tabla.cell($(this).closest('td,li')).index();
+            var data = tabla.row(tr.row).data();
+            //{% block delete_registro_varios%}
+            select_item.push(data.id);
+            //{% endblock %}
+            });
+        if(select_item.length == 0){ mensaje("info",'No hay registros seleccionados.');}
+        else{
+        var contexto = {
+            id:JSON.stringify(select_item),
+            action:"delete",
+            csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
+            }
+        console.log(contexto);
+        with_ajax(url_deletes,"Eliminando","Estas seguro de eliminar los registro seleccionados",contexto,function(data){
+            if (data.hasOwnProperty('error')){
+                mensaje("error","Estos registros están Restringido:  - "+data.error );
+            }
+            else{
+            mensaje("success","Registro eliminado correctamente");
+            }
+            id_edit=null;
+            tabla.ajax.reload();
+        });
+        }
+}
+  var delete_registro = function (tabla, element, url_delete = window.location.pathname) {
+    var tr = tabla.cell($(element).closest('td,li')).index();
+    var data = tabla.row(tr.row).data();
+    contexto = {
+      //{% block delete_registro%}
+      id: data.id,
+      //{% endblock%}
+      action: "delete",
+      csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+    }
+    with_ajax(url_delete, "Eliminando", "Estas seguro de eliminar este registro", contexto, function (data) {
+      if (data.hasOwnProperty('error')) {
+        mensaje("error", "Error Guardando el Registro - " + data.error);
+      } else {
+        $("#modal-nuevo").modal("hide");
+        tabla.ajax.reload();
+        mensaje("success", "Registro eliminado correctamente");
+      }
+      id_edit = null;
+    });
+  }
   var abrir_modal_editar = function (titulo, tabla, element) {
     //{% block abrir_modal_editar%}
     //con esto obtengo el tr del boton edit de la tabla

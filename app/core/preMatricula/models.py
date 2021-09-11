@@ -141,7 +141,7 @@ class Instructor(models.Model):
     usuario_siscae = models.CharField(
         max_length=50, verbose_name="Usuario del siscae", null=True, blank=False)
     usuario = models.OneToOneField(
-        User, on_delete=models.CASCADE, verbose_name="Usuario")
+        User, on_delete=models.CASCADE, verbose_name="Usuario",  primary_key=True)
     jcb = models.ForeignKey(
         JCB, on_delete=models.RESTRICT, verbose_name='Joven Club')
     cargo = models.ForeignKey(
@@ -153,7 +153,7 @@ class Instructor(models.Model):
 
 class Maestro(models.Model):
     instructor = models.OneToOneField(
-        Instructor, on_delete=models.CASCADE, verbose_name='Instructor')
+        Instructor, on_delete=models.CASCADE, verbose_name='Instructor', primary_key=True)
 
     def __str__(self):
         return self.instructor
@@ -215,15 +215,24 @@ class Estudiante(models.Model):
     categoria_ocupacional = models.ForeignKey(
         CategoriaOcupacional, on_delete=models.RESTRICT, verbose_name='Categoría Ocupacional')
     usuario = models.OneToOneField(
-        User, on_delete=models.RESTRICT, verbose_name='usuario')
+        User, on_delete=models.CASCADE, verbose_name='usuario', primary_key=True)
+    creado_por = models.ForeignKey(
+        User, on_delete=models.SET_NULL, verbose_name='Creado por', null=True, blank=True, default=None, related_name="creado_por")
     ocupacion = models.ForeignKey(
         Ocupacion, on_delete=models.RESTRICT, verbose_name='Ocupación')
 
     def __str__(self):
-        return self.usuario.perfil
+        return self.usuario.username
 
     def toJson(self):
-        return model_to_dict(self)
+        estudiante = model_to_dict(
+            self, fields=['usuario_sisce', 'usuario'])
+        estudiante['nombre_usuario'] = self.usuario.perfil.nombre
+        estudiante['username'] = self.usuario.username
+        estudiante['provincia'] = self.usuario.perfil.municipio.provincia.nombre
+        estudiante['ci'] = self.usuario.perfil.ci
+        estudiante['creado_por'] = self.creado_por.username
+        return estudiante
 
 
 # mucho a mucho cursosiscae y estudiante
@@ -241,7 +250,8 @@ class EstudianteCursoSiscae(models.Model):
 
 
 class Gestor(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.RESTRICT)
+    usuario = models.OneToOneField(
+        User, on_delete=models.RESTRICT, primary_key=True)
     jcm = models.ForeignKey(JCM, on_delete=models.RESTRICT,
                             verbose_name='Joven Club Municipal')
 
@@ -409,10 +419,11 @@ class CursoInteres(models.Model):
 class EstudianteCursoInteres(models.Model):
     cursoInteres = models.ForeignKey(
         CursoInteres, on_delete=models.CASCADE, verbose_name='Curso de Interes')
-    estudiante = models.ForeignKey(
-        Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
+
     sugerencia = models.CharField(max_length=200, verbose_name='Sugerencia')
     fecha_creado = models.DateField(verbose_name='fecha creado')
+    estudiante = models.ForeignKey(
+        Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
 
     def __str__(self):
         return self.cursoInteres + '-' + self.estudiante + '-' + self.fecha_creado

@@ -1,20 +1,28 @@
 from django.forms import ModelForm
-from core.preMatricula.models import JCB
+from django.contrib.auth.models import User
+from core.preMatricula.models import Estudiante
 
 
-class JcbForm(ModelForm):
-    """Form definition for jcb."""
-    #region1 = forms.ChoiceField(choices=Region.objects.none())
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['region'].queryset = Region.objects.all()
-
-    # def clean(self):
-    #     print(self.fields['region'].queryset)
-    #     return super().clean()
+class UserCrearAutomaticoForm(ModelForm):
 
     class Meta:
-        """Meta definition for jcb."""
+        model = User
+        fields = ('username',)
 
-        model = JCB
-        fields = ('codigo_jcb', 'jcm')
+    def save(self, commit=True, edit=False):
+        user = super().save(commit=False)
+        if not edit:
+            user.set_password(self.cleaned_data["username"])
+        if commit:
+            user.save()
+        return user
+
+
+class EstudianteForm(ModelForm):
+    """Form definition for estudiante."""
+    class Meta:
+        """Meta definition for estudiante."""
+
+        model = Estudiante
+        fields = ('ocupacion', 'categoria_ocupacional',
+                  'discapacidad', 'usuario_sisce')
