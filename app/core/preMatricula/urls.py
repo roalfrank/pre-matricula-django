@@ -18,11 +18,16 @@ from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
+# importaciones para los metodos del sistema globales
+from .views import buscarEstudiante, uniqueUser
 
 
 app_name = "prematricula"
 
 urlpatterns = [
+    # Enlaces a los metodos del sistema globales
+    path("estudiante-datos/", buscarEstudiante, name="estudiante-datos"),
+    path("unique-username/", uniqueUser, name="unique-username"),
     # Enlaces de las entidades
     path("provincia/", ProvinciaListView.as_view(), name="listar-provincia"),
     path("municipio/buscar/", buscarMunicipios, name="buscar-municipios"),

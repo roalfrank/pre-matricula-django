@@ -36,3 +36,8 @@ class Perfil(models.Model):
             return '{}{}'.format(MEDIA_URL, self.avatar)
         print('{}{}'.format(STATIC_URL, 'img/default.png'))
         return '{}{}'.format(STATIC_URL, 'img/default.png')
+
+    def toJson(self):
+        perfil = model_to_dict(self, exclude=['avatar'])
+        perfil['provincia'] = self.municipio.provincia.pk
+        return perfil

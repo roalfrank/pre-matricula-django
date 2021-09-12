@@ -6,16 +6,18 @@
   .select2-container {
     background-color: #fff;
   }
-  .modal-header{
+
+  .modal-header {
     padding: 0.5rem 1.2rem !important;
   }
-  .modal-body{
+
+  .modal-body {
     padding: 0 1rem;
   }
-  .select2-container--bootstrap4 .select2-selection--single{
+
+  .select2-container--bootstrap4 .select2-selection--single {
     height: calc(1.8125rem + 2px) !important;
   }
-  
 </style>
 {% endblock %}
 {% block columns %}
@@ -55,13 +57,13 @@
     </div>
   </div>
   <div class="col-4">
-     <div class="form-group">
+    <div class="form-group">
       {{form_perfil.apellido1.label_tag}}
       {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
   <div class="col-4">
-     <div class="form-group">
+    <div class="form-group">
       {{form_perfil.apellido2.label_tag}}
       {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
@@ -75,13 +77,13 @@
     </div>
   </div>
   <div class="col-4">
-     <div class="form-group">
+    <div class="form-group">
       {{form_user.username.label_tag}}
       {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
   <div class="col-4">
-     <div class="form-group">
+    <div class="form-group">
       {{form_perfil.correo.label_tag}}
       {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
@@ -95,13 +97,13 @@
     </div>
   </div>
   <div class="col-4">
-     <div class="form-group">
+    <div class="form-group">
       {{form_perfil.provincia.label_tag}}
       {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
   <div class="col-4">
-     <div class="form-group">
+    <div class="form-group">
       {{form_perfil.municipio.label_tag}}
       {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
     </div>
@@ -123,21 +125,21 @@
 </div>
 <div class="row">
   <div class="col-4">
-      <div class="form-group">
+    <div class="form-group">
       {{form_estudiante.ocupacion.label_tag}}
       {{form_estudiante.ocupacion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
   <div class="col-4">
-      <div class="form-group">
+    <div class="form-group">
       {{form_estudiante.categoria_ocupacional.label_tag}}
-      {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+      {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
     </div>
   </div>
   <div class="col-4">
-      <div class="form-group">
+    <div class="form-group">
       {{form_estudiante.discapacidad.label_tag}}
-      {{form_estudiante.discapacidad|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+      {{form_estudiante.discapacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
     </div>
   </div>
 </div>
@@ -314,8 +316,33 @@
           })
       }
     });
+    //funcion utilizada para la validacion del username
+    $.validator.addMethod("uniqueUserName", function (value, element) {
+      var you_pass = false
+      $.ajax({
+        url: "{% url 'prematricula:unique-username'  %}",
+        type: 'POST',
+        data: {
+          'username': value,
+          csrfmiddlewaretoken: function () {
+            return $('input[name="csrfmiddlewaretoken"]').val();
+          },
+        },
+        dataType: 'json'
+      }).done(function (respuesta) {
+        if (respuesta['youPass']) {
+          you_pass = true;
+        } 
+      });
+      console.log(you_pass)
+      return you_pass;
+    }, "Este usuario ya está registrado");
+    //validacion del formulario 
     $("#formRegistro").validate({
       rules: {
+        username: {
+          uniqueUserName:true
+        },
         nombre: {
           required: true,
           maxlength: 100,
@@ -325,21 +352,21 @@
         },
         ci: {
           required: true,
-          minlength:11,
-          maxlength:11,
-          number:true,
-          digits:true,
+          minlength: 11,
+          maxlength: 11,
+          number: true,
+          digits: true,
         },
         correo: {
           email: true,
         },
-         telefono: {
-          digits:true
+        telefono: {
+          digits: true
         },
       },
       messages: {
         telefono: {
-          digits:'Solo dígitos'
+          digits: 'Solo dígitos'
         },
         nombre: {
           required: "El  nombre del estudiante es necesario",
@@ -366,10 +393,10 @@
         },
         ci: {
           required: "El carnet es necesario",
-          minlength:'11 numeros son necesarios',
-          maxlength:'Hay más de 11 números',
-          number:'El carnet es solo números',
-          digits:'Solo números',
+          minlength: '11 numeros son necesarios',
+          maxlength: 'Hay más de 11 números',
+          number: 'El carnet es solo números',
+          digits: 'Solo números',
         },
         username: {
           required: "El usuario es necesario",
@@ -411,40 +438,37 @@ id: data.usuario,
 var tr = tabla.cell($(element).closest('td,li')).index();
 //paso a data una lista de los valores de la row a editar
 var data = tabla.row(tr.row).data();
-console.log(data)
 var elements = document.getElementById("formRegistro").elements;
 $.ajax({
-        url: "{% url 'prematricula:buscar-municipios'  %}",
-        type: 'POST',
-        data: {
-          'id_estudiante': data.usuario,
-          csrfmiddlewaretoken: function () {
-            return $('input[name="csrfmiddlewaretoken"]').val();
-          },
-        },
-        dataType: 'json'
-      }).done(function (data) {
-        
-      });
-      
-    for (var i = 0, element; element = elements[i++];) {
-      if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
-
-        console.log(element)
-        element.value='qwer'
-      }
-    }
-//$('#id_provincia').val(data['provincia'].toString()).trigger("change");
-//setTimeout(() => {
-//$('#id_municipio').val(data['municipio'].toString()).trigger("change");
-//$('#id_jcm').val(data['jcm'].toString()).trigger("change");
-//}, 100);
-// $('#id_municipio').val(data['municipio'].toString()).trigger("change");
-
+url: "{% url 'prematricula:estudiante-datos'  %}",
+type: 'POST',
+data: {
+'id_estudiante': data.usuario,
+csrfmiddlewaretoken: function () {
+return $('input[name="csrfmiddlewaretoken"]').val();
+},
+},
+dataType: 'json'
+}).done(function (respuesta) {
+if(respuesta['enviado']){
+for (var i = 0, element; element = elements[i++];) {
+if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
+element.value= respuesta[element.name]
+}
+}
+$('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
+setTimeout(() => {
+$('#id_municipio').val(respuesta['municipio'].toString()).trigger("change");
+}, 100);
 $('input[name="action"]').val("edit");
-id_edit = data.id_estudiante;
+id_edit = data.usuario;
 modal_title.find('span').html(titulo);
 modal_title.find('i').removeClass().addClass('fa fa-edit');
 $('#modal-nuevo').modal('show');
+}
+else{
+console.log('problema con el ajax en editar estudiante');
+}
+});
 
 {% endblock %}

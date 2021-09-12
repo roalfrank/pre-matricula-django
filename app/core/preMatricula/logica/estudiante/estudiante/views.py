@@ -52,7 +52,6 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
 
             elif action == "cargarDatos":
                 data = [i.toJson() for i in Estudiante.objects.all()]
-                print('cargando', data)
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             # action edit - editando una entidad.
@@ -71,14 +70,23 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                 form_estudiante = EstudianteForm(
                     request.POST, instance=estudiante)
                 if all([form_user.is_valid(), form_estudiante.is_valid(), form_perfil.is_valid()]):
-                    form_user.save()
-                    perfil = form_perfil.save()
-                    form_estudiante.save()
-                    data['enviado'] = True
-                    data['nombre'] = perfil.nombre
+                    with transaction.atomic():
+                        form_user.save()
+                        perfil = form_perfil.save()
+                        form_estudiante.save()
+                        data['enviado'] = True
+                        data['nombre'] = perfil.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = form_estudiante.errors.as_json()
+                    error = {}
+                    if not form_user.is_valid():
+                        error.update(form_user.errors.get_json_data())
+                    elif not form_estudiante.is_valid():
+                        error.update(form_estudiante.errors.get_json_data())
+                    elif not form_perfil.is_valid():
+                        error.update(form_perfil.errors.get_json_data())
+                    print(error)
+                    data['error'] = json.dumps(error)
 
             # action delete, eliminar una registro
             elif action == "delete":

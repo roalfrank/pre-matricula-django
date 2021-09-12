@@ -234,6 +234,13 @@ class Estudiante(models.Model):
         estudiante['creado_por'] = self.creado_por.username
         return estudiante
 
+    def datosAllJson(self):
+        estudiante = model_to_dict(self)
+        estudiante.update(self.usuario.perfil.toJson())
+        estudiante['nombre_usuario'] = self.usuario.perfil.nombre
+        estudiante['username'] = self.usuario.username
+        return estudiante
+
 
 # mucho a mucho cursosiscae y estudiante
 
