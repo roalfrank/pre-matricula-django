@@ -24,13 +24,13 @@
 <tr>
   <th style="width: 5%;">Selecciona</th>
   <th>Id</th>
-  <th style="width: 50%;">Nombre</th>
-  <th style="width: 15%;">Usuario</th>
+  <th style="width: 30%;">Nombre</th>
+  <th style="width: 10%;">Usuario</th>
   <th style="width: 20%;">Carnet</th>
-  <th style="width: 50%;">Provincia</th>
-  <th style="width: 50%;">Creado por</th>
+  <th style="width: 15%;">Provincia</th>
+  <th style="width: 10%;">Correo</th>
   <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
-  <th style="width: 20%;">Acción</th>
+  <th style="width: 50%;">Acción</th>
   <!-- {%endif%} -->
 
 </tr>
@@ -110,13 +110,13 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-6">
+  <div class="col-8">
     <div class="form-group">
       {{form_perfil.direccion.label_tag}}
       {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
-  <div class="col-6">
+  <div class="col-4">
     <div class="form-group">
       {{form_estudiante.usuario_sisce.label_tag}}
       {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
@@ -180,7 +180,7 @@
       });
     });
 
-    var tblListar = $("#data").DataTable({
+     var tblListar = $("#data").DataTable({
       responsive: true,
       autoWidth: false,
       destroy: true,
@@ -217,7 +217,7 @@
           "data": "provincia"
         },
         {
-          "data": "creado_por"
+          "data": "correo"
         },
 
         //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
@@ -250,14 +250,19 @@
           class: "text-center",
           orderable: false,
           render: function (data, type, row) {
+            console.log(row.usuario)
             var buttons = ''
-            //{% if perms.user.change_estudiante%}
             buttons =
-              '<a href="#" rel="edit" class="text-info" data-toggle="tooltip" title="Editar Registro"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+            //{% if perms.user.view_estudiante%}
+              '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver Estudiante"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+            //{%endif%}
+              //{% if perms.user.change_estudiante%}
+            buttons +=
+              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar Estudiante"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
             //{%endif%}
             //{% if perms.user.delete_estudiante%} 
             buttons +=
-              '<a href="#" rel="delete" class="pl-2 text-danger" data-toggle="tooltip" title="Eliminar Registro"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+              '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar Estudiante"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
             //{%endif%}
             return buttons
           }
@@ -283,6 +288,17 @@
 
     $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
       abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
+    });
+    $('#data tbody').on('click', 'a[rel="view"]', function (element) {
+      var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
+      //paso a data una lista de los valores de la row a editar
+      var data = tblListar.row(tr.row).data();
+      //window.location.href='{url "prematricula:estudiante-detail"}'+data.usuario+'/'
+      //abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
+      modal_title.find('span').html('Datos de Estudiante');
+      modal_title.find('i').removeClass().addClass('fa fa-edit');
+      $('#modal-nuevo').load('/sistema/estudiante-detail/'+data.usuario+'/');
+      $('#modal-nuevo').modal('show');
     });
 
     $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
@@ -316,32 +332,26 @@
           })
       }
     });
-    //funcion utilizada para la validacion del username
-    $.validator.addMethod("uniqueUserName", function (value, element) {
-      var you_pass = false
-      $.ajax({
-        url: "{% url 'prematricula:unique-username'  %}",
-        type: 'POST',
-        data: {
-          'username': value,
-          csrfmiddlewaretoken: function () {
-            return $('input[name="csrfmiddlewaretoken"]').val();
-          },
-        },
-        dataType: 'json'
-      }).done(function (respuesta) {
-        if (respuesta['youPass']) {
-          you_pass = true;
-        } 
-      });
-      console.log(you_pass)
-      return you_pass;
-    }, "Este usuario ya está registrado");
+    
     //validacion del formulario 
     $("#formRegistro").validate({
       rules: {
         username: {
-          uniqueUserName:true
+          remote: {
+                      url: "{% url 'prematricula:unique-username' %}",
+                      type: "post",
+                      data: {
+                            'username': function() {
+                              return $("#id_username").val();
+                            },
+                            id_edit:function(){
+                              return id_edit;
+                            },
+                            csrfmiddlewaretoken:function(){
+                                  return $('input[name="csrfmiddlewaretoken"]').val();
+                                },
+                        }
+                  }
         },
         nombre: {
           required: true,
@@ -400,6 +410,7 @@
         },
         username: {
           required: "El usuario es necesario",
+          remote:'Ya existe este usuario.'
         },
         direccion: {
           required: "La dirección es necesaria",
@@ -426,12 +437,15 @@
   });
 </script>
 {%endblock%}
+
 {% block delete_registro_varios%}
 select_item.push(data.usuario);
 {% endblock %}
+
 {% block delete_registro%}
 id: data.usuario,
 {% endblock%}
+
 {% block abrir_modal_editar%}
 //resetearSelect('formRegistro');
 //con esto obtengo el tr del boton edit de la tabla

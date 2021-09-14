@@ -1,4 +1,5 @@
 from django.db import models
+import time
 from django.forms import model_to_dict
 from django.contrib.auth.models import User
 
@@ -225,13 +226,17 @@ class Estudiante(models.Model):
         return self.usuario.username
 
     def toJson(self):
-        estudiante = model_to_dict(
-            self, fields=['usuario_sisce', 'usuario'])
+        tiempo_inicial = time.time()
+        #estudiante = {}
+        estudiante = model_to_dict(self, fields=['usuario'])
         estudiante['nombre_usuario'] = self.usuario.perfil.nombre
         estudiante['username'] = self.usuario.username
         estudiante['provincia'] = self.usuario.perfil.municipio.provincia.nombre
         estudiante['ci'] = self.usuario.perfil.ci
-        estudiante['creado_por'] = self.creado_por.username
+        estudiante['correo'] = self.usuario.perfil.correo
+        tiempo_final = time.time()
+        tiempo = tiempo_final - tiempo_inicial
+        print(f'Tiempo demorado estudiante:{tiempo}')
         return estudiante
 
     def datosAllJson(self):

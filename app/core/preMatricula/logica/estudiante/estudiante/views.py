@@ -1,5 +1,6 @@
 import json
-from django.views.generic import TemplateView
+import time
+from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
@@ -12,7 +13,35 @@ from .form import UserCrearAutomaticoForm, EstudianteForm
 from core.login.form import UserPerfilRegistrationForm
 
 
+# class EstudianteView(ListView):
+#     model = Estudiante
+#     template_name = "estudiante/estudiante/list.html"
+#     paginate_by = 2
+
+#     # def get_queryset(self):
+#     #     datos = self.model.objects.all()
+#     #     return datos
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         print(context)
+#         # return context
+
+
+class EstudianteDetailView(DetailView):
+    model = Estudiante
+    template_name = "estudiante/estudiante/detailEstudiante.html"
+
+    def get_context_data(self, **kwargs):
+        print(self.request.GET.get('next'))
+        context = super().get_context_data(**kwargs)
+        context['next'] = self.request.GET.get('next')
+        print()
+        return context
+
+
 class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
+    #model = Estudiante
     template_name = "estudiante/estudiante/list.html"
     permiso_vista = 'view_estudiante'
     permiso_crud = {
@@ -51,7 +80,11 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
+                tiempo_inicial = time.time()
                 data = [i.toJson() for i in Estudiante.objects.all()]
+                tiempo_final = time.time()
+                tiempo = tiempo_final - tiempo_inicial
+                print(f'Tiempo demorado en cargar datos estudiante:{tiempo}')
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             # action edit - editando una entidad.
@@ -129,6 +162,7 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(context)
         context['title'] = "Lista de Estudiantes"
         context['icono_titulo'] = "fas fa-tachometer-alt"
         context['form_perfil'] = UserPerfilRegistrationForm()

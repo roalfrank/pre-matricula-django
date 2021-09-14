@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import JsonResponse
 from .models import Estudiante
 
@@ -22,13 +23,19 @@ def buscarEstudiante(request):
 @permission_required('preMatricula.view_estudiante', raise_exception=True)
 def uniqueUser(request):
     if request.method == 'POST':
-        print('estoy en unique ')
-        respuesta = {}
-        respuesta['youPass'] = False
-        username = (request.POST['username'])
-        user = User.objects.filter(username=username)
-        if not user:
-            respuesta['youPass'] = True
-        print(respuesta)
-        return JsonResponse(respuesta, safe=False)
-    return JsonResponse([], safe=False)
+        try:
+            # chequeamos si estamos en editar o add . si es editar hacemos la consulta con NONe
+            # id_edit no se incluye en la consulta
+            id_edit = request.POST['id_edit']
+            if id_edit == "":
+                id_edit = None
+            # consulta a la base dato chequear el nombre usuario.
+            user = User.objects.filter(
+                ~Q(id=id_edit), username=request.POST['username'])
+            if len(user) < 1:
+                # si no hay resultado en la busqueda , se devuelve True, dando luz verde usuario.
+                return JsonResponse(True, safe=False)
+            # si hay resultado se retorna False para impedir que se cree  nombres repetidos.
+            return JsonResponse(False, safe=False)
+        except:
+            return JsonResponse(False, safe=False)
