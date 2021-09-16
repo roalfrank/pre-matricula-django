@@ -44,7 +44,7 @@
 {%block modal_listar%}
 <div class="modal fade" id="modal-nuevo">
   <form action="post" id='formRegistro'>
-    <div class="modal-dialog {%block class_modal%}{% endblock %}">
+    <div class="modal-dialog {%block class_modal%}{% endblock %} ">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
@@ -55,14 +55,16 @@
         <div class="modal-body">
           <input type="hidden" name="action" value="add" />
           {% csrf_token %}
+          <div id="contenido-modal">
           {%block form_modal%}
-          {% for field in form.visible_fields%}
-          <div class="form-group">
-            {{field.label_tag}}
-            {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+            {% for field in form.visible_fields%}
+            <div class="form-group">
+              {{field.label_tag}}
+              {{field|add_class:'form-control'|attr:'autocomplete:off'}}
+            </div>
+            {%endfor%}
+            {%endblock%}
           </div>
-          {%endfor%}
-          {%endblock%}
         </div>
         <div class="modal-footer justify-content-between">
           <button type="submit" class="btn btn-primary vw-100">Guardar</button>
@@ -137,6 +139,7 @@
     });
   }
   var abrir_modal_editar = function (titulo, tabla, element) {
+    
     //{% block abrir_modal_editar%}
     //con esto obtengo el tr del boton edit de la tabla
     var tr = tabla.cell($(element).closest('td,li')).index();
@@ -161,6 +164,13 @@
   }
   /*eliminamos la clase is-valid si se cierra el modal*/
   $('#modal-nuevo').on('hidden.bs.modal', function (e) {
+    if (estudiante_view) {
+           $('.modal-footer').html('<button type="submit" class="btn btn-primary vw-100">Guardar</button>');
+           $('#contenido-modal').load('{% url "prematricula:estudiante-add-form"%}',function() {
+                 //$('#modal-nuevo').modal('show');
+           });
+           estudiante_view=false      
+        }
     var elements = document.getElementById("formRegistro").elements;
 
     for (var i = 0, element; element = elements[i++];) {

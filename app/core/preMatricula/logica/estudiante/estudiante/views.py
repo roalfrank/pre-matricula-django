@@ -26,6 +26,17 @@ from core.login.form import UserPerfilRegistrationForm
 #         context = super().get_context_data(**kwargs)
 #         print(context)
 #         # return context
+class EstudianteDetailCargarFormAddView(TemplateView):
+    template_name = "estudiante/estudiante/form_add.html"
+
+    def get_context_data(self, **kwargs):
+        print(self.request.GET.get('next'))
+        context = super().get_context_data(**kwargs)
+        context['form_perfil'] = UserPerfilRegistrationForm()
+        context['form_estudiante'] = EstudianteForm()
+        context['form_user'] = UserCrearAutomaticoForm()
+        print('estoy en add form estudiante')
+        return context
 
 
 class EstudianteDetailView(DetailView):
@@ -42,7 +53,7 @@ class EstudianteDetailView(DetailView):
 
 class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
     #model = Estudiante
-    template_name = "estudiante/estudiante/list.html"
+    template_name = "estudiante/estudiante/estudiante_list.html"
     permiso_vista = 'view_estudiante'
     permiso_crud = {
         'add': 'add_estudiante',

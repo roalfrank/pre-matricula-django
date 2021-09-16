@@ -26,7 +26,7 @@ class Perfil(models.Model):
     correo = models.CharField(
         max_length=100, verbose_name="Correo", unique=True)
     avatar = models.ImageField(
-        upload_to='users/avatar', verbose_name="Avatar", null=True, blank=True)
+        upload_to='users/avatar', default='default.png', verbose_name="Avatar", null=True, blank=True)
 
     def __str__(self):
         return f"{self.nombre}-{self.user.username}"

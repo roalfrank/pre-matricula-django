@@ -18,6 +18,25 @@
   .select2-container--bootstrap4 .select2-selection--single {
     height: calc(1.8125rem + 2px) !important;
   }
+  .modal-body .card {
+    background-color: #fff;
+  }
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #26bdef;
+  } 
+  .nav-link.active:hover{
+    color: #dad6d6 !important;
+  } 
+  .modal a:hover{
+    color: #26bdef !important;
+  }
+  .list-group-item{
+    padding: 0;
+    
+  }
+  .modal-footer{
+    padding-top: 0 !important;
+  }
 </style>
 {% endblock %}
 {% block columns %}
@@ -143,6 +162,13 @@
     </div>
   </div>
 </div>
+{% if request.user.is_staff %}
+<div class="row justify-content-end">
+    <div class="form-group mb-1 mr-1">
+      <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
+    </div>
+</div>
+{% endif %}
 
 {%endblock%}
 
@@ -297,8 +323,12 @@
       //abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
       modal_title.find('span').html('Datos de Estudiante');
       modal_title.find('i').removeClass().addClass('fa fa-edit');
-      $('#modal-nuevo').load('/sistema/estudiante-detail/'+data.usuario+'/');
-      $('#modal-nuevo').modal('show');
+      console.log('estoy en view');
+      $('.modal-footer').html('');
+      $('#contenido-modal').load('/sistema/estudiante-detail/'+data.usuario+'/',function() {
+                 $('#modal-nuevo').modal('show');
+      });
+      estudiante_view = true
     });
 
     $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
@@ -447,12 +477,11 @@ id: data.usuario,
 {% endblock%}
 
 {% block abrir_modal_editar%}
-//resetearSelect('formRegistro');
 //con esto obtengo el tr del boton edit de la tabla
 var tr = tabla.cell($(element).closest('td,li')).index();
 //paso a data una lista de los valores de la row a editar
 var data = tabla.row(tr.row).data();
-var elements = document.getElementById("formRegistro").elements;
+
 $.ajax({
 url: "{% url 'prematricula:estudiante-datos'  %}",
 type: 'POST',
@@ -465,8 +494,10 @@ return $('input[name="csrfmiddlewaretoken"]').val();
 dataType: 'json'
 }).done(function (respuesta) {
 if(respuesta['enviado']){
+var elements = document.getElementById("formRegistro").elements;
 for (var i = 0, element; element = elements[i++];) {
 if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
+console.log(element);
 element.value= respuesta[element.name]
 }
 }
@@ -479,6 +510,7 @@ id_edit = data.usuario;
 modal_title.find('span').html(titulo);
 modal_title.find('i').removeClass().addClass('fa fa-edit');
 $('#modal-nuevo').modal('show');
+
 }
 else{
 console.log('problema con el ajax en editar estudiante');

@@ -7,7 +7,7 @@ class UserCrearAutomaticoForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('username', 'is_active')
 
     def save(self, commit=True, edit=False):
         user = super().save(commit=False)
