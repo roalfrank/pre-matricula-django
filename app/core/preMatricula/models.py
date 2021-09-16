@@ -304,7 +304,7 @@ class Curso(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre Curso')
     duracion = models.IntegerField(verbose_name='Duración en Horas')
     descripcion = models.TextField(verbose_name='Descripción del Curso')
-    corto = models.BooleanField(verbose_name='Tipo de Curso')
+    corto = models.BooleanField(verbose_name='corto')
     nextCurso = models.ForeignKey(
         'preMatricula.Curso', on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -381,7 +381,7 @@ class PreMatriculaMaestro(models.Model):
         Maestro, on_delete=models.CASCADE, verbose_name='Maestro')
 
     def __str__(self):
-        return self.preMatricula + self.maestro
+        return self.preMatricula.curso.nombre + self.maestro.instructor.uruario.perfil.nombre
 
 # clase para mucho a mucho con estudiantes y matriculas
 
@@ -394,8 +394,8 @@ class PreMatriculaEstudiante(models.Model):
     activo = models.BooleanField(
         verbose_name='El Estudiante ha sido chequeado')
 
-    def __str__(self):
-        return self.preMatricula + "- " + self.estudiante
+    # def __str__(self):
+    #     return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.perfil.nombre
 
 # los estudiantes pueden comentar
 

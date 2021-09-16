@@ -19,3 +19,12 @@ def jcmProvincia(id_provincia, formato='default'):
         jcms = JCM.objects.filter(
             entidad__municipio__provincia__pk=id_provincia)
     return jcms
+
+
+def listado_matricula_estudiante(estudiante, json=False):
+    listado_matricula = estudiante.prematriculaestudiante_set.all()
+    listado_matricula_dict = {}
+    print(listado_matricula)
+    if listado_matricula.count() > 0:
+        pass
+    return listado_matricula

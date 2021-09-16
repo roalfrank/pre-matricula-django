@@ -11,6 +11,7 @@ from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import UserCrearAutomaticoForm, EstudianteForm
 from core.login.form import UserPerfilRegistrationForm
+from core.preMatricula.utils.general import listado_matricula_estudiante
 
 
 # class EstudianteView(ListView):
@@ -47,7 +48,11 @@ class EstudianteDetailView(DetailView):
         print(self.request.GET.get('next'))
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next')
-        print()
+        context['matriculados'] = self.get_object(
+        ).prematriculaestudiante_set.all()
+        print(context['matriculados'])
+        context['interes'] = self.get_object(
+        ).estudiantecursointeres_set.all()
         return context
 
 
