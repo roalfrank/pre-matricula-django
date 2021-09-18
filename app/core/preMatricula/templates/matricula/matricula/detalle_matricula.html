@@ -1,50 +1,239 @@
+{% load static %}
 <div class="row">
-    <div class="col-8">
+  <div class="col-12 col-lg-8 col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <div class="user-block">
+          <img class="img-circle" src="{{object.curso.get_foto}}" alt="User Image">
+          <span class="username">{{object.curso.nombre}}</span>
+          <span class="description ">Estado - <span
+              class="badge {% if object.estado.nombre == 'abierto' %} badge-success {% elif object.estado.nombre == 'en proceso' %}badge-warning {% else %} badge-danger {%endif %}">{{object.estado.nombre}}</span>
+          </span>
+        </div>
+        <div class="float-right">
+          <span class="badge badge-success">{{object.tipo_grupo.nombre }}</span>
+        </div>
+      </div>
+      <div class="card-body">
         <div class="card">
-            <div class="card-header">
-                <div class="user-block">
-                  <img class="img-circle" src="{{object.curso.get_foto}}" alt="User Image">
-                  <span class="username">{{object.curso.nombre}}</span>
-                  <span class="description ">Estado - <span class="badge {% if object.estado.nombre == 'abierto' %} badge-success {% elif object.estado.nombre == 'en proceso' %}badge-warning {% else %} badge-danger {%endif %}">{{object.estado.nombre}}</span> </span>
-                </div>
-                <div class="float-right">
-                       <div> <span class="badge badge-success">{{object.fecha_inicio}}</span></div>
-                        <div> <span class="badge badge-danger">{{object.fecha_fin}}</span></div>
-                </div>
-            </div>
-            <div class="card-body">
-              <p>Curso:{{object.curso.nombre}}</p>
-            </div>
+          <div class="card-body">
+            sdfdsfds
+          </div>
         </div>
+        <div class="card" style="height: 50%;">
+          <div class="card-body d-flex ">
+            
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-4">
-      <div class="card">
-            <div class="card-body">
-              <p>Curso:{{object.curso.nombre}}</p>
+  </div>
+  <div class="col-12 col-lg-4 col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <ul class="list-group list-group-unbordered mb-3">
+          <li class="list-group-item">
+            <b><img src="{% static 'img/iconos/fecha.png' %}" alt="Fecha Inicio" style="width: 1.5rem;" srcset="">
+              Inicio:</b>
+            <span class='badge badge-success float-right mt-1 mr-1'>{{object.fecha_inicio}}</span>
+          </li>
+          <li class="list-group-item">
+            <b><img src="{% static 'img/iconos/fecha.png' %}" alt="Fecha fin" style="width: 1.5rem;" srcset=""> Fin:</b>
+            <span class='badge badge-danger float-right mt-1 mr-1'>{{object.fecha_fin}}</span>
+          </li>
+          <li class="list-group-item">
+            <b><i class="fa fa-users"></i> Capacidad</b> <a
+              class="float-right text-perfil">{{cantAlumnos}}/{{object.capacidad}}(<span
+                style="color: rgb(64, 145, 111); font-weight: bolder;">{{promedioCantidad}}%</span>)</a>
+            <div class="progress">
+              <div class="progress-bar" style="width: {{promedioCantidad}}%"></div>
             </div>
-        </div>
-       </div>
+          </li>
+          <li class="list-group-item">
+            <b>Modalidad:</b>
+            <span class="float-right"><span>{{ object.modalidad.nombre }}</span></span>
+          </li>
+          <li class="list-group-item">
+            <b>Frecuencia:</b>
+            <span class="float-right"><span class="badge badge-warning">{{ object.frecuencia }} semanal</span></span>
+          </li>
+          <li class="list-group-item">
+            <b>QR:</b><br>
+            <div class="row justify-content-center align-items-center">
+              <img src="{% static 'img/iconos/qr.png' %}" alt="Fecha fin" style="width: 5rem;" srcset="">
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="row">
-    <div class="col-8">
-        <div class="card">
-            <div class="card-header">
-                <div class="user-block">
-                  <img class="img-circle" src="{{object.curso.get_foto}}" alt="User Image">
-                  <span class="username">{{object.curso.nombre}}</span>
-                  <span class="description">Shared publicly - 7:30 PM Today</span>
+  <div class="col-12 ">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-tool">
+          <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Compartir</button>
+          <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Me gusta</button>
+          <span class="float-right text-muted">127 Me gusta - 3 comentarios</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-footer card-comments">
+          <div class="card-comment">
+            <!-- User image -->
+            <img class="img-circle img-sm" src="{% static 'img/inicio/team/team-1.jpg' %}" alt="User Image">
+
+            <div class="comment-text">
+              <span class="username">
+                Frank Garcia
+                <span class="text-muted float-right">9:03 PM Hoy</span>
+              </span><!-- /.username -->
+              Cuanto hay que pagar?
+            </div>
+            <!-- /.comment-text -->
+            <div class="card collapsed-card m-0 ml-4  ">
+              <div class="card-header p-0 pr-2 pl-2">
+                <div class="card-title">
+                  <small>1 Respuestas</small>
                 </div>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <small>
+                  <div class="card-comment">
+                    <!-- User image -->
+                    <img class="img-circle img-sm" src="{% static 'img/inicio/team/team-4.jpg' %}" alt="User Image">
+
+                    <div class="comment-text">
+                      <span class="username">
+                        Susana Vargas
+                        <span class="text-muted float-right">10:03 PM Hoy</span>
+                      </span><!-- /.username -->
+                      Es gratis, lo dicen en el sitio oficial. solo cobran a las empresas.
+                    </div>
+                    <!-- /.comment-text -->
+                  </div>
+                  <form action="#" method="post">
+                    <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
+                    <!-- .img-push is used to add margin to elements next to floating images -->
+                    <div class="img-push">
+                      <input type="text" class="form-control form-control-sm"
+                        placeholder="Presione enter para comentar">
+                    </div>
+                  </form>
+                </small>
+              </div>
             </div>
-            <div class="card-body">
-              <p>Curso:{{object.curso.nombre}}</p>
+          </div>
+          <!-- /.card-comment -->
+          <div class="card-comment">
+            <!-- User image -->
+            <img class="img-circle img-sm" src="{% static 'img/inicio/team/team-2.jpg' %}" alt="User Image">
+
+            <div class="comment-text">
+              <span class="username">
+                Maria Gonzales
+                <span class="text-muted float-right">8:03 PM Hoy</span>
+              </span><!-- /.username -->
+              Tengo una duda se podrá cambiar las frecuencias de este curso. Es que solo podría con 1 semanal.
             </div>
+            <!-- /.comment-text -->
+            <div class="card collapsed-card m-0 ml-4  ">
+              <div class="card-header p-0 pr-2 pl-2">
+                <div class="card-title">
+                  <small>1 Respuestas</small>
+                </div>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <small>
+                  <div class="card-comment">
+                    <!-- User image -->
+                    <img class="img-circle img-sm" src="{% static 'img/inicio/team/team-4.jpg' %}" alt="User Image">
+
+                    <div class="comment-text">
+                      <span class="username">
+                        Osvaldo Martinez
+                        <span class="text-muted float-right">10:03 PM Hoy</span>
+                      </span><!-- /.username -->
+                      Hola Susana, ya este curso esta conformado con esta frecuencia. Puedes sugerir un curso en tu
+                      panel de estudiante y en cuanto se pueda habilitar te informamos.
+                      saludos.
+                    </div>
+                    <!-- /.comment-text -->
+                  </div>
+                  <form action="#" method="post">
+                    <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
+                    <!-- .img-push is used to add margin to elements next to floating images -->
+                    <div class="img-push">
+                      <input type="text" class="form-control form-control-sm"
+                        placeholder="Presione enter para comentar">
+                    </div>
+                  </form>
+                </small>
+              </div>
+            </div>
+          </div>
+          <!-- /.card-comment -->
+          <div class="card-comment">
+            <!-- User image -->
+            <img class="img-circle img-sm" src="{% static 'img/inicio/team/team-3.jpg' %}" alt="User Image">
+
+            <div class="comment-text">
+              <span class="username">
+                Alberto Hernandez
+                <span class="text-muted float-right">8:03 PM 02/4/2021</span>
+              </span><!-- /.username -->
+              Me parece genial este curso, espero aprender mucho. saludos
+            </div>
+            <!-- /.comment-text -->
+            <div class="card collapsed-card m-0 ml-4  ">
+              <div class="card-header p-0 pr-2 pl-2">
+                <div class="card-title">
+                  <small>0 Respuestas</small>
+                </div>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <small>
+                  <form action="#" method="post">
+                    <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
+                    <!-- .img-push is used to add margin to elements next to floating images -->
+                    <div class="img-push">
+                      <input type="text" class="form-control form-control-sm"
+                        placeholder="Presione enter para comentar">
+                    </div>
+                  </form>
+                </small>
+              </div>
+            </div>
+          </div>
+          <!-- /.card-comment -->
         </div>
+      </div>
+
+      <div class="card-footer">
+        <form action="#" method="post">
+          <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
+          <!-- .img-push is used to add margin to elements next to floating images -->
+          <div class="img-push">
+            <input type="text" class="form-control form-control-sm" placeholder="Presione enter para comentar">
+          </div>
+        </form>
+      </div>
     </div>
-    <div class="col-4">
-      <div class="card">
-            <div class="card-body">
-              <p>Curso:{{object.curso.nombre}}</p>
-            </div>
-        </div>
-       </div>
+  </div>
 </div>
