@@ -1,7 +1,8 @@
-from django.db import models
 import time
+from django.db import models
 from django.forms import model_to_dict
 from django.contrib.auth.models import User
+from config.settings import MEDIA_URL, STATIC_URL
 
 # Create your models here.
 
@@ -307,12 +308,19 @@ class Curso(models.Model):
     corto = models.BooleanField(verbose_name='corto')
     nextCurso = models.ForeignKey(
         'preMatricula.Curso', on_delete=models.SET_NULL, null=True, blank=True)
+    foto = models.ImageField(
+        upload_to='curso/foto', default='curso_default.png', verbose_name="Foto", null=True, blank=True)
 
     def __str__(self):
         tipo_curso = "Largo"
         if self.corto:
             tipo_curso = "Corto"
         return f"{self.nombre}-{self.duracion} - {tipo_curso}"
+
+    def get_foto(self):
+        if self.foto:
+            return '{}{}'.format(MEDIA_URL, self.foto)
+        return '{}{}'.format(STATIC_URL, 'img/curso_default.png')
 
 
 # Modalidad de la preMatricula
@@ -406,8 +414,8 @@ class Comentario(models.Model):
         auto_now=True, verbose_name='Fecha Creado')
     preMatricula = models.ForeignKey(
         PreMatricula, on_delete=models.CASCADE, verbose_name='Pre matricula')
-    estudiante = models.ForeignKey(
-        Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
+    usuario = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name='Usuario')
 
     def __str__(self):
         return self.preMatricula + '-' + self.estudiante+'-'+self.fecha_comentario
@@ -423,7 +431,7 @@ class CursoInteres(models.Model):
         Municipio, on_delete=models.RESTRICT, verbose_name='Municipio')
 
     def __str__(self):
-        return self.curso + '-' + self.municipio
+        return self.curso.nombre + '-' + self.municipio.nombre
 
 # mucho a mucho con estudiantes y curso interes
 
@@ -438,4 +446,4 @@ class EstudianteCursoInteres(models.Model):
         Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
 
     def __str__(self):
-        return self.cursoInteres + '-' + self.estudiante + '-' + self.fecha_creado
+        return self.cursoInteres.curso.nombre + '-' + self.estudiante.usuario.perfil.nombre

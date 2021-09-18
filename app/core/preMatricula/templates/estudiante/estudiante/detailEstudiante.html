@@ -59,10 +59,10 @@
                                 class="fas fa-user"></i> Perfil</a></li>
                     <li class="nav-item"><a class="nav-link" id="nav_matriculado" href="#matriculado" data-toggle="tab"><i
                                 class="fa fa-address-card"></i> Cursos matrículados <span
-                                class="badge badge-success">15</span></a></li>
+                                class="badge badge-success"> {{matriculados.count}} <span></a></li>
                     <li class="nav-item"><a class="nav-link" id="nav_interes" href="#interes" data-toggle="tab"><i
                                 class="fas fa-bullhorn"></i> Cursos de interés <span
-                                class="badge badge-warning">2</span></a></li>
+                                class="badge badge-warning">{{ interes.count }}</span></a></li>
                 </ul>
             </div><!-- /.card-header -->
             <div class="card-body">
@@ -116,14 +116,14 @@
                     <div class="tab-pane" id="matriculado">
                         <div class="card">
                             
-                            <div class="card-body table-responsive p-0">
+                            <div class="card-body table-responsive p-2">
                                 {% if matriculados%}
-                                <table class="table table-striped table-valign-middle">
+                                <table id="tb-matriculado" class="table table-striped table-valign-middle">
                                     <thead>
                                         <tr>
                                             <th style="width: 50%;">Nombre</th>
                                             <th style="width: 100%;">Fecha</th>
-                                            <th style="width: 5%;">Ver</th>
+                                            <th style="width: 2%;">Ver</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -166,9 +166,9 @@
 
                     <div class="tab-pane" id="interes">
                         <div class="card">
-                            <div class="card-body table-responsive p-0">
+                            <div class="card-body table-responsive p-2">
                                 {% if interes %}
-                                <table class="table table-striped table-valign-middle">
+                                <table id="tb-interes" class="table table-striped table-valign-middle p-2">
                                     <thead>
                                         <tr>
                                             <th style="width: 50%;" class='text-center'>Nombre</th>
@@ -177,34 +177,22 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                         <tr>
-                                            <td>
-                                                <small> Cursos Aprendiendo Python <small><span  id='badge_frecuencia_interes' class="badge badge-success">2f</span></small> </small>
-                                                
-                                            </td>
-                                            <td>
-                                                <small> San Miguel del Padrón</small>
-                                            </td>
-                                            <td>
-                                                <a href="#" class="text-perfil">
-                                                   <i class="fas fa-search text-success"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        {% for curso_interes in interes %}
                                         <tr>
-                                            <td>
-                                                <small> Python <small><span  id='badge_frecuencia_interes' class="badge badge-success">2f</span></small> </small>
-                                                
-                                            </td>
-                                            <td>
-                                                <small> San Miguel del Padrón</small>
-                                            </td>
-                                            <td>
-                                                <a href="#" class="text-perfil">
-                                                   <i class="fas fa-search text-success"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                           <td>
+                                               <small>{{curso_interes.cursoInteres.curso.nombre}} <small><span  id='badge_frecuencia_interes' class="badge badge-success">{{curso_interes.cursoInteres.frecuencia}}fr</span></small> </small>
+                                               
+                                           </td>
+                                           <td>
+                                               <small> {{curso_interes.cursoInteres.municipio.nombre}}</small>
+                                           </td>
+                                           <td>
+                                               <a href="#" class="text-perfil">
+                                                  <i class="fas fa-search text-success"></i>
+                                               </a>
+                                           </td>
+                                       </tr>
+                                        {%endfor%}
                                     </tbody>
                                 </table>
                                 {% else %}

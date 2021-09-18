@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="user-block">
+                  <img class="img-circle" src="{{object.curso.get_foto}}" alt="User Image">
+                  <span class="username">{{object.curso.nombre}}</span>
+                  <span class="description ">Estado - <span class="badge {% if object.estado.nombre == 'abierto' %} badge-success {% elif object.estado.nombre == 'en proceso' %}badge-warning {% else %} badge-danger {%endif %}">{{object.estado.nombre}}</span> </span>
+                </div>
+                <div class="float-right">
+                       <div> <span class="badge badge-success">{{object.fecha_inicio}}</span></div>
+                        <div> <span class="badge badge-danger">{{object.fecha_fin}}</span></div>
+                </div>
+            </div>
+            <div class="card-body">
+              <p>Curso:{{object.curso.nombre}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+            <div class="card-body">
+              <p>Curso:{{object.curso.nombre}}</p>
+            </div>
+        </div>
+       </div>
+</div>
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="user-block">
+                  <img class="img-circle" src="{{object.curso.get_foto}}" alt="User Image">
+                  <span class="username">{{object.curso.nombre}}</span>
+                  <span class="description">Shared publicly - 7:30 PM Today</span>
+                </div>
+            </div>
+            <div class="card-body">
+              <p>Curso:{{object.curso.nombre}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+            <div class="card-body">
+              <p>Curso:{{object.curso.nombre}}</p>
+            </div>
+        </div>
+       </div>
+</div>

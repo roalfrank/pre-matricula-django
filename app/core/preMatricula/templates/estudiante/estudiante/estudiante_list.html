@@ -41,6 +41,17 @@
     position: absolute;
     margin-left: 0.2rem;
   }
+#tb-interes_info,#tb-matriculado_info{
+  padding-top: 2rem;
+}
+#tb-interes_paginate,#tb-matriculado_paginate{
+  margin: -0.5rem;
+}
+
+
+.pagination{
+  font-size: smaller;
+}
 </style>
 {% endblock %}
 {% block columns %}
@@ -321,14 +332,7 @@
       abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
     });
      //botones del nav de detalle
-    let detalle_boton_action = function () {
-       $("#nav_matriculado").on("click", function () {
-           console.log('estoy en matriculado');
-        });
-      $("#nav_interes").on("click", function () {
-         console.log('estoy en interes');
-      });
-    }
+    
     $('#data tbody').on('click', 'a[rel="view"]', function (element) {
       var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
       //paso a data una lista de los valores de la row a editar
@@ -341,7 +345,14 @@
       $('.modal-footer').html('');
       $('#contenido-modal').load('/sistema/estudiante-detail/'+data.usuario+'/',function() {
                  $('#modal-nuevo').modal('show');
-                 detalle_boton_action();
+                 $('#tb-matriculado').DataTable({responsive: true,autoWidth: false,columnDefs:[{
+                    targets: [2],
+                    orderable: false,
+                 }]});
+                 $('#tb-interes').DataTable({responsive: true,autoWidth: false,columnDefs:[{
+                    targets: [2],
+                    orderable: false,
+                 }]});
 
       });
       estudiante_view = true

@@ -1,0 +1,13 @@
+{% extends 'base.html'%}
+{% block titulo %}Detalle de Curso{%endblock%}
+{%block contenido%}
+<div class="probando"></div>
+{%endblock%}
+{%block js%}
+<script>
+    $(function () {
+        $('.probando').load('{% url "prematricula:matricula-detalle" 2%}',function() {
+        });
+    });
+</script>
+{%endblock%}

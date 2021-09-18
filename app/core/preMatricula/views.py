@@ -2,9 +2,14 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
+from django.views.generic import TemplateView
 from .models import Estudiante
 
 # Create your views here.
+
+
+class probando(TemplateView):
+    template_name = "estudiante/estudiante/probando.html"
 
 
 @login_required

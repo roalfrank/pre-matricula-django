@@ -1,6 +1,6 @@
 import json
 import time
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
@@ -53,6 +53,7 @@ class EstudianteDetailView(DetailView):
         print(context['matriculados'])
         context['interes'] = self.get_object(
         ).estudiantecursointeres_set.all()
+        print('curso interes', context['interes'])
         return context
 
 
