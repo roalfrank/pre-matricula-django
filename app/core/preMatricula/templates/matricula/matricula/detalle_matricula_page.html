@@ -1,11 +1,22 @@
 {% extends 'base.html'%}
 {% load static%}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
+<link rel="stylesheet"
+  href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
+{% endblock  %}
+
 {% block titulo %}<img src="{% static 'img/iconos/curso.png' %}" alt="Fecha fin"
     style="width: 2.5rem; margin-right: 1rem;" srcset="">Detalle del Curso{%endblock%}
 {%block contenido%}
 <div class="probando"></div>
 {%endblock%}
 {%block js%}
+<script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
 <script>
     $(function () {
         $('.probando').load('{% url "prematricula:matricula-detalle" 2 %}', function () {
@@ -52,6 +63,7 @@
                 },
             });
         });
+                  $('#tabla_comentario').DataTable();
         });
 
        

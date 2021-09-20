@@ -7,4 +7,4 @@ register = template.Library()
 
 @register.simple_tag
 def comentario_hijos(request, comentario_papa):
-    return Comentario.objects.filter(respuestaA=comentario_papa, aprobado=True)
+    return Comentario.objects.filter(respuestaA=comentario_papa, aprobado=True).order_by('-fecha_comentario',)
