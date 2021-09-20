@@ -29,7 +29,7 @@ class Perfil(models.Model):
         upload_to='users/avatar', default='default.png', verbose_name="Avatar", null=True, blank=True)
 
     def __str__(self):
-        return f"{self.nombre}-{self.user.username}"
+        return f"{self.nombre}{self.user.username}"
 
     def get_image(self):
         if self.avatar:
@@ -41,3 +41,6 @@ class Perfil(models.Model):
         perfil = model_to_dict(self, exclude=['avatar'])
         perfil['provincia'] = self.municipio.provincia.pk
         return perfil
+
+    def get_nombre(self):
+        return f'{self.nombre} {self.apellido1} {self.apellido2}'

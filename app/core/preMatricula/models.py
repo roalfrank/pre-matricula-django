@@ -1,5 +1,6 @@
 import time
 from django.db import models
+from django.db.models.fields import BigIntegerField
 from django.forms import model_to_dict
 from django.contrib.auth.models import User
 from config.settings import MEDIA_URL, STATIC_URL
@@ -138,8 +139,7 @@ class Cargo(models.Model):
 
 
 class Instructor(models.Model):
-    ci = models.IntegerField(
-        verbose_name="Carnet Identidad", unique=True)
+
     usuario_siscae = models.CharField(
         max_length=50, verbose_name="Usuario del siscae", null=True, blank=False)
     usuario = models.OneToOneField(
@@ -158,7 +158,10 @@ class Maestro(models.Model):
         Instructor, on_delete=models.CASCADE, verbose_name='Instructor', primary_key=True)
 
     def __str__(self):
-        return self.instructor
+        return self.instructor.usuario.perfil.nombre
+
+    def get_nombre(self):
+        return f"{self.instructor.usuario.perfil.nombre} {self.instructor.usuario.perfil.apellido1} {self.instructor.usuario.perfil.apellido2}"
 
 # todo sobre los estudiantes
 
@@ -290,7 +293,7 @@ class GestorEstudiante(models.Model):
 
 class InstructorEstudiante(models.Model):
     instructor = models.ForeignKey(
-        Gestor, on_delete=models.CASCADE, verbose_name='Gestor')
+        Instructor, on_delete=models.CASCADE, verbose_name='Gestor')
     estudiante = models.ForeignKey(
         Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
     fecha_creado = models.DateTimeField(auto_now=True)
@@ -375,9 +378,15 @@ class PreMatricula(models.Model):
         Modalidad, on_delete=models.RESTRICT, verbose_name='Modalidad')
     tipo_grupo = models.ForeignKey(
         TipoGrupo, on_delete=models.RESTRICT, verbose_name='Tipo Grupo')
+    likes = models.ManyToManyField(
+        User, related_name='likes', blank=True, default=None)
+    like_count = BigIntegerField(default=0)
 
     def __str__(self):
         return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.estado})"
+
+    def numero_comentario(self):
+        return Comentario.objects.filter(preMatricula=self).count()
 
 # clase de relacion mucho a mucho con maestro
 
@@ -389,7 +398,7 @@ class PreMatriculaMaestro(models.Model):
         Maestro, on_delete=models.CASCADE, verbose_name='Maestro')
 
     def __str__(self):
-        return self.preMatricula.curso.nombre + self.maestro.instructor.uruario.perfil.nombre
+        return self.preMatricula.curso.nombre + self.maestro.instructor.usuario.perfil.nombre
 
 # clase para mucho a mucho con estudiantes y matriculas
 
@@ -410,15 +419,18 @@ class PreMatriculaEstudiante(models.Model):
 
 class Comentario(models.Model):
     texto = models.TextField(verbose_name='Texto del comentario')
-    fecha_comentario = models.DateField(
+    fecha_comentario = models.DateTimeField(
         auto_now=True, verbose_name='Fecha Creado')
     preMatricula = models.ForeignKey(
         PreMatricula, on_delete=models.CASCADE, verbose_name='Pre matricula')
     usuario = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Usuario')
+    respuestaA = models.ForeignKey(
+        'preMatricula.Comentario', on_delete=models.CASCADE, verbose_name='Respuesta a', null=True, blank=True, default=None)
+    aprobado = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.preMatricula + '-' + self.estudiante+'-'+self.fecha_comentario
+        return self.preMatricula.curso.nombre + '-' + self.usuario.perfil.nombre
 
 
 # cursos de interes para los estudiantes

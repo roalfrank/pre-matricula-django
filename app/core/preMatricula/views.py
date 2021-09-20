@@ -2,14 +2,20 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
-from django.views.generic import TemplateView
-from .models import Estudiante
+from django.views.generic import DetailView, TemplateView
+from .models import Estudiante, PreMatricula
 
 # Create your views here.
 
 
-class probando(TemplateView):
-    template_name = "estudiante/estudiante/probando.html"
+class DetalleMatriculaPage(TemplateView):
+    template_name = "matricula/matricula/detalle_matricula_page.html"
+    id_matricula = 0
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #context["id_matricula"] = int(self.request.GET.get('pk'))
+        return context
 
 
 @login_required

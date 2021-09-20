@@ -18,9 +18,9 @@ from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
-from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView
+from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula
 # importaciones para los metodos del sistema globales
-from .views import buscarEstudiante, uniqueUser, probando
+from .views import buscarEstudiante, uniqueUser, DetalleMatriculaPage
 
 
 app_name = "prematricula"
@@ -57,12 +57,12 @@ urlpatterns = [
          EstudianteDetailView.as_view(), name="estudiante-detail"),
     path("estudiante-add-form/",
          EstudianteDetailCargarFormAddView.as_view(), name="estudiante-add-form"),
-    path("probando/",
-         probando.as_view(), name="probando"),
+
 
     # --- Todo relacionado con los cursos
     path("curso-tipo/", TipoCursoView.as_view(),
          name="curso-tipo"),
+
 
     # --- Todo relacionado con los matricula
     path("matricula-modalidad/", ModalidadMatriculaView.as_view(),
@@ -71,6 +71,10 @@ urlpatterns = [
          name="matricula-estado"),
     path("matricula-detalle/<int:pk>/", MatriculaDetailView.as_view(),
          name="matricula-detalle"),
+    path("matricula-page/",
+         DetalleMatriculaPage.as_view(), name="matricula-page"),
+    path("matricula-like/",
+         likeMatricula, name="matricula-like"),
 
 
 ]

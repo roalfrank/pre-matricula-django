@@ -1,0 +1,60 @@
+{% extends 'base.html'%}
+{% load static%}
+{% block titulo %}<img src="{% static 'img/iconos/curso.png' %}" alt="Fecha fin"
+    style="width: 2.5rem; margin-right: 1rem;" srcset="">Detalle del Curso{%endblock%}
+{%block contenido%}
+<div class="probando"></div>
+{%endblock%}
+{%block js%}
+<script>
+    $(function () {
+        $('.probando').load('{% url "prematricula:matricula-detalle" 2 %}', function () {
+            $('[data-toggle="popover"]').popover({
+                html: true,
+                content: function () {
+                    var content = $(this).attr("data-popover-content");
+                    return $(content).children(".popover-body").html();
+                },
+                title: function () {
+                    var title = $(this).attr("data-popover-content");
+                    return $(title).children(".popover-heading").html();
+                }
+            });
+            //cargar like
+             $('#like_button').on('click', function (event) {
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "prematricula:matricula-like" %}',
+                data: {
+                    'id_matricula': pk,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                datatype: 'json',
+                success: function (response) {
+                    if (response["error"] == false){
+                        if(response['is_liked']){
+                          $('#like_button').removeClass('btn-default');
+                          $('#like_button').addClass('btn-info');
+                        }
+                        else{
+                            $('#like_button').removeClass('btn-info');
+                            $('#like_button').addClass('btn-default');
+                        }
+                        $('#cantidad_like').html(response['total_likes']).fadeIn(1000);
+                       
+                    }
+                    
+
+                },
+                error: function (rs, e) {
+                    console.log(rs.responseText);
+                },
+            });
+        });
+        });
+
+       
+    });
+</script>
+{%endblock%}
