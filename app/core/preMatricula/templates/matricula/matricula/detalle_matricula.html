@@ -183,7 +183,7 @@
 </div>
 <div class="row">
   <div class="col-12 ">
-    <div class="card">
+    <div class="card" id='comentario-contenedor'>
       <div class="card-header">
         <div class="card-tool">
           <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Compartir</button>
@@ -194,7 +194,7 @@
         </div>
       </div>
       <div class="card-body text-success">
-        <div class="card-footer card-comments">
+        <div class="card-comments p-2" id='cargarComentarios'>
           <table id="tabla_comentario" class="display" style="width:100%">
             <thead>
               <tr>
@@ -208,8 +208,8 @@
                   <div class="card-comment">
                     <!-- User image -->
                     <img class="img-circle img-sm" src="{{comentario.usuario.perfil.get_image}}" alt="User Image">
-        
-                    <div class="comment-text">
+                    <span class='{% if comentario.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}' style="position: absolute; left: 5px;margin-top: 25px; font-size: 0.8rem;"> <small> {{comentario.usuario.perfil.get_tipo_display}} </small></span>
+                    <div class="comment-text pl-3">
                       <span class="username">
                         {{comentario.usuario.username}}
                         <span class="text-muted float-right">{{comentario.fecha_comentario|naturaltime}}</span>
@@ -235,7 +235,7 @@
                           <div class="card-comment">
                             <!-- User image -->
                             <img class="img-circle img-sm" src="{{ hijo.usuario.perfil.get_image }}" alt="User Image">
-        
+                            <span  class='{% if hijo.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}' style="position: absolute; left: 10px;margin-top: 25px; font-size: 0.8rem;"> <small> {{hijo.usuario.perfil.get_tipo_display}} </small></span>
                             <div class="comment-text">
                               <span class="username">
                                 {{ hijo.usuario.username }}
@@ -246,12 +246,16 @@
                             <!-- /.comment-text -->
                           </div>
                           {% endfor %}
-                          <form action="#" method="post">
+                          <form action="#" method="post" id='form-comentario-g'>
+                            {%csrf_token%}
+                            <input type="hidden" value='hijo' name='action'>
+                            <input type="hidden" value='{{ object.pk }}' name='id_matricula'>
+                            <input type="hidden" value='{{ comentario.pk }}' name='id_comentario'>
                             <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
                             <!-- .img-push is used to add margin to elements next to floating images -->
                             <div class="img-push">
                               <input type="text" class="form-control form-control-sm"
-                                placeholder="Presione enter para comentar">
+                                placeholder="Presione enter para comentar" name='texto'>
                             </div>
                           </form>
                         </small>
@@ -271,11 +275,14 @@
       </div>
 
       <div class="card-footer">
-        <form action="#" method="post">
+        <form action="" method="post" id='form-comentario-g'>
+          {%csrf_token%}
+          <input type="hidden" value='padre' name='action'>
+          <input type="hidden" value='{{ object.pk }}' name='id_matricula'>
           <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
           <!-- .img-push is used to add margin to elements next to floating images -->
           <div class="img-push">
-            <input type="text" class="form-control form-control-sm" placeholder="Presione enter para comentar">
+            <input type="text" name='texto' class="form-control form-control-sm texto-comentario-g" placeholder="Presione enter para comentar">
           </div>
         </form>
       </div>
@@ -290,164 +297,170 @@
       </div>
 
       <div class="card-body">
-        <div class="d-flex justify-content-around flex-wrap">
-          <div class="card card-widget widget-user w-25">
-            <div class="ribbon-wrapper ">
-              <div class="ribbon bg-success">nuevo</div>
-            </div>
-            <!-- Add the bg color to the header using any of the bg-* classes -->
-            <div class="widget-user-header bg-info">
-              <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
-              <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-            </div>
-            <div class="btn-detalles-curso">
-              <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
-            </div>
-            <div class="btn-matricular">
-              <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                  aria-hidden="true"></i></button>
-            </div>
-            <div class="widget-user-image">
-              <img class="img-circle elevation-2 img-curso-panel " src="/static/img/windows.png" alt="User Avatar">
-            </div>
-            <div class="">
-              <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
-                height="50">
-            </div>
-            <div class="card-footer p-0">
-              <div class="row">
-                <div class="col-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">24h</h5>
-                    <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">04/05/21</h5>
-                    <span class="description-text text-xs text-success ">Inicio</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-4">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">04/06/21</h5>
-                    <span class="description-text text-xs text-danger ">fin</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
+        <div class="row">
+          <div class="col-12 col-lg-4 col-md-4 ">
+            <div class="card card-widget widget-user ">
+              <div class="ribbon-wrapper ">
+                <div class="ribbon bg-success">nuevo</div>
               </div>
-              <!-- /.row -->
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-info">
+                <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
+                <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+              </div>
+              <div class="btn-detalles-curso">
+                <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+              </div>
+              <div class="btn-matricular">
+                <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                    aria-hidden="true"></i></button>
+              </div>
+              <div class="widget-user-image">
+                <img class="img-circle elevation-2 img-curso-panel " src="/static/img/windows.png" alt="User Avatar">
+              </div>
+              <div class="">
+                <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
+                  height="50">
+              </div>
+              <div class="card-footer p-0">
+                <div class="row">
+                  <div class="col-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">24h</h5>
+                      <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">04/05/21</h5>
+                      <span class="description-text text-xs text-success ">Inicio</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-4">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">04/06/21</h5>
+                      <span class="description-text text-xs text-danger ">fin</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
             </div>
           </div>
-          <div class="card card-widget widget-user w-25">
-            <div class="ribbon-wrapper ">
-              <div class="ribbon bg-danger">+ 50 %</div>
-            </div>
-            <!-- Add the bg color to the header using any of the bg-* classes -->
-            <div class="widget-user-header bg-info">
-              <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
-              <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-            </div>
-            <div class="btn-detalles-curso">
-              <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
-            </div>
-            <div class="btn-matricular">
-              <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                  aria-hidden="true"></i></button>
-            </div>
-            <div class="widget-user-image">
-              <img class="img-circle elevation-2 img-curso-panel " src="/static/img/windows.png" alt="User Avatar">
-            </div>
-            <div class="">
-              <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
-                height="50">
-            </div>
-            <div class="card-footer p-0">
-              <div class="row">
-                <div class="col-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">24h</h5>
-                    <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">04/05/21</h5>
-                    <span class="description-text text-xs text-success ">Inicio</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-4">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">04/06/21</h5>
-                    <span class="description-text text-xs text-danger ">fin</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
+          <div class="col-12 col-lg-4 col-md-4 ">
+            <div class="card card-widget widget-user ">
+              <div class="ribbon-wrapper ">
+                <div class="ribbon bg-success">nuevo</div>
               </div>
-              <!-- /.row -->
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-info">
+                <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
+                <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+              </div>
+              <div class="btn-detalles-curso">
+                <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+              </div>
+              <div class="btn-matricular">
+                <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                    aria-hidden="true"></i></button>
+              </div>
+              <div class="widget-user-image">
+                <img class="img-circle elevation-2 img-curso-panel " src="/static/img/windows.png" alt="User Avatar">
+              </div>
+              <div class="">
+                <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
+                  height="50">
+              </div>
+              <div class="card-footer p-0">
+                <div class="row">
+                  <div class="col-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">24h</h5>
+                      <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">04/05/21</h5>
+                      <span class="description-text text-xs text-success ">Inicio</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-4">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">04/06/21</h5>
+                      <span class="description-text text-xs text-danger ">fin</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
             </div>
           </div>
-          <div class="card card-widget widget-user card-front w-25">
-            <div class="ribbon-wrapper ">
-              <div class="ribbon bg-danger">+ 50 %</div>
-            </div>
-            <!-- Add the bg color to the header using any of the bg-* classes -->
-            <div class="widget-user-header bg-info">
-              <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
-              <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
-            </div>
-            <div class="btn-detalles-curso">
-              <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
-            </div>
-            <div class="btn-matricular">
-              <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
-                  aria-hidden="true"></i></button>
-            </div>
-            <div class="widget-user-image">
-              <img class="img-circle elevation-2 img-curso-panel " src="/static/img/windows.png" alt="User Avatar">
-            </div>
-            <div class="">
-              <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
-                height="50">
-            </div>
-            <div class="card-footer p-0">
-              <div class="row">
-                <div class="col-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">24h</h5>
-                    <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">04/05/21</h5>
-                    <span class="description-text text-xs text-success ">Inicio</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-4">
-                  <div class="description-block">
-                    <h5 class="description-header text-xs">04/06/21</h5>
-                    <span class="description-text text-xs text-danger ">fin</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
+          <div class="col-12 col-lg-4 col-md-4 ">
+            <div class="card card-widget widget-user ">
+              <div class="ribbon-wrapper ">
+                <div class="ribbon bg-success">nuevo</div>
               </div>
-              <!-- /.row -->
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-info">
+                <h3 class="widget-user-username">Curso sistema operativo Windows</h3>
+                <!-- <h5 class="widget-user-desc">San Miguel del Padron</h5> -->
+              </div>
+              <div class="btn-detalles-curso">
+                <button href="" class="btn bg-transparent text-white"><i class="fas fa-info"></i></button>
+              </div>
+              <div class="btn-matricular">
+                <button href="" class="btn bg-transparent text-white"><i class="fas fa-graduation-cap"
+                    aria-hidden="true"></i></button>
+              </div>
+              <div class="widget-user-image">
+                <img class="img-circle elevation-2 img-curso-panel " src="/static/img/windows.png" alt="User Avatar">
+              </div>
+              <div class="">
+                <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
+                  height="50">
+              </div>
+              <div class="card-footer p-0">
+                <div class="row">
+                  <div class="col-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">24h</h5>
+                      <span class="description-text text-xs"><i class="fa fa-clock" aria-hidden="true"></i></span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-4 border-right">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">04/05/21</h5>
+                      <span class="description-text text-xs text-success ">Inicio</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-4">
+                    <div class="description-block">
+                      <h5 class="description-header text-xs">04/06/21</h5>
+                      <span class="description-text text-xs text-danger ">fin</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
             </div>
           </div>
         </div>

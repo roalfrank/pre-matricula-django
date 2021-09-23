@@ -5,6 +5,7 @@ from django.forms import model_to_dict
 from django.contrib.auth.models import User
 from config.settings import MEDIA_URL, STATIC_URL
 
+
 # Create your models here.
 
 
@@ -150,7 +151,7 @@ class Instructor(models.Model):
         Cargo, on_delete=models.RESTRICT, verbose_name='Cargo')
 
     def __str__(self):
-        return self.usuario.perfil.nombre
+        return f"{self.usuario.username}-{self.usuario.perfil.nombre}"
 
 
 class Maestro(models.Model):
@@ -158,7 +159,7 @@ class Maestro(models.Model):
         Instructor, on_delete=models.CASCADE, verbose_name='Instructor', primary_key=True)
 
     def __str__(self):
-        return self.instructor.usuario.perfil.nombre
+        return self.instructor
 
     def get_nombre(self):
         return f"{self.instructor.usuario.perfil.nombre} {self.instructor.usuario.perfil.apellido1} {self.instructor.usuario.perfil.apellido2}"
@@ -388,6 +389,7 @@ class PreMatricula(models.Model):
     def numero_comentario(self):
         return Comentario.objects.filter(preMatricula=self).count()
 
+
 # clase de relacion mucho a mucho con maestro
 
 
@@ -423,14 +425,16 @@ class Comentario(models.Model):
         auto_now=True, verbose_name='Fecha Creado')
     preMatricula = models.ForeignKey(
         PreMatricula, on_delete=models.CASCADE, verbose_name='Pre matricula')
+
     usuario = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='Usuario')
     respuestaA = models.ForeignKey(
         'preMatricula.Comentario', on_delete=models.CASCADE, verbose_name='Respuesta a', null=True, blank=True, default=None)
     aprobado = models.BooleanField(default=True)
+    leido = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.preMatricula.curso.nombre + '-' + self.usuario.perfil.nombre
+        return f'{self.preMatricula.curso.nombre}-{self.usuario.perfil.nombre}-{self.fecha_comentario}'
 
 
 # cursos de interes para los estudiantes

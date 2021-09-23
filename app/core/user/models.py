@@ -9,6 +9,13 @@ from core.preMatricula.models import Municipio
 
 
 class Perfil(models.Model):
+    ESTUDIANTE = 'ES'
+    PROFESOR = 'PR'
+    GESTOR = 'GE'
+    INSTRUCTOR = 'IN'
+    ADMIN = 'AD'
+    CHOICE_TIPO = [(ESTUDIANTE, 'Estudiante'), (PROFESOR, 'Profesor'),
+                   (GESTOR, "Gestor"), (INSTRUCTOR, 'Instructor'), (ADMIN, 'Admin')]
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name="Usuario")
     ci = models.IntegerField(verbose_name="Carne Identidad", unique=True)
@@ -27,6 +34,11 @@ class Perfil(models.Model):
         max_length=100, verbose_name="Correo", unique=True)
     avatar = models.ImageField(
         upload_to='users/avatar', default='default.png', verbose_name="Avatar", null=True, blank=True)
+    tipo = models.CharField(
+        max_length=2,
+        choices=CHOICE_TIPO,
+        default=ESTUDIANTE,
+    )
 
     def __str__(self):
         return f"{self.nombre}{self.user.username}"

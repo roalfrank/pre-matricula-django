@@ -19,6 +19,10 @@ from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula
+
+# importaciones de comentarios
+from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario
+
 # importaciones para los metodos del sistema globales
 from .views import buscarEstudiante, uniqueUser, DetalleMatriculaPage
 
@@ -75,6 +79,12 @@ urlpatterns = [
          DetalleMatriculaPage.as_view(), name="matricula-page"),
     path("matricula-like/",
          likeMatricula, name="matricula-like"),
+
+    # todo sobre comentarios
+    path("listado-comentario/",
+         ListarComentariosPorMatricula, name="comentario-listar"),
+    path("add-comentario/",
+         AddComentario, name="comentario-add"),
 
 
 ]
