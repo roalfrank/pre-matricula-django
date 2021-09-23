@@ -37,7 +37,7 @@
         }
 
 
-        $('.cargar_matricula').load('{% url "prematricula:matricula-detalle" 2 %}', function () {
+        $('.cargar_matricula').load('{% url "prematricula:matricula-detalle" id_matricula %}', function () {
             $('[data-toggle="popover"]').popover({
                 html: true,
                 content: function () {
@@ -101,7 +101,7 @@
                             } else {
                                 $("#cargarComentarios").load(
                                     '{% url "prematricula:comentario-listar" %}', {
-                                        'id_matricula': 2,
+                                        'id_matricula': {{id_matricula}},
                                         'csrfmiddlewaretoken': function () {
                                             return $(
                                                 'input[name="csrfmiddlewaretoken"]'

@@ -4,7 +4,11 @@ from django.db.models.fields import BigIntegerField
 from django.forms import model_to_dict
 from django.contrib.auth.models import User
 from config.settings import MEDIA_URL, STATIC_URL
-
+import qrcode
+import random
+from PIL import Image, ImageDraw
+from io import BytesIO
+from django.core.files import File
 
 # Create your models here.
 
@@ -159,7 +163,7 @@ class Maestro(models.Model):
         Instructor, on_delete=models.CASCADE, verbose_name='Instructor', primary_key=True)
 
     def __str__(self):
-        return self.instructor
+        return self.instructor.usuario.username
 
     def get_nombre(self):
         return f"{self.instructor.usuario.perfil.nombre} {self.instructor.usuario.perfil.apellido1} {self.instructor.usuario.perfil.apellido2}"
@@ -381,13 +385,16 @@ class PreMatricula(models.Model):
         TipoGrupo, on_delete=models.RESTRICT, verbose_name='Tipo Grupo')
     likes = models.ManyToManyField(
         User, related_name='likes', blank=True, default=None)
-    like_count = BigIntegerField(default=0)
 
     def __str__(self):
         return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.estado})"
 
     def numero_comentario(self):
         return Comentario.objects.filter(preMatricula=self).count()
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('prematricula:matricula-page')
 
 
 # clase de relacion mucho a mucho con maestro

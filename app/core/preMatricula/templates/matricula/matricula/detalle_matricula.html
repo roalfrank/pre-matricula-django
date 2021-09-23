@@ -1,6 +1,7 @@
 {% load static %}
 {% load filterCustom %}
 {% load humanize%}
+{% load qr_code %}
 <div class="row">
   <div class="col-12 col-lg-8 col-md-8">
     <div class="card ">
@@ -13,29 +14,64 @@
           <span class="description ">Estado - <span
               class="badge {% if object.estado.nombre == 'abierto' %} badge-success {% elif object.estado.nombre == 'en proceso' %}badge-warning {% else %} badge-danger {%endif %}">{{object.estado.nombre}}</span>
           </span>
+
         </div>
         <div class="float-right">
-          <span class="badge badge-success">{{object.tipo_grupo.nombre }}</span>
+          <a class="btn btn-sm btn-default" href=""><i class="fas fa-graduation-cap p-1" aria-hidden="true"></i>
+            matricular</a>
+          <a class="btn btn-sm btn-default" href=""><i class="fa fa-file-pdf" aria-hidden="true"></i>
+            PDF</a>
+
         </div>
       </div>
       <div class="card-body">
+       
 
-        <div class="card bg-info">
-          <div class="card-header p-0 pl-2">
-            <div class="title"><strong> Descripcion</strong></div>
-          </div>
-          <div class="card-body ">
-            {{object.curso.descripcion}}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="card bg-info">
-              <div class="card-header p-0 pl-2">
-                <div class="title"><strong> Profesores</strong></div>
-              </div>
-              <div class="card-body text-center bg-info">
-                <div class="d-flex justify-content-around flex-wrap">
+<div class="card bg-info ">
+  <div class="card-header p-0 pl-2 pr-2">
+    <h5 class="card-title text-white">Descripcion</h5>
+    <div class="card-tools">
+      <!-- Collapse Button -->
+      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+    </div>
+    <!-- /.card-tools -->
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    {{object.curso.descripcion}}
+  </div>
+  <!-- /.card-body -->
+</div>
+<!-- /.card -->
+
+<div class="card bg-info ">
+  <div class="card-header p-0 pl-2 pr-2">
+    <h5 class="card-title text-white">Joven Club</h5>
+    <div class="card-tools">
+      <!-- Collapse Button -->
+      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+    </div>
+    <!-- /.card-tools -->
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+    
+  </div>
+  <!-- /.card-body -->
+</div>
+<!-- /.card -->
+<div class="card bg-info ">
+  <div class="card-header p-0 pl-2 pr-2">
+    <h5 class="card-title text-white">Joven Club</h5>
+    <div class="card-tools">
+      <!-- Collapse Button -->
+      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+    </div>
+    <!-- /.card-tools -->
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+     <div class="d-flex justify-content-around flex-wrap">
                   {% for profe in object.prematriculamaestro_set.all %}
                   <div class="card ">
                     <div class="card-body text-center ">
@@ -86,12 +122,11 @@
                   </div>
                   {% endfor %}
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
+  </div>
+  <!-- /.card-body -->
+</div>
+<!-- /.card -->
+       
       </div>
     </div>
   </div>
@@ -99,6 +134,8 @@
     <div class="card ">
       <div class="card-header ">
         <div class="title"><strong> Información</strong></div>
+        Horas Clases:
+        <span class="badge badge-success float-right  ">{{object.tipo_grupo.nombre }}</span>
       </div>
       <div class="card-body ">
         <ul class="list-group list-group-unbordered mb-3">
@@ -131,8 +168,20 @@
           <li class="list-group-item">
             <b>QR:</b><br>
             <div class="row justify-content-center align-items-center">
-              <img src="{% static 'img/iconos/qr.png' %}" alt="Fecha fin" style="width: 5rem;" srcset="">
+              {% qr_from_text base_url  size=8 error_correction="L" %}
             </div>
+          </li>
+          <li class="d-flex justify-content-around p-0 pl-2 pr-2 pt-4">
+            <a class='btn btn-default' href="">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a class='btn btn-default' href="">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a class='btn btn-default' href="">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+
           </li>
         </ul>
       </div>
@@ -149,6 +198,9 @@
       <div class="card-body p-0">
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner pt-2">
+            {% if not listaAlumnos%}
+            <h1 class="text-center">No hay alumnos matriculados</h1>
+            {% else %}
             {% for item in listaAlumnos %}
             <div class="carousel-item {% if forloop.first %}active{% endif %} ">
               <ul class="users-list clearfix">
@@ -164,6 +216,7 @@
               </ul>
             </div>
             {% endfor %}
+            {% endif %}
           </div>
           <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev"
             style="width: 5%;">
@@ -186,7 +239,6 @@
     <div class="card" id='comentario-contenedor'>
       <div class="card-header">
         <div class="card-tool">
-          <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Compartir</button>
           <button type="button" class="btn {% if is_liked %} btn-info {% else %} btn-default {% endif %}btn-sm"
             id="like_button" value="{{ object.pk }}"><i class="far fa-thumbs-up"></i> Me gusta</button>
           <span class="float-right text-muted"><span id='cantidad_like'>{{ total_likes }}</span> Me gusta - <span
@@ -203,12 +255,15 @@
             </thead>
             <tbody>
               {% for comentario in lista_comentarios %}
-               <tr>
+              <tr>
                 <td>
                   <div class="card-comment">
                     <!-- User image -->
                     <img class="img-circle img-sm" src="{{comentario.usuario.perfil.get_image}}" alt="User Image">
-                    <span class='{% if comentario.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}' style="position: absolute; left: 5px;margin-top: 25px; font-size: 0.8rem;"> <small> {{comentario.usuario.perfil.get_tipo_display}} </small></span>
+                    <span
+                      class='{% if comentario.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}'
+                      style="position: absolute; left: 5px;margin-top: 25px; font-size: 0.8rem;"> <small>
+                        {{comentario.usuario.perfil.get_tipo_display}} </small></span>
                     <div class="comment-text pl-3">
                       <span class="username">
                         {{comentario.usuario.username}}
@@ -235,7 +290,10 @@
                           <div class="card-comment">
                             <!-- User image -->
                             <img class="img-circle img-sm" src="{{ hijo.usuario.perfil.get_image }}" alt="User Image">
-                            <span  class='{% if hijo.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}' style="position: absolute; left: 10px;margin-top: 25px; font-size: 0.8rem;"> <small> {{hijo.usuario.perfil.get_tipo_display}} </small></span>
+                            <span
+                              class='{% if hijo.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}'
+                              style="position: absolute; left: 10px;margin-top: 25px; font-size: 0.8rem;"> <small>
+                                {{hijo.usuario.perfil.get_tipo_display}} </small></span>
                             <div class="comment-text">
                               <span class="username">
                                 {{ hijo.usuario.username }}
@@ -251,7 +309,8 @@
                             <input type="hidden" value='hijo' name='action'>
                             <input type="hidden" value='{{ object.pk }}' name='id_matricula'>
                             <input type="hidden" value='{{ comentario.pk }}' name='id_comentario'>
-                            <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
+                            <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}"
+                              alt="Alt Text">
                             <!-- .img-push is used to add margin to elements next to floating images -->
                             <div class="img-push">
                               <input type="text" class="form-control form-control-sm"
@@ -264,11 +323,11 @@
                   </div>
                 </td>
               </tr>
-          {% endfor %}
-             
+              {% endfor %}
+
             </tbody>
           </table>
-          
+
           <!-- /.card-comment -->
         </div>
 
@@ -282,7 +341,8 @@
           <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
           <!-- .img-push is used to add margin to elements next to floating images -->
           <div class="img-push">
-            <input type="text" name='texto' class="form-control form-control-sm texto-comentario-g" placeholder="Presione enter para comentar">
+            <input type="text" name='texto' class="form-control form-control-sm texto-comentario-g"
+              placeholder="Presione enter para comentar">
           </div>
         </form>
       </div>

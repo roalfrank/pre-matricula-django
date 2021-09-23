@@ -43,6 +43,8 @@ class MatriculaDetailView(DetailView):
         lista = [lista_estudiante[i:i + n]
                  for i in range(0, len(lista_estudiante), n)]
         context['listaAlumnos'] = lista
+        context['base_url'] = "{0}://{1}{2}".format(
+            self.request.scheme, self.request.get_host(), self.request.path)
         context['promedioCantidad'] = round(
             (context['cantAlumnos']*100)/self.object.capacidad, 2)
         is_liked = False
@@ -52,6 +54,5 @@ class MatriculaDetailView(DetailView):
         context['total_likes'] = self.get_object().likes.all().count()
         context['lista_comentarios'] = self.get_object(
         ).comentario_set.filter(respuestaA=None, aprobado=True).order_by('-fecha_comentario',)
-        print('lista de comentarios', context['lista_comentarios'])
 
         return context

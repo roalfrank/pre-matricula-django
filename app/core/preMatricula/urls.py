@@ -24,7 +24,7 @@ from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailVi
 from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario
 
 # importaciones para los metodos del sistema globales
-from .views import buscarEstudiante, uniqueUser, DetalleMatriculaPage
+from .views import buscarEstudiante, uniqueUser, DetalleMatriculaPage, getDetalle
 
 
 app_name = "prematricula"
@@ -75,8 +75,8 @@ urlpatterns = [
          name="matricula-estado"),
     path("matricula-detalle/<int:pk>/", MatriculaDetailView.as_view(),
          name="matricula-detalle"),
-    path("matricula-page/",
-         DetalleMatriculaPage.as_view(), name="matricula-page"),
+    path("matricula-page/<int:id>/",
+         getDetalle, name="matricula-page"),
     path("matricula-like/",
          likeMatricula, name="matricula-like"),
 

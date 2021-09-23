@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "django.contrib.humanize",
     "core.preMatricula",
-    "core.estudiante"
+    "core.estudiante",
+    "qr_code"
 ]
 
 MIDDLEWARE = [

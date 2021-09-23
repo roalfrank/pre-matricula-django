@@ -2,10 +2,18 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.generic import DetailView, TemplateView
 from .models import Estudiante, PreMatricula
 
 # Create your views here.
+
+
+def getDetalle(request, id):
+    template_name = "matricula/matricula/detalle_matricula_page.html"
+    context = {}
+    context['id_matricula'] = id
+    return render(request, template_name, context)
 
 
 class DetalleMatriculaPage(TemplateView):
