@@ -1,15 +1,12 @@
 import time
+import qrcode
+import random
 from django.db import models
-from django.db.models.fields import BigIntegerField
 from django.forms import model_to_dict
 from django.contrib.auth.models import User
 from config.settings import MEDIA_URL, STATIC_URL
-import qrcode
-import random
-from PIL import Image, ImageDraw
-from io import BytesIO
-from django.core.files import File
-
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 # Create your models here.
 
 
@@ -396,8 +393,32 @@ class PreMatricula(models.Model):
         from django.urls import reverse
         return reverse('prematricula:matricula-page')
 
+    def cantidadEstudiante(self):
+        estudiantes = PreMatriculaEstudiante.objects.filter(
+            preMatricula=self).count()
+        return estudiantes
 
-# clase de relacion mucho a mucho con maestro
+    def actualizad_estado(self):
+        cantidad_estudiante = self.cantidadEstudiante()
+        if self.cantidadEstudiante() < self.capacidad:
+            estado = EstadoMatricula.objects.filter(nombre='abierto').first()
+            if estado:
+                self.estado = estado
+        elif cantidad_estudiante == self.capacidad:
+            estado = EstadoMatricula.objects.filter(nombre='cerrado').first()
+            if estado:
+                self.estado = estado
+        else:
+            estado = EstadoMatricula.objects.filter(
+                nombre='en proceso').first()
+            if estado:
+                self.estado = estado
+        self.save()
+
+    def listadoEstudiante(self):
+        estudiantes = PreMatriculaEstudiante.objects.filter(
+            preMatricula=self)
+        return estudiantes
 
 
 class PreMatriculaMaestro(models.Model):
@@ -420,8 +441,35 @@ class PreMatriculaEstudiante(models.Model):
     activo = models.BooleanField(
         verbose_name='El Estudiante ha sido chequeado', default=False)
 
-    # def __str__(self):
-    #     return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.perfil.nombre
+    def __str__(self):
+        return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.perfil.nombre
+
+    def save(self, *args, **kwargs):
+        cantidad_estudiante = self.preMatricula.cantidadEstudiante()
+        if cantidad_estudiante >= self.preMatricula.capacidad:
+            return False
+        cant_mas_uno = cantidad_estudiante + 1
+        if cant_mas_uno == self.preMatricula.capacidad:
+            cerrado = EstadoMatricula.objects.filter(nombre='cerrado').first()
+            print("estado", cerrado)
+            if cerrado:
+                self.preMatricula.estado = cerrado
+                self.preMatricula.save()
+        return super().save(self, *args, **kwargs)
+
+    # def delete(self, *args, **kwargs):
+    #     matricula = self.preMatricula
+    #     print('matricula se borra un estudiante', matricula)
+    #     object_delete = super().delete(self, *args, **kwargs)
+    #     print('matricula borro un estudiante', matricula)
+    #     matricula.actualizad_estado()
+    #     return object_delete
+
+
+@receiver(post_delete, sender=PreMatriculaEstudiante)
+def actualizarMatricula(sender, instance, **kwargs):
+    instance.preMatricula.actualizad_estado()
+    print('desde signal', instance.preMatricula)
 
 # los estudiantes pueden comentar
 

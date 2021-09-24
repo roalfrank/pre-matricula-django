@@ -107,6 +107,19 @@
                                 $('#cant_estudante').html(response['cant_estudiante']);
                                 let promedio = Math.round((response['cant_estudiante']*100)/ parseInt($('#cant_estudiante_total').text()));
                                 $('#cant_estudiante_promedio').html(promedio +'%');
+                                console.log(response);
+                                $("#estado-matricula").html(response["estado"]);
+                                $("#estado-matricula").removeClass('badge-success badge-danger badge-warning');
+                                color = 'badge-success'
+                                if(response["estado"]=='cerrado'){
+                                  color = 'badge-danger'
+                                }
+                                else if (response["estado"]=='en proceso'){
+                                    color = 'badge-warning'
+                                }
+                                $("#estado-matricula").addClass(color);
+                                 $('.carousel-inner').load('{% url "prematricula:matricula-estudiante-listar-carrucel" id_matricula %}',function(){
+                                 });
                             }
                             else{
                                  mensaje('error','Error eliminando su matrícula , contactar a un admin.');
@@ -138,9 +151,18 @@
                                 $('#cant_estudante').html(response['cant_estudiante']);
                                 let promedio = Math.round((response['cant_estudiante']*100)/ parseInt($('#cant_estudiante_total').text()));
                                 $('#cant_estudiante_promedio').html(promedio +'%');
-                                if($('.no-alumnos')){
-                                    // alert('no hay alumnos')
+                                $("#estado-matricula").html(response["estado"]);
+                                $("#estado-matricula").removeClass('badge-success badge-danger badge-warning');
+                                color = 'badge-success'
+                                if(response["estado"]=='cerrado'){
+                                  color = 'badge-danger'
                                 }
+                                else if (response["estado"]=='en proceso'){
+                                    color = 'badge-warning'
+                                }
+                                $("#estado-matricula").addClass(color);
+                                 $('.carousel-inner').load('{% url "prematricula:matricula-estudiante-listar-carrucel" id_matricula %}',function(){
+                                 });
                             }
                             else{
                                 mensaje('error','Error en la matrícula , contactar a un admin.');
@@ -159,7 +181,6 @@
                 btn_matricular.addClass('btn-secondary');
                 btn_matricular.html('<i class="fas fa-plus mr-2"></i>No estudiante.');
                 //{% endif %}
-                console.log($(this));
 
             });
             //evento del formulario comentario general

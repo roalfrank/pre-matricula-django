@@ -2,8 +2,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.views.generic import DetailView, TemplateView
+
 from .models import Estudiante, PreMatricula, PreMatriculaEstudiante
 
 # Create your views here.
@@ -16,24 +15,6 @@ def esta_matriculado(user, id_matricula):
     if matricula_estudiante >= 1:
         return True
     return False
-
-
-@login_required
-def getDetalle(request, id):
-    template_name = "matricula/matricula/detalle_matricula_page.html"
-    context = {}
-    context['id_matricula'] = id
-    return render(request, template_name, context)
-
-
-class DetalleMatriculaPage(TemplateView):
-    template_name = "matricula/matricula/detalle_matricula_page.html"
-    id_matricula = 0
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        #context["id_matricula"] = int(self.request.GET.get('pk'))
-        return context
 
 
 @login_required

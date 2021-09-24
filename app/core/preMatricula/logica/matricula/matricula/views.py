@@ -2,10 +2,23 @@ from core.preMatricula.models import PreMatriculaEstudiante
 from core.preMatricula.models import Estudiante
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse, request
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from core.preMatricula.models import PreMatricula
 from core.preMatricula.views import esta_matriculado
+
+
+def listar_estudiante_matriculado_carrucel(request, id_matricula):
+    template_name = "matricula/matricula/lista_estudiantes_matriculado_carrucel.html"
+    respuesta = {}
+    matricula = PreMatricula.objects.filter(pk=id_matricula).first()
+    lista_estudiante = matricula.listadoEstudiante()
+    n = 4
+    lista = [lista_estudiante[i:i + n]
+             for i in range(0, len(lista_estudiante), n)]
+    respuesta['listaAlumnos'] = lista
+    return render(request, template_name, respuesta)
 
 
 @login_required
@@ -57,7 +70,7 @@ def addEstudianteMatricula(request):
                     respuesta['error'] = False
                     respuesta['cant_estudiante'] = PreMatriculaEstudiante.objects.filter(
                         preMatricula=matricula).count()
-
+                    respuesta['estado'] = matricula.estado.nombre
             except Exception as e:
                 respuesta['error'] = True
                 print(e)
@@ -75,10 +88,20 @@ def addEstudianteMatricula(request):
                 respuesta['error'] = False
                 respuesta['cant_estudiante'] = PreMatriculaEstudiante.objects.filter(
                     preMatricula=matricula).count()
+                matricula.actualizad_estado()
+                respuesta['estado'] = matricula.estado.nombre
             except Exception as e:
                 respuesta['error'] = True
                 print(e)
         return JsonResponse(respuesta, safe=False)
+
+
+@login_required
+def getDetallePageMatricula(request, id):
+    template_name = "matricula/matricula/detalle_matricula_page.html"
+    context = {}
+    context['id_matricula'] = id
+    return render(request, template_name, context)
 
 
 class MatriculaDetailView(DetailView):
