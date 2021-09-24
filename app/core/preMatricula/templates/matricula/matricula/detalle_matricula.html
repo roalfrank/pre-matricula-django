@@ -17,9 +17,16 @@
 
         </div>
         <div class="float-right">
-          <a class="btn btn-sm btn-default" href=""><i class="fas fa-graduation-cap p-1" aria-hidden="true"></i>
-            matricular</a>
-          <a class="btn btn-sm btn-default" href=""><i class="fa fa-file-pdf" aria-hidden="true"></i>
+          <a class="btn btn-sm {% if matriculado %}btn-danger {% else %} btn-default {% endif %}" href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
+           {% if matriculado %}
+           <i class="fa fa-trash-alt p-1"></i>Cancelar matrícula 
+           {% else %}
+            <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
+            matricular
+           {% endif %}
+            
+          </a>
+          <a class="btn btn-sm btn-default" href="#" id='btn-pdf-matricular'><i class="fa fa-file-pdf" aria-hidden="true"></i>
             PDF</a>
 
         </div>
@@ -150,8 +157,8 @@
           </li>
           <li class="list-group-item">
             <b><i class="fa fa-users"></i> Capacidad</b> <a
-              class="float-right "><strong>{{cantAlumnos}}/{{object.capacidad}}</strong>(<span
-                style="color: rgb(42, 44, 43); font-weight: bolder;">{{promedioCantidad}}%</span>)</a>
+              class="float-right "><strong><span id='cant_estudante'>{{cantAlumnos}}</span>/ <span id='cant_estudiante_total'>{{object.capacidad}}</span></strong>(<span
+                style="color: rgb(42, 44, 43); font-weight: bolder;" id='cant_estudiante_promedio'>{{promedioCantidad}}%</span>)</a>
             <div class="progress progress-sm">
               <div class="progress-bar  bg-success" style="width:{{ promedioCantidad|floatformat:0 }}%;"></div>
             </div>
@@ -199,7 +206,7 @@
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
           <div class="carousel-inner pt-2">
             {% if not listaAlumnos%}
-            <h1 class="text-center">No hay alumnos matriculados</h1>
+            <h1 class="text-center no-alumnos">No hay alumnos matriculados</h1>
             {% else %}
             {% for item in listaAlumnos %}
             <div class="carousel-item {% if forloop.first %}active{% endif %} ">

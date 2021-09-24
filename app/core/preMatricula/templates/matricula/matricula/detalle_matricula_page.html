@@ -82,6 +82,86 @@
                 });
             });
             cargarDataTable();
+            //el boton para matricular
+            $('#btn-matricular').on('click', function (e) {
+                let btn_matricular = $(this);
+                //{% if request.user.groups.all.0.name == 'Estudiante' %}
+                console.log(btn_matricular.attr('activo')=='si');
+                if (btn_matricular.attr('activo') == 'si') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "prematricula:matricula-estudiante-add" %}',
+                        data: {
+                            'id_matricula':{{id_matricula}},
+                            'action': 'delete',
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        datatype: 'json',
+                        success: function (response) {
+                            if (response["error"] == false) {
+                                btn_matricular.removeClass('btn-danger');
+                                btn_matricular.addClass('btn-default');
+                                btn_matricular.html('<i class="fas fa-graduation-cap p-1"></i>Matricular');
+                                btn_matricular.attr('activo', 'no');
+                                mensaje('success','Eliminada su matrícula.');
+                                $('#cant_estudante').html(response['cant_estudiante']);
+                                let promedio = Math.round((response['cant_estudiante']*100)/ parseInt($('#cant_estudiante_total').text()));
+                                $('#cant_estudiante_promedio').html(promedio +'%');
+                            }
+                            else{
+                                 mensaje('error','Error eliminando su matrícula , contactar a un admin.');
+                            }
+
+                        },
+                        error: function (rs, e) {
+                            console.log(rs.responseText);
+                        },
+                    });
+                } 
+                else {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "prematricula:matricula-estudiante-add" %}',
+                        data: {
+                            'id_matricula': {{id_matricula}},
+                            'action': 'add',
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        datatype: 'json',
+                        success: function (response) {
+                            if (response["error"] == false) {
+                                btn_matricular.removeClass('btn-default');
+                                btn_matricular.addClass('btn-danger');
+                                btn_matricular.html('<i class="fa fa-trash-alt p-1"></i>Cancelar matrícula');
+                                btn_matricular.attr('activo', 'si');
+                                mensaje('success','Matriculado correctamente.');
+                                $('#cant_estudante').html(response['cant_estudiante']);
+                                let promedio = Math.round((response['cant_estudiante']*100)/ parseInt($('#cant_estudiante_total').text()));
+                                $('#cant_estudiante_promedio').html(promedio +'%');
+                                if($('.no-alumnos')){
+                                    // alert('no hay alumnos')
+                                }
+                            }
+                            else{
+                                mensaje('error','Error en la matrícula , contactar a un admin.');
+                            }
+
+
+                        },
+                        error: function (rs, e) {
+                            console.log(rs.responseText);
+                        },
+                    });
+                }
+                //{% else %}
+                btn_matricular.removeClass('btn-success');
+                btn_matricular.removeClass('btn-default');
+                btn_matricular.addClass('btn-secondary');
+                btn_matricular.html('<i class="fas fa-plus mr-2"></i>No estudiante.');
+                //{% endif %}
+                console.log($(this));
+
+            });
             //evento del formulario comentario general
             $("#comentario-contenedor").on('submit', 'form', function (e) {
                 e.preventDefault();
@@ -97,7 +177,8 @@
                     success: function (response) {
                         if (response["error"] == false) {
                             if (response['estudiante']) {
-                               mensaje('succes',"Comentario enviado correctamente. ");
+                                mensaje('succes',
+                                    "Comentario enviado correctamente. ");
                             } else {
                                 $("#cargarComentarios").load(
                                     '{% url "prematricula:comentario-listar" %}', {
@@ -111,12 +192,12 @@
                                     function () {
                                         cargarDataTable();
                                     });
-                                    mensaje("success","Comentario enviado correctamente.");
+                                mensaje("success",
+                                    "Comentario enviado correctamente.");
                             }
-                            e.target.texto.value='' ;
-                        }
-                        else{
-                            mensaje("error","Error mandando comentario. ");
+                            e.target.texto.value = '';
+                        } else {
+                            mensaje("error", "Error mandando comentario. ");
                         }
 
 
@@ -124,7 +205,7 @@
                     error: function (rs, e) {
                         console.log(rs.responseText);
                     },
-                });//fin ajax
+                }); //fin ajax
             });
             //formulario responder 
 

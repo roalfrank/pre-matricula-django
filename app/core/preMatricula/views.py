@@ -4,11 +4,21 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, TemplateView
-from .models import Estudiante, PreMatricula
+from .models import Estudiante, PreMatricula, PreMatriculaEstudiante
 
 # Create your views here.
 
 
+def esta_matriculado(user, id_matricula):
+    matricula = PreMatricula.objects.filter(pk=id_matricula).first()
+    matricula_estudiante = PreMatriculaEstudiante.objects.filter(
+        estudiante__usuario=user, preMatricula=matricula).count()
+    if matricula_estudiante >= 1:
+        return True
+    return False
+
+
+@login_required
 def getDetalle(request, id):
     template_name = "matricula/matricula/detalle_matricula_page.html"
     context = {}

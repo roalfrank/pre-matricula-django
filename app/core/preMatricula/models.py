@@ -418,7 +418,7 @@ class PreMatriculaEstudiante(models.Model):
     estudiante = models.ForeignKey(
         Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
     activo = models.BooleanField(
-        verbose_name='El Estudiante ha sido chequeado')
+        verbose_name='El Estudiante ha sido chequeado', default=False)
 
     # def __str__(self):
     #     return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.perfil.nombre
