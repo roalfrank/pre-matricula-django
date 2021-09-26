@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 import qrcode
 import random
 from django.db import models
@@ -369,6 +370,8 @@ class TipoGrupo(models.Model):
 class PreMatricula(models.Model):
     curso = models.ForeignKey(
         Curso, on_delete=models.RESTRICT, verbose_name='Curso')
+    jcb = models.ForeignKey(
+        JCB, on_delete=models.CASCADE, verbose_name='Joven Club', blank=True, null=True, default=None)
     capacidad = models.IntegerField(
         verbose_name='Capacidad Total a Matricular')
     frecuencia = models.IntegerField(verbose_name='Frecuencia semanal')
@@ -382,6 +385,7 @@ class PreMatricula(models.Model):
         TipoGrupo, on_delete=models.RESTRICT, verbose_name='Tipo Grupo')
     likes = models.ManyToManyField(
         User, related_name='likes', blank=True, default=None)
+    fecha_creado = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.estado})"
@@ -397,6 +401,15 @@ class PreMatricula(models.Model):
         estudiantes = PreMatriculaEstudiante.objects.filter(
             preMatricula=self).count()
         return estudiantes
+
+    def esNuevo(self):
+        fecha_now = datetime.now()
+        print("fecha actual", fecha_now)
+        print("fecha crado", self.fecha_creado.replace(tzinfo=None))
+        resta = fecha_now - self.fecha_creado.replace(tzinfo=None)
+        if resta.days < 7:
+            return True
+        return False
 
     def actualizad_estado(self):
         cantidad_estudiante = self.cantidadEstudiante()

@@ -3,9 +3,9 @@
 {% else %}
 {% for item in listaAlumnos %}
 <div class="carousel-item {% if forloop.first %}active{% endif %} ">
-    <ul class="users-list clearfix">
+    <ul class="users-list clearfix mb-1">
         {% for estudiante in item %}
-        <li>
+        <li class='p-1'>
             <img src="{{estudiante.estudiante.usuario.perfil.get_image}}" alt="Imagen de usuario"
                 style="max-width: 30%;">
             <span class="users-list-name text-white">{{estudiante.estudiante.usuario.username}}</span>

@@ -4,11 +4,35 @@ from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from core.preMatricula.models import PreMatricula
+from core.preMatricula.models import PreMatricula, Curso
 from core.preMatricula.views import esta_matriculado
 
 
+def lista_curso_relacionado(id_matricula, cantidad):
+    matricula = PreMatricula.objects.filter(pk=id_matricula).first()
+    nexCurso = matricula.curso
+    lista_relacionado = []
+    for m in range(0, cantidad):
+        proximo = nexCurso.nextCurso
+        if proximo:
+            lista_relacionado.append(proximo)
+            nexCurso = proximo
+    cantidad_buscado = len(lista_relacionado)
+    lista_faltante = []
+    if cantidad_buscado < cantidad:
+        faltan = cantidad-cantidad_buscado
+        lista_faltante = [m for m in Curso.objects.filter(
+            ~Q(pk__in=[encontrado.pk for encontrado in lista_relacionado]))[0:faltan]]
+    if len(lista_faltante) != 0:
+        lista_relacionado.extend(lista_faltante)
+    lista_matricula_relacionado = [
+        matricula for matricula in PreMatricula.objects.filter(~Q(pk=id_matricula), curso__in=lista_relacionado)]
+    return lista_matricula_relacionado
+
+
+@login_required
 def listar_estudiante_matriculado_carrucel(request, id_matricula):
     template_name = "matricula/matricula/lista_estudiantes_matriculado_carrucel.html"
     respuesta = {}
@@ -124,8 +148,9 @@ class MatriculaDetailView(DetailView):
         is_liked = False
         if self.get_object().likes.filter(id=self.request.user.id).exists():
             is_liked = True
-        print('usuario de detalle', self.object.pk)
         context['is_liked'] = is_liked
+        context['listaRelacionado'] = lista_curso_relacionado(
+            self.object.pk, 3)
         context['matriculado'] = esta_matriculado(
             self.request.user, self.object.pk)
         context['total_likes'] = self.get_object().likes.all().count()
