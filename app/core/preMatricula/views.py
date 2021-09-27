@@ -2,10 +2,43 @@ from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import JsonResponse
+from django.shortcuts import render
+from core.preMatricula.utils.general import generar_pdf
 
 from .models import Estudiante, PreMatricula, PreMatriculaEstudiante
 
 # Create your views here.
+
+
+# def pdf_estudiantes(request):
+#     context = {
+#         'estudiantes': Estudiante.objects.all(),
+#         'title': 'Estudiantes en el sistema'
+#     }
+#     url_logo = "{0}://{1}/static/{2}".format(
+#         request.scheme, request.get_host(), 'img/iconos/logoJovenclubpeque.png')
+#     url_pie = "{0}://{1}/static/{2}".format(
+#         request.scheme, request.get_host(), 'img/iconos/pie_doc_jovenclub.png')
+#     context['logoUrl'] = url_logo
+#     context['url_pie'] = url_pie
+#     template_name = 'pruebas/pdf_estudiante.html'
+#     return render(request, template_name, context)
+
+def pdf_estudiantes(request):
+    context = {
+        'estudiantes': Estudiante.objects.all(),
+        'title': 'Estudiantes en el sistema'
+    }
+    print(request.path)
+    template_name = 'pruebas/pdf_estudiante.html'
+    url_logo = "{0}://{1}/static/{2}".format(
+        request.scheme, request.get_host(), 'img/iconos/logoJovenclubpeque.png')
+    url_pie = "{0}://{1}/static/{2}".format(
+        request.scheme, request.get_host(), 'img/iconos/pie_doc_jovenclub.png')
+    context['logoUrl'] = url_logo
+    context['url_pie'] = url_pie
+    response = generar_pdf(template_name, context, 'probando')
+    return response
 
 
 def esta_matriculado(user, id_matricula):
@@ -17,8 +50,8 @@ def esta_matriculado(user, id_matricula):
     return False
 
 
-@login_required
-@permission_required('preMatricula.view_estudiante', raise_exception=True)
+@ login_required
+@ permission_required('preMatricula.view_estudiante', raise_exception=True)
 def buscarEstudiante(request):
     if request.method == 'POST':
         id_estudiante = int(request.POST['id_estudiante'])
@@ -29,8 +62,8 @@ def buscarEstudiante(request):
     return JsonResponse([], safe=False)
 
 
-@login_required
-@permission_required('preMatricula.view_estudiante', raise_exception=True)
+@ login_required
+@ permission_required('preMatricula.view_estudiante', raise_exception=True)
 def uniqueUser(request):
     if request.method == 'POST':
         try:

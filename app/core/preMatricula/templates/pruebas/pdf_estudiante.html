@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'lib/adminlte-master/plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-master/css/adminlte.min.css' %}">
+    <style>
+        @page {
+            size: a4 portrait;
+
+            @frame header_frame {
+                /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 50pt;
+                width: 512pt;
+                top: 15pt;
+                height: 40pt;
+            }
+
+            @frame content_frame {
+                /* Content Frame */
+                left: 50pt;
+                width: 512pt;
+                top: 90pt;
+                height: 632pt;
+            }
+
+            @frame footer_frame {
+                /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 300pt;
+                width: 256pt;
+                top: 772pt;
+                height: 400pt;
+            }
+             
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content"><img src="{{logoUrl}}" alt="" srcset="">
+       </div>
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">
+        <div class="row">
+          <div class="col-6"><span class="float-right"> <pdf:pagenumber> de <pdf:pagecount></span></div>  
+          <div class="col-6"><img src="{{url_pie}}" alt="" srcset=""></div></div>  
+        </div>
+        
+    <h1>{{ title }}</h1>
+    <span><img src="{{ request.scheme}}://{{request.get_host}}/img/iconos/logoJovenclubpeque.png" alt=""></span>
+    <table>
+        <thead>
+            <td>Nombre</td>
+            <td>ApellidoM</td>
+            <td>ApellidoP</td>
+            <td>Usuario</td>
+            <td>Avatar</td>
+        </thead>
+        <tbody>
+            {% for estudiante in estudiantes %}
+            <tr>
+                <td>{{estudiante.usuario.perfil.nombre}}</td>
+                <td>{{estudiante.usuario.perfil.apellido1}}</td>
+                <td>{{estudiante.usuario.perfil.apellido2}}</td>
+                <td>{{estudiante.usuario.username}}</td>
+                <td>{{estudiante.usuario..perfil.get_image}}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- jQuery -->
+    <script src="{% static 'lib/adminlte-master/plugins/jquery/jquery.min.js' %}"></script>
+    <!-- <script src="{% static 'lib/popper/popper.min.js' %}"></script> -->
+    <!-- Bootstrap 4 -->
+    <script src="{% static 'lib/adminlte-master/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>

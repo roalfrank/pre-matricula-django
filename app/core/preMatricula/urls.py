@@ -24,7 +24,9 @@ from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailVi
 from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario
 
 # importaciones para los metodos del sistema globales
-from .views import buscarEstudiante, uniqueUser
+from .views import buscarEstudiante, pdf_estudiantes, uniqueUser
+
+# importaciones de las pruebas
 
 
 app_name = "prematricula"
@@ -90,5 +92,8 @@ urlpatterns = [
     path("add-comentario/",
          AddComentario, name="comentario-add"),
 
+    # url de pruebas
+    # generar pdf de prueba
+    path('generar-pdf/', pdf_estudiantes, name='generar-pdf'),
 
 ]
