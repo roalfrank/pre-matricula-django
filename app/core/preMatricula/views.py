@@ -10,35 +10,35 @@ from .models import Estudiante, PreMatricula, PreMatriculaEstudiante
 # Create your views here.
 
 
-# def pdf_estudiantes(request):
-#     context = {
-#         'estudiantes': Estudiante.objects.all(),
-#         'title': 'Estudiantes en el sistema'
-#     }
-#     url_logo = "{0}://{1}/static/{2}".format(
-#         request.scheme, request.get_host(), 'img/iconos/logoJovenclubpeque.png')
-#     url_pie = "{0}://{1}/static/{2}".format(
-#         request.scheme, request.get_host(), 'img/iconos/pie_doc_jovenclub.png')
-#     context['logoUrl'] = url_logo
-#     context['url_pie'] = url_pie
-#     template_name = 'pruebas/pdf_estudiante.html'
-#     return render(request, template_name, context)
-
 def pdf_estudiantes(request):
     context = {
         'estudiantes': Estudiante.objects.all(),
         'title': 'Estudiantes en el sistema'
     }
-    print(request.path)
-    template_name = 'pruebas/pdf_estudiante.html'
     url_logo = "{0}://{1}/static/{2}".format(
         request.scheme, request.get_host(), 'img/iconos/logoJovenclubpeque.png')
     url_pie = "{0}://{1}/static/{2}".format(
         request.scheme, request.get_host(), 'img/iconos/pie_doc_jovenclub.png')
     context['logoUrl'] = url_logo
     context['url_pie'] = url_pie
-    response = generar_pdf(template_name, context, 'probando')
-    return response
+    template_name = 'pruebas/pdf_estudiante.html'
+    return render(request, template_name, context)
+
+# def pdf_estudiantes(request):
+#     context = {
+#         'estudiantes': Estudiante.objects.all(),
+#         'title': 'Estudiantes en el sistema'
+#     }
+#     print(request.path)
+#     template_name = 'pruebas/pdf_estudiante.html'
+#     url_logo = "{0}://{1}/static/{2}".format(
+#         request.scheme, request.get_host(), 'img/iconos/logoJovenclubpeque.png')
+#     url_pie = "{0}://{1}/static/{2}".format(
+#         request.scheme, request.get_host(), 'img/iconos/pie_doc_jovenclub.png')
+#     context['logoUrl'] = url_logo
+#     context['url_pie'] = url_pie
+#     response = generar_pdf(template_name, context, 'probando')
+#     return response
 
 
 def esta_matriculado(user, id_matricula):
