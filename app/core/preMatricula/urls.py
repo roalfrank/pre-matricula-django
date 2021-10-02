@@ -18,7 +18,7 @@ from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
-from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula
+from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
 
 # importaciones de comentarios
 from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario
@@ -85,6 +85,8 @@ urlpatterns = [
          addEstudianteMatricula, name="matricula-estudiante-add"),
     path("matricula-estudiante-listar-carrucel/<int:id_matricula>",
          listar_estudiante_matriculado_carrucel, name="matricula-estudiante-listar-carrucel"),
+    path("matricula-estudiante-esta/",
+         estudianteEstaMatriculado, name="matricula-estudiante-esta"),
 
     # todo sobre comentarios
     path("listado-comentario/",

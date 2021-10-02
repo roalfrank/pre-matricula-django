@@ -1,10 +1,20 @@
 {% extends 'base.html'%}
-{% load static%}
+{% load static %}
 
 {% block head %}
 <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}" />
-<link rel="stylesheet"
-    href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
+<link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}" />
+                                         
+<link rel="stylesheet" href=" {%  static 'inicio/vendor/owl.carousel/assets/owl.carousel.min.css' %} ">
+<link rel="stylesheet" href="{%  static 'inicio/vendor/owl.carousel/assets/owl.theme.default.min.css' %}  ">
+<style>
+  .owl-carousel .owl-stage-outer{
+      overflow: visible;
+  }
+  .owl-dots{
+    margin-top: 20px ! important;
+  }
+</style>
 {% endblock  %}
 
 {% block titulo %}<img src="{% static 'img/iconos/curso.png' %}" alt="Fecha fin"
@@ -17,7 +27,7 @@
 <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
 <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script> -->
+<script src="{%  static 'inicio/vendor/owl.carousel/owl.carousel.min.js' %} "></script>
 <script src="{% static 'js/html2pdf/html2pdf.bundle.min.js' %}"></script>
 <script>
     $(function () {
@@ -40,6 +50,25 @@
 
 
         $('.cargar_matricula').load('{% url "prematricula:matricula-detalle" id_matricula %}', function () {
+           var owl = $('.owl-carousel');
+              owl.owlCarousel({
+                margin: 2,
+                nav: false,
+                //loop:true,
+                autoplay:true,
+                stagePadding:10,
+                responsive: {
+                  0: {
+                    items: 2
+                  },
+                  600: {
+                    items: 4
+                  },
+                  1000: {
+                    items: 5
+                  }
+                }
+              })
             $('[data-toggle="popover"]').popover({
                 html: true,
                 content: function () {
@@ -84,13 +113,9 @@
                 });
             });
             cargarDataTable();
-            //el boton para matricular
-            $('#btn-matricular').on('click', function (e) {
-                let btn_matricular = $(this);
-                //{% if request.user.groups.all.0.name == 'Estudiante' %}
-                console.log(btn_matricular.attr('activo') == 'si');
-                if (btn_matricular.attr('activo') == 'si') {
-                    $.ajax({
+            //el boton de eliminar matricula
+            $('#btn-matricular-cancel').on('click',function(){
+                 $.ajax({
                         type: 'POST',
                         url: '{% url "prematricula:matricula-estudiante-add" %}',
                         data: {
@@ -101,45 +126,25 @@
                         datatype: 'json',
                         success: function (response) {
                             if (response["error"] == false) {
-                                btn_matricular.removeClass('btn-danger');
-                                btn_matricular.addClass('btn-default');
-                                btn_matricular.html(
-                                    '<i class="fas fa-graduation-cap p-1"></i>Matricular'
-                                    );
-                                btn_matricular.attr('activo', 'no');
                                 mensaje('success', 'Eliminada su matrícula.');
-                                $('#cant_estudante').html(response[
-                                    'cant_estudiante']);
-                                let promedio = Math.round((response[
-                                    'cant_estudiante'] * 100) / parseInt($(
-                                    '#cant_estudiante_total').text()));
-                                $('#cant_estudiante_promedio').html(promedio + '%');
-                                console.log(response);
-                                $("#estado-matricula").html(response["estado"]);
-                                $("#estado-matricula").removeClass(
-                                    'badge-success badge-danger badge-warning');
-                                color = 'badge-success'
-                                if (response["estado"] == 'cerrado') {
-                                    color = 'badge-danger'
-                                } else if (response["estado"] == 'en proceso') {
-                                    color = 'badge-warning'
-                                }
-                                $("#estado-matricula").addClass(color);
+                                
                                 $('.carousel-inner').load(
                                     '{% url "prematricula:matricula-estudiante-listar-carrucel" id_matricula %}',
                                     function () {});
                             } else {
-                                mensaje('error',
-                                    'Error eliminando su matrícula , contactar a un admin.'
-                                    );
+                                mensaje('error','Error eliminando su matrícula , contactar a un admin.');
                             }
 
                         },
                         error: function (rs, e) {
                             console.log(rs.responseText);
                         },
-                    });
-                } else {
+                    });// ajax delete matricula
+            });// fin del boton cancelar matricula
+
+            //el boton para matricular
+            $('#btn-matricular').on('click', function (e) {
+                let btn_matricular = $(this);
                     $.ajax({
                         type: 'POST',
                         url: '{% url "prematricula:matricula-estudiante-add" %}',
@@ -151,36 +156,15 @@
                         datatype: 'json',
                         success: function (response) {
                             if (response["error"] == false) {
-                                btn_matricular.removeClass('btn-default');
-                                btn_matricular.addClass('btn-danger');
-                                btn_matricular.html(
-                                    '<i class="fa fa-trash-alt p-1"></i>Cancelar matrícula'
-                                    );
-                                btn_matricular.attr('activo', 'si');
+                                btn_matricular.addClass('disabled');
+                                $('#btn-matricular-cancel').removeClass('disabled');
                                 mensaje('success', 'Matriculado correctamente.');
-                                $('#cant_estudante').html(response[
-                                    'cant_estudiante']);
-                                let promedio = Math.round((response[
-                                    'cant_estudiante'] * 100) / parseInt($(
-                                    '#cant_estudiante_total').text()));
-                                $('#cant_estudiante_promedio').html(promedio + '%');
-                                $("#estado-matricula").html(response["estado"]);
-                                $("#estado-matricula").removeClass(
-                                    'badge-success badge-danger badge-warning');
-                                color = 'badge-success'
-                                if (response["estado"] == 'cerrado') {
-                                    color = 'badge-danger'
-                                } else if (response["estado"] == 'en proceso') {
-                                    color = 'badge-warning'
-                                }
-                                $("#estado-matricula").addClass(color);
+                                
                                 $('.carousel-inner').load(
                                     '{% url "prematricula:matricula-estudiante-listar-carrucel" id_matricula %}',
                                     function () {});
                             } else {
-                                mensaje('error',
-                                    'Error en la matrícula , contactar a un admin.'
-                                    );
+                                mensaje('error','Error en la matrícula , contactar a un admin.');
                             }
 
 
@@ -188,15 +172,7 @@
                         error: function (rs, e) {
                             console.log(rs.responseText);
                         },
-                    });
-                }
-                //{% else %}
-                btn_matricular.removeClass('btn-success');
-                btn_matricular.removeClass('btn-default');
-                btn_matricular.addClass('btn-secondary');
-                btn_matricular.html('<i class="fas fa-plus mr-2"></i>No estudiante.');
-                //{% endif %}
-
+                    });//ajax para add matricula
             });
             //boton generar pdf 
             let imgData = 'data:image/png;base64,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'
@@ -254,8 +230,7 @@
                         success: function (response) {
                             if (response["error"] == false) {
                                 if (response['estudiante']) {
-                                    mensaje('success',
-                                        "Comentario enviado correctamente. ");
+                                    mensaje('success',"Comentario enviado correctamente. ");
                                 } else {
                                     $("#cargarComentarios").load(
                                         '{% url "prematricula:comentario-listar" %}', {
@@ -288,9 +263,142 @@
                 }
             });
             //formulario responder 
+            // //connecion al websocket de like de la matricula activa
+            // let like_websocket = new WebSocket('ws://'
+            //                                    + window.location.host
+            //                                    + '/ws/like-matricula/{{id_matricula}}/'
+            //                                    );
+            // like_websocket.onmessage = function(e){
+            //     let data = JSON.parse(e.data);
+            //     document.querySelector('#cantidad_like').innerHTML = data.contador_like ;
+            // }
+            // like_websocket.onclose= function (e){
+            //     console.log('cerrada la conexion  a like de matricula.....');
+            // }
+            // //fin del socket de la matricula activa
 
-        });
+            //function actualizarProedio 
+            function actualizarPromedio(estudiante_matriculados){
+                let cant_estudiante_total = document.querySelector('#cant_estudiante_total');
+                let cant_estudiante_promedio = document.querySelector('#cant_estudiante_promedio');
+                let promedio = Math.round((estudiante_matriculados * 100)/ parseInt(cant_estudiante_total.textContent));
+                cant_estudiante_promedio.innerHTML= promedio ;
+            }
+            //connecion al websocket de update de la matricula activa
+            let update_websocket = new WebSocket('ws://'
+                                               + window.location.host
+                                               + '/ws/update-matricula/{{id_matricula}}/'
+                                               );
+            update_websocket.onmessage = function(e){
+                let data = JSON.parse(e.data);
+                console.log('datos que llega de update matricula',data)
+                let estado =data.matricula.datos.estado 
+                let esta_matriculado = false;
+                $.ajax({
+                        type: 'POST',
+                        url: '{% url "prematricula:matricula-estudiante-esta" %}',
+                        data: {
+                            'id_matricula': {{id_matricula}},
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        datatype: 'json',
+                        success:function(response){
+                              esta_matriculado =  response;
+                              if(data.matricula.evento == 'cerrado'){
+                                document.querySelector('#estado-matricula').classList.remove('badge-success');
+                                document.querySelector('#estado-matricula').classList.add('badge-danger');
+                                document.querySelector('#estado-matricula').innerHTML =estado;
+                                if(document.querySelector('#btn-matricular')){
+                                    document.querySelector('#btn-matricular').classList.add('disabled');
+                                    if(esta_matriculado){
+                                        document.querySelector('#btn-matricular-cancel').classList.remove('disabled');
+                                    }
+                                }
+                                if(document.querySelector('#btn-matricular-estudiante')){
+                                    document.querySelector('#btn-matricular-estudiante').classList.add('disabled');
+                                }
+                                document.querySelector('#cant_estudante').innerHTML = data.matricula.datos.cant_estudiante
+                                actualizarPromedio(data.matricula.datos.cant_estudiante);
+                            }
+                            else {
+                                document.querySelector('#cant_estudante').innerHTML = data.matricula.datos.cant_estudiante
+                                actualizarPromedio(data.matricula.datos.cant_estudiante);
+                                document.querySelector('#estado-matricula').classList.remove('badge-danger');
+                                document.querySelector('#estado-matricula').classList.add('badge-success');
+                                document.querySelector('#estado-matricula').innerHTML=data.matricula.datos.estado ;
+
+                                if(document.querySelector('#btn-matricular')){
+                                    console.log('probando dentro de java est_matriculado',esta_matriculado);
+                                    if(esta_matriculado){
+                                        document.querySelector('#btn-matricular').classList.add('disabled');
+                                        document.querySelector('#btn-matricular-cancel').classList.remove('disabled');
+                                    }
+                                    else{
+                                        document.querySelector('#btn-matricular').classList.remove('disabled');
+                                        document.querySelector('#btn-matricular-cancel').classList.add('disabled');
+                                    }
+                                }
+                                if(document.querySelector('#btn-matricular-estudiante')){
+                                    document.querySelector('#btn-matricular-estudiante').classList.remove('disabled');
+                                }
+                            }
+                        }
+
+                });// fin de ajax para buscar si esta matriculado
+
+               
+            }
+            update_websocket.onclose= function (e){
+                console.log('cerrada la conexion  a update de matricula.....');
+            }
+            //fin del socket de la matricula activa
+            // var mensaje = '4 Respuesta incorrecta';
+            // document.querySelector('#btn-cambiar-roa').addEventListener('click',function(e){
+            //     document.querySelector('#h1-text').innerHTML = mensaje;
+            //     $('#btn-cambiar-roa').removeClass('bg-default')
+            //      $('#btn-cambiar-roa').removeClass('bg-success');
+
+            //     $('#btn-cambiar-roa').addClass('bg-danger');
+
+            //     $('#h1-text').removeClass('badge-success');
+            //     $('#h1-text').removeClass('badge-danger');
+
+            //     $('#h1-text').addClass('badge-danger');
+            //     $('#imagen').attr('src','{% static "img/respuesta-incorrecta-gif-animado.gif "%}');
+
+            // });
+            // var frank = '8 Respuesta incorrecta';
+            // document.querySelector('#btn-cambiar-frank').addEventListener('click',function(e){
+            //     document.querySelector('#h1-text').innerHTML = frank;
+            //     $('#btn-cambiar-frank').removeClass('bg-default')
+            //      $('#btn-cambiar-frank').removeClass('bg-success');
+                 
+            //     $('#btn-cambiar-frank').addClass('bg-danger');
+
+            //     $('#h1-text').removeClass('badge-success');
+            //     $('#h1-text').removeClass('badge-danger');
+                
+            //     $('#h1-text').addClass('badge-danger');
+            //     $('#imagen').attr('src','{% static "img/respuesta-incorrecta-gif-animado.gif "%}');
+            // });
+            // var abuelo = '6 Respuesta correcta';
+            // document.querySelector('#btn-cambiar-Abuelo').addEventListener('click',function(e){
+            //     document.querySelector('#h1-text').innerHTML = abuelo;
+            //      $('#btn-cambiar-Abuelo').removeClass('bg-default')
+            //      $('#btn-cambiar-Abuelo').removeClass('bg-success');
+                 
+            //     $('#btn-cambiar-Abuelo').addClass('bg-success');
+
+            //     $('#h1-text').removeClass('badge-success');
+            //     $('#h1-text').removeClass('badge-danger');
+                
+            //     $('#h1-text').addClass('badge-success');
+            //     $('#imagen').attr('src','{% static "img/check-correct.gif "%}');
+            //     $('#imagen').attr('width','125px');
+            // });
+        });//fin de cargar matricula contenedor
 
     });
+    
 </script>
 {%endblock%}

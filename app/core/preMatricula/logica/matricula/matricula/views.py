@@ -6,8 +6,18 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from core.preMatricula.models import PreMatricula, Curso
 from core.preMatricula.views import esta_matriculado
+
+
+def estudianteEstaMatriculado(request):
+    if request.method == 'POST':
+        id_matricula = int(request.POST['id_matricula'])
+        esta = esta_matriculado(request.user, id_matricula)
+        print('esta Matriculado?', esta)
+        return JsonResponse(esta, safe=False)
 
 
 def lista_curso_relacionado(id_matricula, cantidad):
@@ -92,9 +102,6 @@ def addEstudianteMatricula(request):
                         preMatricula=matricula, estudiante=estudiante)
                     matriculado.save()
                     respuesta['error'] = False
-                    respuesta['cant_estudiante'] = PreMatriculaEstudiante.objects.filter(
-                        preMatricula=matricula).count()
-                    respuesta['estado'] = matricula.estado.nombre
             except Exception as e:
                 respuesta['error'] = True
                 print(e)
@@ -110,10 +117,7 @@ def addEstudianteMatricula(request):
                     preMatricula=matricula, estudiante=estudiante).first()
                 matriculado_ya.delete()
                 respuesta['error'] = False
-                respuesta['cant_estudiante'] = PreMatriculaEstudiante.objects.filter(
-                    preMatricula=matricula).count()
-                matricula.actualizad_estado()
-                respuesta['estado'] = matricula.estado.nombre
+
             except Exception as e:
                 respuesta['error'] = True
                 print(e)
@@ -136,11 +140,12 @@ class MatriculaDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next')
         lista_estudiante = self.object.prematriculaestudiante_set.all()
+        print(lista_estudiante)
         context['cantAlumnos'] = lista_estudiante.count()
-        n = 4
-        lista = [lista_estudiante[i:i + n]
-                 for i in range(0, len(lista_estudiante), n)]
-        context['listaAlumnos'] = lista
+        # n = 4
+        # lista = [lista_estudiante[i:i + n]
+        #          for i in range(0, len(lista_estudiante), n)]
+        context['listaAlumnos'] = lista_estudiante
         context['base_url'] = "{0}://{1}{2}".format(
             self.request.scheme, self.request.get_host(), self.request.path)
         context['promedioCantidad'] = round(
@@ -153,6 +158,10 @@ class MatriculaDetailView(DetailView):
             self.object.pk, 3)
         context['matriculado'] = esta_matriculado(
             self.request.user, self.object.pk)
+        if self.object.estado.nombre == 'cerrado':
+            context['cerrado'] = True
+        else:
+            context['cerrado'] = False
         context['total_likes'] = self.get_object().likes.all().count()
         context['lista_comentarios'] = self.get_object(
         ).comentario_set.filter(respuestaA=None, aprobado=True).order_by('-fecha_comentario',)

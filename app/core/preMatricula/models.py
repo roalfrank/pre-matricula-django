@@ -1,13 +1,18 @@
-import time
-from datetime import datetime
-import qrcode
-import random
-from django.db import models
-from django.forms import model_to_dict
-from django.contrib.auth.models import User
-from config.settings import MEDIA_URL, STATIC_URL
-from django.db.models.signals import post_delete
+import json
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.dispatch import receiver
+from django.db.models.signals import post_delete, m2m_changed, post_save
+from config.settings import MEDIA_URL, STATIC_URL
+from django.contrib.auth.models import User
+from django.forms import model_to_dict
+from django.db import models
+import random
+import qrcode
+from datetime import datetime
+import time
+
+
 # Create your models here.
 
 
@@ -387,6 +392,19 @@ class PreMatricula(models.Model):
         User, related_name='likes', blank=True, default=None)
     fecha_creado = models.DateTimeField(auto_now=True)
 
+    def toJson(self):
+        jsonMatricula = model_to_dict(
+            self, exclude=['curso', 'jcb', 'tipo_grupo', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
+        jsonMatricula['estado'] = self.estado.nombre
+        jsonMatricula['fecha_inicio'] = self.fecha_inicio.strftime(
+            '%d/%m/%Y')
+        jsonMatricula['fecha_fin'] = self.fecha_fin.strftime('%d/%m/%Y')
+        jsonMatricula['nombre_curso'] = self.curso.nombre
+        jsonMatricula['descripcion_curso'] = self.curso.descripcion
+        jsonMatricula['horas'] = self.tipo_grupo.nombre
+        jsonMatricula['modalidad'] = self.modalidad.nombre
+        return jsonMatricula
+
     def __str__(self):
         return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.estado})"
 
@@ -433,6 +451,39 @@ class PreMatricula(models.Model):
             preMatricula=self)
         return estudiantes
 
+# singal para cuando se edita una matricula
+
+
+# @receiver(post_save, sender=PreMatricula)
+# def change_matricula(sender, instance, created, **kwargs):
+#     print('datos update', kwargs)
+#     if not created:
+#         print('dentro de post_save no creado')
+#         jsonMatricula = instance.toJson()
+#         # conectamos al websocket de like
+#         print(jsonMatricula)
+#         channel_layer = get_channel_layer()
+#         nombre_grupo = 'update_matricula_' + str(instance.pk)
+#         # lanzamiento de mensaje a websocket
+#         async_to_sync(channel_layer.group_send)(nombre_grupo, {
+#             'type': 'send_message',
+#             'matricula': jsonMatricula
+#         })
+# signal para cuando se cambia el like de la matricula y asi lanzar un mensaje al websocket de like
+
+
+@receiver(m2m_changed, sender=PreMatricula.likes.through)
+def like_change(sender, instance, action, **kwargs):
+    contador_like = instance.likes.all().count()
+    # conectamos al websocket de like
+    channel_layer = get_channel_layer()
+    nombre_grupo = 'like_matricula_' + str(instance.pk)
+    # lanzamiento de mensaje a websocket
+    async_to_sync(channel_layer.group_send)(nombre_grupo, {
+        'type': 'send_message',
+        'contador_like': contador_like
+    })
+
 
 class PreMatriculaMaestro(models.Model):
     preMatricula = models.ForeignKey(
@@ -461,13 +512,35 @@ class PreMatriculaEstudiante(models.Model):
         cantidad_estudiante = self.preMatricula.cantidadEstudiante()
         if cantidad_estudiante >= self.preMatricula.capacidad:
             return False
+
+        # conectamos al websocket de de update matricula
+        channel_layer = get_channel_layer()
+        nombre_grupo = 'update_matricula_' + str(self.preMatricula.pk)
         cant_mas_uno = cantidad_estudiante + 1
         if cant_mas_uno == self.preMatricula.capacidad:
             cerrado = EstadoMatricula.objects.filter(nombre='cerrado').first()
-            print("estado", cerrado)
             if cerrado:
                 self.preMatricula.estado = cerrado
                 self.preMatricula.save()
+            # lanzamiento de mensaje a websocket de update matricula
+            async_to_sync(channel_layer.group_send)(nombre_grupo, {
+                'type': 'send_message',
+                'evento': 'cerrado',
+                'datos': {
+                    'cant_estudiante': cant_mas_uno,
+                    'estado': cerrado.nombre
+                }
+            })
+        else:
+            # lanzamiento sin el estado
+            async_to_sync(channel_layer.group_send)(nombre_grupo, {
+                'type': 'send_message',
+                'evento': 'no cerrado',
+                'datos': {
+                        'cant_estudiante': cant_mas_uno,
+                        'estado': self.preMatricula.estado.nombre
+                }
+            })
         return super().save(self, *args, **kwargs)
 
     # def delete(self, *args, **kwargs):
@@ -481,8 +554,19 @@ class PreMatriculaEstudiante(models.Model):
 
 @receiver(post_delete, sender=PreMatriculaEstudiante)
 def actualizarMatricula(sender, instance, **kwargs):
+    # conectamos al websocket de de update matricula
+    channel_layer = get_channel_layer()
+    nombre_grupo = 'update_matricula_' + str(instance.preMatricula.pk)
     instance.preMatricula.actualizad_estado()
-    print('desde signal', instance.preMatricula)
+    cant_estudiante = instance.preMatricula.cantidadEstudiante()
+    async_to_sync(channel_layer.group_send)(nombre_grupo, {
+        'type': 'send_message',
+        'evento': 'no cerrado',
+        'datos': {
+            'cant_estudiante': cant_estudiante,
+            'estado': instance.preMatricula.estado.nombre
+        }
+    })
 
 # los estudiantes pueden comentar
 

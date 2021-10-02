@@ -17,18 +17,21 @@
 
         </div>
         <div class="float-right" data-html2canvas-ignore="true">
-          <a class="btn btn-sm {% if matriculado %}btn-danger {% else %} btn-default {% endif %}" href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
-           {% if matriculado %}
-           <i class="fa fa-trash-alt p-1"></i>Cancelar matrícula 
-           {% else %}
+         
+          {% if request.user.groups.all.0.name == 'Estudiante'%}
+           <a class="btn btn-sm btn-success {% if matriculado or cerrado %}disabled {% endif %}" href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
             matricular
-           {% endif %}
-            
           </a>
-          <a class="btn btn-sm btn-default" href="#" id='btn-pdf-matricular'><i class="fa fa-file-pdf" aria-hidden="true"></i>
-            PDF</a>
-
+           <a class="btn btn-sm btn-danger {% if not matriculado  %} disabled{% endif %}" href="#" id='btn-matricular-cancel' activo='{% if matriculado %}si{% else %}no{% endif %}' >
+           <i class="fa fa-trash-alt p-1"></i>Cancelar matrícula 
+          </a>
+          {% else %}
+           <a class="btn btn-sm btn-success" href="#" id='btn-matricular-estudiante' >
+            <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
+            matricular a estudiante
+          </a>
+          {% endif %}
         </div>
       </div>
       <div class="card-body">
@@ -47,7 +50,9 @@
   <div class="card-body p-2 mb-1">
     <div class="card mb-1">
       <div class="card-body p-2">
-{{object.curso.descripcion}}
+        <p id='descripcion-matricula'>
+          {{object.curso.descripcion}}
+        </p>
       </div>
     </div>
   </div>
@@ -168,25 +173,39 @@
   <div class="col-12 col-lg-4 col-md-4">
     <div class="card mb-1">
       <div class="card-header ">
-        <div class="title"><strong> Información</strong></div>
+        <div class="title"><strong> Información</strong>
+            <div class="float-right" data-html2canvas-ignore="true">
+              <a class="btn btn-default btn-sm mb-2 pl-1 p-0 pr-1"  href="#" id='btn-pdf-matricular'>
+                <i class="fa fa-file-pdf" aria-hidden="true"></i> PDF
+              </a>
+            </div>
+        </div>
+        <hr class="mb-1 mt-2">
         Horas Clases:
-        <span class="badge badge-success float-right  ">{{object.tipo_grupo.nombre }}</span>
+        <span class="badge badge-success float-right " id="horas-matricula">{{object.tipo_grupo.nombre }}</span>
       </div>
       <div class="card-body ">
         <ul class="list-group list-group-unbordered mb-1">
           <li class="list-group-item">
             <b><img src="{% static 'img/iconos/fecha.png' %}" alt="Fecha Inicio" style="width: 1.5rem;" srcset="">
               Inicio:</b>
-            <span class='badge badge-success float-right mt-1 mr-1'>{{object.fecha_inicio}}</span>
+            <span id='inicio-matricula' class='badge badge-success float-right mt-1 mr-1'>{{object.fecha_inicio|date:"d/m/Y"}}</span>
           </li>
           <li class="list-group-item">
             <b><img src="{% static 'img/iconos/fecha.png' %}" alt="Fecha fin" style="width: 1.5rem;" srcset=""> Fin:</b>
-            <span class='badge badge-danger float-right mt-1 mr-1'>{{object.fecha_fin}}</span>
+            <span id='fin-matricula' class='badge badge-danger float-right mt-1 mr-1'>{{object.fecha_fin|date:"d/m/Y"}}</span>
           </li>
           <li class="list-group-item">
-            <b><i class="fa fa-users"></i> Capacidad</b> <a
-              class="float-right "><strong><span id='cant_estudante' data-html2canvas-ignore="true">{{cantAlumnos}}/</span> <span id='cant_estudiante_total'>{{object.capacidad}}</span></strong><span
-                style="color: rgb(42, 44, 43); font-weight: bolder;" id='cant_estudiante_promedio' data-html2canvas-ignore="true">({{promedioCantidad}}%)</span></a>
+            <b><i class="fa fa-users"></i> Capacidad</b> 
+            <a class="float-right ">
+              <strong>
+                <span>
+                  <span id='cant_estudante' data-html2canvas-ignore="true">{{cantAlumnos}}</span>/ 
+                </span>
+                <span id='cant_estudiante_total'>{{object.capacidad}}</span>
+              </strong>
+              (<span style="color: rgb(42, 44, 43); font-weight: bolder;" id='cant_estudiante_promedio' data-html2canvas-ignore="true">{{promedioCantidad}}</span>%)
+            </a>
             <div class="progress progress-sm">
               <div class="progress-bar  bg-success" style="width:{{ promedioCantidad|floatformat:0 }}%;"></div>
             </div>
@@ -194,11 +213,11 @@
           </li>
           <li class="list-group-item">
             <b>Modalidad:</b>
-            <span class="float-right"><span>{{ object.modalidad.nombre }}</span></span>
+            <span id='modalidad-matricula' class="float-right"><span>{{ object.modalidad.nombre }}</span></span>
           </li>
           <li class="list-group-item">
             <b>Frecuencia:</b>
-            <span class="float-right"><span class="badge badge-warning">{{ object.frecuencia }} semanal</span></span>
+            <span  id='frecuencia-matricula' class="float-right"><span class="badge badge-warning">{{ object.frecuencia }} semanal</span></span>
           </li>
           <li class="list-group-item">
             <b>QR:</b><br>
@@ -223,7 +242,29 @@
     </div>
   </div>
 </div>
-
+<div class="row">
+  <div class="col-12">
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            Pregunta
+          </div>
+        </div>
+        <div class="card-body">
+          <div class='row'>
+            <div class='col-6'><h1 >cuanto es 4+2</h1></div>
+            <div class='col-6'><img src="{% static 'img/inicial.gif' %}" alt="" width="100px" height="100px" id='imagen'></div>
+          </div>
+          <span id='h1-text' class='badge badge-success'></span>
+            <button id='btn-cambiar-roa' class='btn btn-default '>4</button>
+            <button id='btn-cambiar-frank' class='btn btn-default'>8</button>
+            <button id='btn-cambiar-Abuelo' class='btn btn-default'>6</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row" data-html2canvas-ignore="true">
   <div class="col-12">
     <div class="card  text-white bg-info mb-1">
@@ -231,40 +272,22 @@
         <div class="title"><strong> Estudiantes matriculados</strong></div>
       </div>
       <div class="card-body p-0">
-        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-          <div class="carousel-inner pt-2">
-            {% if not listaAlumnos%}
+        <div class="owl-carousel owl-theme p-4 pt-1 m-1">
+          {% if not listaAlumnos%}
             <h1 class="text-center no-alumnos">No hay alumnos matriculados</h1>
             {% else %}
             {% for item in listaAlumnos %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %} ">
-              <ul class="users-list clearfix mb-1">
-                {% for estudiante in item %}
-                <li class='p-1'>
-                  <img src="{{estudiante.estudiante.usuario.perfil.get_image}}" alt="Imagen de usuario"
-                    style="max-width: 30%;">
-                  <span class="users-list-name text-white">{{estudiante.estudiante.usuario.username}}</span>
-                  <span class="users-list-date"></span>
-                </li>
-                {% endfor %}
-
-              </ul>
-            </div>
+                   <div class="item" id='estudiante_{{item.estudiante.pk}}'>
+                      <div class="row justify-content-center">
+                        <span>
+                          <img src="{{item.estudiante.usuario.perfil.get_image}}" class='rounded-circle elevation-2' alt="" width="60px" height="60px">
+                        </span>
+                      <small style="position: absolute; top: 60px;" >{{item.estudiante.usuario.username}}</small>
+                      </div>
+                   </div>
             {% endfor %}
-            {% endif %}
+          {% endif %}
           </div>
-          <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev"
-            style="width: 5%;">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next"
-            style="width: 5%;">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
-        </div>
-
       </div>
     </div>
   </div>
