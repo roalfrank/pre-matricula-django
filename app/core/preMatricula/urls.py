@@ -21,7 +21,7 @@ from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatri
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
 
 # importaciones de comentarios
-from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario
+from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario, rowComentario
 
 # importaciones para los metodos del sistema globales
 from .views import buscarEstudiante, pdf_estudiantes, uniqueUser
@@ -93,6 +93,8 @@ urlpatterns = [
          ListarComentariosPorMatricula, name="comentario-listar"),
     path("add-comentario/",
          AddComentario, name="comentario-add"),
+    path("row-comentario/",
+         rowComentario, name="row-comentario"),
 
     # url de pruebas
     # generar pdf de prueba

@@ -164,6 +164,6 @@ class MatriculaDetailView(DetailView):
             context['cerrado'] = False
         context['total_likes'] = self.get_object().likes.all().count()
         context['lista_comentarios'] = self.get_object(
-        ).comentario_set.filter(respuestaA=None, aprobado=True).order_by('-fecha_comentario',)
+        ).comentario_set.filter(respuestaA=None, aprobado=True).order_by('fecha_comentario',)
 
         return context

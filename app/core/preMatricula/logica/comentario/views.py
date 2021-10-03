@@ -1,9 +1,26 @@
-from core.preMatricula.models import PreMatricula
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from core.preMatricula.models import PreMatricula
 from core.preMatricula.models import Comentario
 
 #from .form import TipoCursoForm
+
+
+def rowComentario(request):
+    if request.method == 'POST':
+        id_comentario = int(request.POST['id_comentario'])
+        comentario = Comentario.objects.filter(pk=id_comentario).first()
+        id_matricula = comentario.preMatricula.pk
+        context = {}
+        html_string = render_to_string(
+            'comentario/row_comentario.html', {'comentario': comentario, 'id_matricula': id_matricula}, request)
+        context['html'] = html_string
+        #context['fecha'] = naturaltime(comentario.fecha_comentario)
+        context['fecha'] = comentario.fecha_comentario
+
+        return JsonResponse(context, safe=False)
 
 
 def ListarComentariosPorMatricula(request):

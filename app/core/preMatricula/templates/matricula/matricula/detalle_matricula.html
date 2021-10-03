@@ -18,6 +18,7 @@
         </div>
         <div class="float-right" data-html2canvas-ignore="true">
          
+         
           {% if request.user.groups.all.0.name == 'Estudiante'%}
            <a class="btn btn-sm btn-success {% if matriculado or cerrado %}disabled {% endif %}" href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
@@ -27,7 +28,7 @@
            <i class="fa fa-trash-alt p-1"></i>Cancelar matrícula 
           </a>
           {% else %}
-           <a class="btn btn-sm btn-success" href="#" id='btn-matricular-estudiante' >
+           <a class="btn btn-sm btn-success {% if cerrado %} disabled {% endif %}" href="#" id='btn-matricular-estudiante' >
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
             matricular a estudiante
           </a>
@@ -207,7 +208,7 @@
               (<span style="color: rgb(42, 44, 43); font-weight: bolder;" id='cant_estudiante_promedio' data-html2canvas-ignore="true">{{promedioCantidad}}</span>%)
             </a>
             <div class="progress progress-sm">
-              <div class="progress-bar  bg-success" style="width:{{ promedioCantidad|floatformat:0 }}%;"></div>
+              <div id='progres-bar' class="progress-bar  bg-success" style="width:{{ promedioCantidad|floatformat:0 }}%;"></div>
             </div>
 
           </li>
@@ -242,29 +243,6 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col-12">
-    <div class="container">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            Pregunta
-          </div>
-        </div>
-        <div class="card-body">
-          <div class='row'>
-            <div class='col-6'><h1 >cuanto es 4+2</h1></div>
-            <div class='col-6'><img src="{% static 'img/inicial.gif' %}" alt="" width="100px" height="100px" id='imagen'></div>
-          </div>
-          <span id='h1-text' class='badge badge-success'></span>
-            <button id='btn-cambiar-roa' class='btn btn-default '>4</button>
-            <button id='btn-cambiar-frank' class='btn btn-default'>8</button>
-            <button id='btn-cambiar-Abuelo' class='btn btn-default'>6</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="row" data-html2canvas-ignore="true">
   <div class="col-12">
     <div class="card  text-white bg-info mb-1">
@@ -292,35 +270,52 @@
     </div>
   </div>
 </div>
+<!-- seccion  comentarios -->
 <div class="row" data-html2canvas-ignore="true">
   <div class="col-12 ">
     <div class="card" id='comentario-contenedor'>
       <div class="card-header p-2">
         <div class="card-tool">
-          <button type="button" class="btn {% if is_liked %} btn-info {% else %} btn-default {% endif %}btn-sm"
-            id="like_button" value="{{ object.pk }}"><i class="far fa-thumbs-up"></i> Me gusta</button>
-          <span class="float-right text-muted"><span id='cantidad_like'>{{ total_likes }}</span> Me gusta - <span
+          <span><strong> Comentarios </strong></span>
+          <span class="float-right text-muted mb-2"><span id='cantidad_like'>{{ total_likes }}</span> Me gusta - <span
               id='cantidad_comentario'>{{ object.numero_comentario }}</span> comentarios</span>
+          <button type="button" style='font-size: 0.7rem;' class="mb-2 mr-2 float-right btn {% if is_liked %} btn-info {% else %} btn-default {% endif %}btn-sm"
+            id="like_button" value="{{ object.pk }}"><i class="far fa-thumbs-up"></i></button>
         </div>
+        <div class="card-title w-100">
+          <form action="" method="post" id='form-comentario-g'>
+            {%csrf_token%}
+            <input type="hidden" value='padre' name='action'>
+            <input type="hidden" value='{{ object.pk }}' name='id_matricula'>
+            <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
+            <!-- .img-push is used to add margin to elements next to floating images -->
+            <div class="img-push">
+              <input type="text" name='texto' class="form-control form-control-sm texto-comentario-g"
+                placeholder="Presione enter para comentar">
+            </div>
+          </form>
+        </div>
+        
       </div>
       <div class="card-body text-success">
         <div class="card-comments p-2" id='cargarComentarios'>
           <table id="tabla_comentario" class="display" style="width:100%">
             <thead>
               <tr>
-                <th></th>
+                <th style="width: 90%;">Comentario</th>
+                <th style="width: 10%;">count</th>
               </tr>
             </thead>
             <tbody>
               {% for comentario in lista_comentarios %}
-              <tr>
-                <td>
+              <tr >
+                <td class='p-3'>
                   <div class="card-comment">
                     <!-- User image -->
                     <img class="img-circle img-sm" src="{{comentario.usuario.perfil.get_image}}" alt="User Image">
                     <span
                       class='{% if comentario.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}'
-                      style="position: absolute; left: 5px;margin-top: 25px; font-size: 0.8rem;"> <small>
+                      style="position: absolute; left: 20px;margin-top: 25px; font-size: 0.8rem;"> <small>
                         {{comentario.usuario.perfil.get_tipo_display}} </small></span>
                     <div class="comment-text pl-3">
                       <span class="username">
@@ -331,7 +326,7 @@
                     </div>
                     <!-- /.comment-text -->
                     {% comentario_hijos request comentario as listaHijos %}
-                    <div class="card collapsed-card m-0 ml-4  ">
+                    <div class="card collapsed-card m-0 ml-4 mt-2  ">
                       <div class="card-header p-0 pr-2 pl-2">
                         <div class="card-title">
                           <small>{{ listaHijos.count}} Respuestas</small>
@@ -355,7 +350,7 @@
                             <div class="comment-text">
                               <span class="username">
                                 {{ hijo.usuario.username }}
-                                <span class="text-muted float-right">{{ hijo.fecha_comentario|naturaltime }}</span>
+                                <span class="text-muted float-right mt-4">{{ hijo.fecha_comentario|naturaltime }}</span>
                               </span><!-- /.username -->
                               {{ hijo.texto }}
                             </div>
@@ -380,6 +375,7 @@
                     </div>
                   </div>
                 </td>
+                <td> {{forloop.counter}}</td>
               </tr>
               {% endfor %}
 
@@ -392,21 +388,13 @@
       </div>
 
       <div class="card-footer">
-        <form action="" method="post" id='form-comentario-g'>
-          {%csrf_token%}
-          <input type="hidden" value='padre' name='action'>
-          <input type="hidden" value='{{ object.pk }}' name='id_matricula'>
-          <img class="img-fluid img-circle img-sm" src="{{ request.user.perfil.get_image }}" alt="Alt Text">
-          <!-- .img-push is used to add margin to elements next to floating images -->
-          <div class="img-push">
-            <input type="text" name='texto' class="form-control form-control-sm texto-comentario-g"
-              placeholder="Presione enter para comentar">
-          </div>
-        </form>
+        
       </div>
     </div>
   </div>
-</div>
+  </div> <!--fin comentarios / -->
+
+<!-- seccion cursos relacionados -->
 <div class="row" id="row_relacionados" data-html2canvas-ignore="true">
   <div class="col-12">
     <div class="card">

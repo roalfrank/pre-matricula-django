@@ -14,6 +14,38 @@
   .owl-dots{
     margin-top: 20px ! important;
   }
+  .new-comentario{
+      background-color: brown;
+  }
+  .ribbon-comentario{
+      padding: 0.1rem 0 ! important;
+      font-size: 0.68rem ! important;
+  }
+  .animated {
+      animation: up-down 0.3s ease-in-out infinite alternate-reverse both;
+  }
+  .progress{
+      height: 0.5rem !important;
+  }
+@-webkit-keyframes up-down {
+    0% {
+        transform: translateX(10px);
+    }
+
+    100% {
+        transform: translateX(-10px);
+    }
+}
+
+@keyframes up-down {
+  0% {
+    transform: translateX(1.3px);
+  }
+
+  100% {
+    transform:translateX(-1.3px);
+  }
+}
 </style>
 {% endblock  %}
 
@@ -31,20 +63,26 @@
 <script src="{% static 'js/html2pdf/html2pdf.bundle.min.js' %}"></script>
 <script>
     $(function () {
+        let tabla =  null
         let cargarDataTable = function () {
             //cargar datatable de comentario
-            $('#tabla_comentario').DataTable({
+            tabla = $('#tabla_comentario').DataTable({
                 pageLength: 5,
                 lengthMenu: [
                     [5, 10, 20, -1],
                     [5, 10, 20, "Todos"]
                 ],
-                "order": [],
-                columnDefs: [{
-                    targets: 0,
-                    orderable: false,
-
-                }]
+                "order": [[1,'desc']],
+                columnDefs: [
+                    {
+                      targets: 0,
+                      orderable: false,
+                    },
+                    {
+                        targets: 1,
+                        visible:false
+                    }
+                 ]
             });
         }
 
@@ -56,7 +94,6 @@
                 nav: false,
                 //loop:true,
                 autoplay:true,
-                stagePadding:10,
                 responsive: {
                   0: {
                     items: 2
@@ -119,7 +156,7 @@
                         type: 'POST',
                         url: '{% url "prematricula:matricula-estudiante-add" %}',
                         data: {
-                            'id_matricula': {{id_matricula}},
+                            'id_matricula': '{{id_matricula}}',
                             'action': 'delete',
                             'csrfmiddlewaretoken': '{{ csrf_token }}'
                         },
@@ -149,7 +186,7 @@
                         type: 'POST',
                         url: '{% url "prematricula:matricula-estudiante-add" %}',
                         data: {
-                            'id_matricula': {{id_matricula}},
+                            'id_matricula': '{{id_matricula}}',
                             'action': 'add',
                             'csrfmiddlewaretoken': '{{ csrf_token }}'
                         },
@@ -217,8 +254,6 @@
             $("#comentario-contenedor").on('submit', 'form', function (e) {
                 e.preventDefault();
                 if (e.target.texto.value != '') {
-
-                    console.log(e.target.texto.value);
                     var parametro = new FormData(e.target);
                     $.ajax({
                         type: 'POST',
@@ -232,18 +267,18 @@
                                 if (response['estudiante']) {
                                     mensaje('success',"Comentario enviado correctamente. ");
                                 } else {
-                                    $("#cargarComentarios").load(
-                                        '{% url "prematricula:comentario-listar" %}', {
-                                            'id_matricula': {{id_matricula}},
-                                            'csrfmiddlewaretoken': function () {
-                                                return $(
-                                                    'input[name="csrfmiddlewaretoken"]'
-                                                ).val();
-                                            },
-                                        },
-                                        function () {
-                                            cargarDataTable();
-                                        });
+                                    // $("#cargarComentarios").load(
+                                    //     '{% url "prematricula:comentario-listar" %}', {
+                                    //         'id_matricula': '{{id_matricula}}',
+                                    //         'csrfmiddlewaretoken': function () {
+                                    //             return $(
+                                    //                 'input[name="csrfmiddlewaretoken"]'
+                                    //             ).val();
+                                    //         },
+                                    //     },
+                                    //     function () {
+                                    //         cargarDataTable();
+                                    //     });
                                     mensaje("success",
                                         "Comentario enviado correctamente.");
                                 }
@@ -262,19 +297,21 @@
                     mensaje('error', 'Debe escribir un comentario.');
                 }
             });
-            //formulario responder 
-            // //connecion al websocket de like de la matricula activa
-            // let like_websocket = new WebSocket('ws://'
-            //                                    + window.location.host
-            //                                    + '/ws/like-matricula/{{id_matricula}}/'
-            //                                    );
-            // like_websocket.onmessage = function(e){
-            //     let data = JSON.parse(e.data);
-            //     document.querySelector('#cantidad_like').innerHTML = data.contador_like ;
-            // }
-            // like_websocket.onclose= function (e){
-            //     console.log('cerrada la conexion  a like de matricula.....');
-            // }
+            //formulario responder
+            
+            
+            //connecion al websocket de like de la matricula activa
+            let like_websocket = new WebSocket('ws://'
+                                               + window.location.host
+                                               + '/ws/like-matricula/{{id_matricula}}/'
+                                               );
+            like_websocket.onmessage = function(e){
+                let data = JSON.parse(e.data);
+                document.querySelector('#cantidad_like').innerHTML = data.contador_like ;
+            }
+            like_websocket.onclose= function (e){
+                console.log('cerrada la conexion  a like de matricula.....');
+            }
             // //fin del socket de la matricula activa
 
             //function actualizarProedio 
@@ -283,6 +320,8 @@
                 let cant_estudiante_promedio = document.querySelector('#cant_estudiante_promedio');
                 let promedio = Math.round((estudiante_matriculados * 100)/ parseInt(cant_estudiante_total.textContent));
                 cant_estudiante_promedio.innerHTML= promedio ;
+                let stilo =promedio+'%'
+                document.getElementById('progres-bar').style.width = stilo;
             }
             //connecion al websocket de update de la matricula activa
             let update_websocket = new WebSocket('ws://'
@@ -291,14 +330,13 @@
                                                );
             update_websocket.onmessage = function(e){
                 let data = JSON.parse(e.data);
-                console.log('datos que llega de update matricula',data)
                 let estado =data.matricula.datos.estado 
                 let esta_matriculado = false;
                 $.ajax({
                         type: 'POST',
                         url: '{% url "prematricula:matricula-estudiante-esta" %}',
                         data: {
-                            'id_matricula': {{id_matricula}},
+                            'id_matricula': '{{id_matricula}}',
                             'csrfmiddlewaretoken': '{{ csrf_token }}'
                         },
                         datatype: 'json',
@@ -352,50 +390,36 @@
                 console.log('cerrada la conexion  a update de matricula.....');
             }
             //fin del socket de la matricula activa
-            // var mensaje = '4 Respuesta incorrecta';
-            // document.querySelector('#btn-cambiar-roa').addEventListener('click',function(e){
-            //     document.querySelector('#h1-text').innerHTML = mensaje;
-            //     $('#btn-cambiar-roa').removeClass('bg-default')
-            //      $('#btn-cambiar-roa').removeClass('bg-success');
 
-            //     $('#btn-cambiar-roa').addClass('bg-danger');
+            //inicio websocket de comentarios
+            let websocker_comentario= new WebSocket('ws://'
+                                               + window.location.host
+                                               + '/ws/comentario-matricula/{{id_matricula}}/');
+            websocker_comentario.onmessage=function(e){
+                let data= JSON.parse(e.data);
+                if (data.comentario.evento=='new' && data.comentario.datos.hijo !=true){
+                   $.ajax({
+                    type:'POST',
+                    url: '{% url "prematricula:row-comentario" %}',
+                    data: {
+                        "id_comentario":data.comentario.datos.id_comentario,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    datatype: 'json',
+                    success:function(response){
+                       let count =tabla.data().count() + 1
+                       let rowNode =  tabla.row.add([response.html,count]).draw(false).nodes().to$(); 
+                       //tabla.order([1, 'asc']).draw();
+                      // cargarDataTable();
+                       document.querySelector('#cantidad_comentario').innerHTML= data.comentario.datos.cantidad_comentario
+                    }
 
-            //     $('#h1-text').removeClass('badge-success');
-            //     $('#h1-text').removeClass('badge-danger');
+                });
+                }
 
-            //     $('#h1-text').addClass('badge-danger');
-            //     $('#imagen').attr('src','{% static "img/respuesta-incorrecta-gif-animado.gif "%}');
-
-            // });
-            // var frank = '8 Respuesta incorrecta';
-            // document.querySelector('#btn-cambiar-frank').addEventListener('click',function(e){
-            //     document.querySelector('#h1-text').innerHTML = frank;
-            //     $('#btn-cambiar-frank').removeClass('bg-default')
-            //      $('#btn-cambiar-frank').removeClass('bg-success');
-                 
-            //     $('#btn-cambiar-frank').addClass('bg-danger');
-
-            //     $('#h1-text').removeClass('badge-success');
-            //     $('#h1-text').removeClass('badge-danger');
-                
-            //     $('#h1-text').addClass('badge-danger');
-            //     $('#imagen').attr('src','{% static "img/respuesta-incorrecta-gif-animado.gif "%}');
-            // });
-            // var abuelo = '6 Respuesta correcta';
-            // document.querySelector('#btn-cambiar-Abuelo').addEventListener('click',function(e){
-            //     document.querySelector('#h1-text').innerHTML = abuelo;
-            //      $('#btn-cambiar-Abuelo').removeClass('bg-default')
-            //      $('#btn-cambiar-Abuelo').removeClass('bg-success');
-                 
-            //     $('#btn-cambiar-Abuelo').addClass('bg-success');
-
-            //     $('#h1-text').removeClass('badge-success');
-            //     $('#h1-text').removeClass('badge-danger');
-                
-            //     $('#h1-text').addClass('badge-success');
-            //     $('#imagen').attr('src','{% static "img/check-correct.gif "%}');
-            //     $('#imagen').attr('width','125px');
-            // });
+            };
+            //fin websocket comentario
+            
         });//fin de cargar matricula contenedor
 
     });

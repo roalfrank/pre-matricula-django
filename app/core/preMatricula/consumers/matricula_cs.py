@@ -3,6 +3,22 @@ from asyncio import sleep
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
+class ComentariosMatricula(AsyncWebsocketConsumer):
+    async def connect(self):
+        print('conectado', self.channel_name)
+        self.matricula = self.scope['url_route']['kwargs']['matricula']
+        self.group_name = f'comentario_matricula_{self.matricula}'
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def send_message(self, event):
+        print('datos cuando se manda dentro del consumer', event)
+        await self.send(text_data=json.dumps({'comentario': event}))
+
+
 class MatriculaUpdate(AsyncWebsocketConsumer):
     async def connect(self):
         self.matricula = self.scope["url_route"]["kwargs"]["matricula"]

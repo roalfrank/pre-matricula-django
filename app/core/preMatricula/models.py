@@ -553,7 +553,7 @@ class PreMatriculaEstudiante(models.Model):
 
 
 @receiver(post_delete, sender=PreMatriculaEstudiante)
-def actualizarMatricula(sender, instance, **kwargs):
+def actualizarMatricula(sender, instance, created, **kwargs):
     # conectamos al websocket de de update matricula
     channel_layer = get_channel_layer()
     nombre_grupo = 'update_matricula_' + str(instance.preMatricula.pk)
@@ -589,7 +589,44 @@ class Comentario(models.Model):
         return f'{self.preMatricula.curso.nombre}-{self.usuario.perfil.nombre}-{self.fecha_comentario}'
 
 
+@receiver(post_save, sender=Comentario)
+def actualizarMatricula(sender, instance, created, **kwargs):
+    context = {}
+    print('estoy en post_save')
+    context['type'] = 'send_message'
+    # conectamos al websocket de de comentario_matricula_
+    channel_layer = get_channel_layer()
+    nombre_grupo = 'comentario_matricula_' + str(instance.preMatricula.pk)
+    cantidad_comentario = Comentario.objects.filter(
+        preMatricula=instance.preMatricula).count()
+    hijo = False
+    if created:
+        if instance.aprobado:
+            if instance.respuestaA:
+                hijo = True
+            context['evento'] = 'new'
+            context['datos'] = {
+                'id_comentario': instance.pk,
+                'hijo': hijo,
+                'cantidad_comentario': cantidad_comentario}
+        else:
+            context['evento'] = 'new_no_aprobado'
+    else:
+        if instance.aprobado:
+            if instance.respuestaA:
+                hijo = True
+            context['evento'] = 'update'
+            context['datos'] = {
+                'id_comentario': instance.pk,
+                'hijo': hijo,
+                'cantidad_comentario': cantidad_comentario}
+        else:
+            context['evento'] = 'update_no_aprobado'
+    print('contecto que se envia',context)
+    async_to_sync(channel_layer.group_send)(nombre_grupo, context)
+
 # cursos de interes para los estudiantes
+
 
 class CursoInteres(models.Model):
     frecuencia = models.IntegerField(verbose_name='Frecuencia')
