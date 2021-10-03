@@ -1,0 +1,26 @@
+{% load humanize%}
+<div class="card">
+    <div class="card-body p-2">
+        <div class="ribbon-wrapper animated ">
+            <div class="ribbon bg-success ribbon-comentario  ">nuevo</div>
+        </div>
+        <div class="card-comment">
+            <!-- User image -->
+            <img class="img-circle img-sm" src="{{ comentario.usuario.perfil.get_image }}" alt="User Image">
+            <span
+                class='{% if comentario.usuario.perfil.tipo == "ES" %} text-success {% else %} text-danger {% endif %}'
+                style="position: absolute; left: 10px;margin-top: 25px; font-size: 0.8rem;"> <small>
+                {{comentario.usuario.perfil.get_tipo_display}} </small></span>
+            <div class="comment-text">
+                <span class="username">
+                {{ comentario.usuario.username }}
+                <span class="text-muted float-right mt-3">{{ comentario.fecha_comentario|naturaltime }}</span>
+                </span><!-- /.username -->
+                {{ comentario.texto }}
+            </div>
+            <!-- /.comment-text -->
+        </div>
+    </div>
+</div>
+    
+    

@@ -252,7 +252,7 @@
       <div class="card-body p-0">
         <div class="owl-carousel owl-theme p-4 pt-1 m-1">
           {% if not listaAlumnos%}
-            <h1 class="text-center no-alumnos">No hay alumnos matriculados</h1>
+            <span class="text-center no-alumnos">No hay alumnos matriculados</span>
             {% else %}
             {% for item in listaAlumnos %}
                    <div class="item" id='estudiante_{{item.estudiante.pk}}'>
@@ -310,7 +310,7 @@
               {% for comentario in lista_comentarios %}
               <tr >
                 <td class='p-3'>
-                  <div class="card-comment">
+                  <div class="card-comment" id='card_comentario_{{comentario.pk}}'>
                     <!-- User image -->
                     <img class="img-circle img-sm" src="{{comentario.usuario.perfil.get_image}}" alt="User Image">
                     <span
@@ -329,7 +329,7 @@
                     <div class="card collapsed-card m-0 ml-4 mt-2  ">
                       <div class="card-header p-0 pr-2 pl-2">
                         <div class="card-title">
-                          <small>{{ listaHijos.count}} Respuestas</small>
+                          <small><span id='cant_respuesta'>{{ listaHijos.count}}</span> Respuestas <span id='badge-respuesta' class='badge badge-danger navbar-badge d-none' ></span></small>
                         </div>
                         <div class="card-tools">
                           <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -340,7 +340,7 @@
                       <div class="card-body">
                         <small>
                           {% for hijo in listaHijos %}
-                          <div class="card-comment">
+                          <div class="card-comment id='card_comentario_hijo_{{hijo.pk}}">
                             <!-- User image -->
                             <img class="img-circle img-sm" src="{{ hijo.usuario.perfil.get_image }}" alt="User Image">
                             <span

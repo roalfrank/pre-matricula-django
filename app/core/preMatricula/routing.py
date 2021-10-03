@@ -7,5 +7,6 @@ ws_urlpatterns = [
     path('ws/update-matricula/<int:matricula>/', MatriculaUpdate.as_asgi()),
     # comentarios
     path('ws/comentario-matricula/<int:matricula>/',
-         ComentariosMatricula.as_asgi())  # comenatrios de una matricula
+         ComentariosMatricula.as_asgi()),  # comenatrios de una matricula
+
 ]

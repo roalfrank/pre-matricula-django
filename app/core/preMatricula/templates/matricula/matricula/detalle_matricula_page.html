@@ -27,6 +27,10 @@
   .progress{
       height: 0.5rem !important;
   }
+  #badge-respuesta{
+      top:-10px !important;
+      right: -10px;
+  }
 @-webkit-keyframes up-down {
     0% {
         transform: translateX(10px);
@@ -414,7 +418,48 @@
                        document.querySelector('#cantidad_comentario').innerHTML= data.comentario.datos.cantidad_comentario
                     }
 
-                });
+                   });
+                }
+                else if (data.comentario.evento=='new' && data.comentario.datos.hijo){
+                     //buscar en la tabla el comentario A 
+                     let selector = '#card_comentario_'+data.comentario.datos.id_comentario_a
+                     let papa = $(selector)
+                     $.ajax({
+                         type:'POST',
+                         url:'{% url "prematricula:row-comentario-hijo" %}',
+                         data:{
+                             "id_comentario_hijo":data.comentario.datos.id_comentario,
+                             "id_comentario_papa":data.comentario.datos.id_comentario_a,
+                             'csrfmiddlewaretoken': '{{ csrf_token }}'
+                         },
+                         datatype: 'json',
+                         success: function(response){
+                            if(papa){
+                                papa.find('form').before(response.html);
+                                console.log('cantidad respuesta',response.cantidad_respuesta);
+                                console.log('cantidad respuesta element ',papa.find('#cant_respuesta'));
+                                papa.find('#cant_respuesta').html(response.cantidad_respuesta);
+                                let badge = papa.find('#badge-respuesta');
+                                let cantidad =parseInt(badge.html());
+                                if (cantidad){
+                                }
+                                else{
+                                    cantidad=0;
+                                }
+                                console.log('cantidad que tiene badge',cantidad);
+                                cantidad +=1;
+                                badge.removeClass('d-none') ;  
+                                badge.html(cantidad) ;  
+                                badge.show();  
+                             }
+                             else{
+                                 alert('no encontre al papa en la tabla');
+                             }
+                         }
+                     });
+                     
+                     //peticion ajax para obtener el comentario hijo formateado
+                     //insertar el comentario formateado en la tabla
                 }
 
             };

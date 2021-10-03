@@ -8,6 +8,22 @@ from core.preMatricula.models import Comentario
 #from .form import TipoCursoForm
 
 
+def rowComentarioHijo(request):
+    if request.method == 'POST':
+        id_comentario_hijo = int(request.POST['id_comentario_hijo'])
+        id_comentario_papa = int(request.POST['id_comentario_papa'])
+        comentario_hijo = Comentario.objects.filter(
+            pk=id_comentario_hijo).first()
+        cant_comentario_a_papa = Comentario.objects.filter(
+            respuestaA__pk=id_comentario_papa, aprobado=True).count()
+        context = {}
+        html_string = render_to_string(
+            'comentario/row_comentario_hijo.html', {'comentario': comentario_hijo}, request)
+        context['html'] = html_string
+        context['cantidad_respuesta'] = cant_comentario_a_papa
+        return JsonResponse(context, safe=False)
+
+
 def rowComentario(request):
     if request.method == 'POST':
         id_comentario = int(request.POST['id_comentario'])
@@ -56,7 +72,7 @@ def AddComentario(request):
                 comentarioa = Comentario.objects.get(pk=id_comentarioa)
                 comentario.respuestaA = comentarioa
             if request.user.perfil.tipo == 'ES':
-                comentario.aprobado = False
+                comentario.aprobado = True
                 respuesta['estudiante'] = True
             else:
                 respuesta['estudiante'] = False
