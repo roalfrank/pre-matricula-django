@@ -2,12 +2,26 @@ var Toast = Swal.mixin({
       toast: true,
       position: "top",
       showConfirmButton: false,
-      timer: 3000,
+      
+     // timer: 3000,
     });
-function mensaje(icono,text) {
-    Toast.fire({
+// function mensaje(icono,text) {
+//     Toast.fire({
+//         icon: icono,
+//         title: text,
+//         showCloseButton: true,
+//         timer: 8000,
+//       });
+// }
+function mensaje(icono,text,timer=8000,position="top",confirma=false) {
+    Swal.fire({
         icon: icono,
         title: text,
+        showCloseButton: true,
+        timer: timer,
+        toast: true,
+        position: position,
+        showConfirmButton: confirma,
       });
 }
 function submit_with_ajax(url, title, content, parameters, callback) {

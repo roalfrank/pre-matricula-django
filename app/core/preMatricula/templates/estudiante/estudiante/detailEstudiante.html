@@ -22,6 +22,10 @@
                         <div>{{object.usuario.perfil.correo}}</div>
                     </li>
                     <li class="list-group-item pt-2 pb-2">
+                        <small><b>Carnet Identidad:</b></small>
+                        <div>{{object.usuario.perfil.ci}}</div>
+                    </li>
+                    <li class="list-group-item pt-2 pb-2">
                         <small><b>Sistema:</b></small>
                         <div>
                             {% if object.usuario.is_active%}
@@ -145,7 +149,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="#" class="text-perfil">
+                                                <a href="{% url 'prematricula:matricula-page'  matricula.preMatricula.pk %}" class="text-perfil">
                                                    <i class="fas fa-search text-success"></i>
                                                 </a>
                                             </td>

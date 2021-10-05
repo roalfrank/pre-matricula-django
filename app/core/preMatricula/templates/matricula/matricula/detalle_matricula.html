@@ -17,8 +17,7 @@
 
         </div>
         <div class="float-right" data-html2canvas-ignore="true">
-         
-         
+          {% if request.user.is_authenticated %}
           {% if request.user.groups.all.0.name == 'Estudiante'%}
            <a class="btn btn-sm btn-success {% if matriculado or cerrado %}disabled {% endif %}" href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
@@ -32,6 +31,20 @@
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
             matricular a estudiante
           </a>
+             {% endif %}
+           {% else %}
+           <a class="btn btn-sm btn-success " href="/"  >
+            <i class="fa fa-reply" aria-hidden="true"></i>
+         Volver al sitio web
+          </a>  
+           <a class="btn btn-sm btn-success " href="{% url 'login:registrar' %}"  >
+            <i class="fa fa-user-plus" aria-hidden="true"></i>
+         Crear cuenta
+          </a>  
+           <a class="btn btn-sm btn-success " href="{% url 'login:login-user' %}"  >
+           <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+          Entrar en el sistema
+          </a>  
           {% endif %}
         </div>
       </div>
@@ -223,7 +236,8 @@
           <li class="list-group-item">
             <b>QR:</b><br>
             <div class="row justify-content-center align-items-center">
-              {% qr_from_text base_url  size=8 error_correction="L" %}
+              {% qr_crear base_url object.pk as urlQR_comentario %}
+              {% qr_from_text urlQR_comentario  size=8 error_correction="L" %}
             </div>
           </li>
           <li class="d-flex justify-content-around p-0 pl-2 pr-2 pt-4" data-html2canvas-ignore="true">
@@ -279,10 +293,11 @@
           <span><strong> Comentarios </strong></span>
           <span class="float-right text-muted mb-2"><span id='cantidad_like'>{{ total_likes }}</span> Me gusta - <span
               id='cantidad_comentario'>{{ object.numero_comentario }}</span> comentarios</span>
-          <button type="button" style='font-size: 0.7rem;' class="mb-2 mr-2 float-right btn {% if is_liked %} btn-info {% else %} btn-default {% endif %}btn-sm"
+          <button type="button" style='font-size: 0.7rem;' class="mb-2 mr-2 float-right btn {% if is_liked %} btn-info {% else %} btn-default {% endif %}btn-sm {% if request.user.is_authenticated %}{% else %}disabled{% endif %}"
             id="like_button" value="{{ object.pk }}"><i class="far fa-thumbs-up"></i></button>
         </div>
         <div class="card-title w-100">
+          {% if request.user.is_authenticated %}
           <form action="" method="post" id='form-comentario-g'>
             {%csrf_token%}
             <input type="hidden" value='padre' name='action'>
@@ -294,6 +309,7 @@
                 placeholder="Presione enter para comentar">
             </div>
           </form>
+          {% endif %}
         </div>
         
       </div>
@@ -302,13 +318,13 @@
           <table id="tabla_comentario" class="display" style="width:100%">
             <thead>
               <tr>
-                <th style="width: 90%;">Comentario</th>
+                <th style="width: 90%;"></th>
                 <th style="width: 10%;">count</th>
               </tr>
             </thead>
             <tbody>
               {% for comentario in lista_comentarios %}
-              <tr >
+              <tr id='tr_comentario_{{comentario.pk}}'>
                 <td class='p-3'>
                   <div class="card-comment" id='card_comentario_{{comentario.pk}}'>
                     <!-- User image -->
@@ -340,7 +356,7 @@
                       <div class="card-body">
                         <small>
                           {% for hijo in listaHijos %}
-                          <div class="card-comment id='card_comentario_hijo_{{hijo.pk}}">
+                          <div class="card-comment " id='card_comentario_hijo_{{hijo.pk}}'>
                             <!-- User image -->
                             <img class="img-circle img-sm" src="{{ hijo.usuario.perfil.get_image }}" alt="User Image">
                             <span
@@ -352,11 +368,12 @@
                                 {{ hijo.usuario.username }}
                                 <span class="text-muted float-right mt-4">{{ hijo.fecha_comentario|naturaltime }}</span>
                               </span><!-- /.username -->
-                              {{ hijo.texto }}
+                              <span id='texto_hijo'>{{ hijo.texto }}</span>
                             </div>
                             <!-- /.comment-text -->
                           </div>
                           {% endfor %}
+                          {% if request.user.is_authenticated %}
                           <form action="#" method="post" id='form-comentario-g'>
                             {%csrf_token%}
                             <input type="hidden" value='hijo' name='action'>
@@ -370,6 +387,7 @@
                                 placeholder="Presione enter para comentar" name='texto'>
                             </div>
                           </form>
+                          {% endif %}
                         </small>
                       </div>
                     </div>
@@ -427,9 +445,9 @@
               <div class="widget-user-image">
                 <img class="img-circle elevation-2 " src="{{relacionado.curso.get_foto}}" alt="User Avatar" style="height: 80px !important; width: 80px !important;">
               </div>
-              <div class="">
-                <img class="img-responsive ml-4" src="{% static 'img/iconos/qr.png' %}" alt="qr codigo" width="50"
-                  height="50">
+              <div class="pl-4">
+                {% qr_crear base_url relacionado.pk as urlQR %}
+                {% qr_from_text urlQR  size=4 error_correction="L" %}
               </div>
               <div class="card-footer p-0">
                 <div class="row">

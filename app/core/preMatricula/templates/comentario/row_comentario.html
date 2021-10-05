@@ -39,7 +39,7 @@
                             <div class="card-body">
                             <small>
                                 {% for hijo in listaHijos %}
-                                    <div class="card-comment">
+                                    <div class="card-comment id='card_comentario_hijo_{{hijo.pk}}">
                                     <!-- User image -->
                                     <img class="img-circle img-sm" src="{{ hijo.usuario.perfil.get_image }}" alt="User Image">
                                     <span
@@ -51,7 +51,7 @@
                                         {{ hijo.usuario.username }}
                                         <span class="text-muted float-right">{{ hijo.fecha_comentario|naturaltime }}</span>
                                         </span><!-- /.username -->
-                                        {{ hijo.texto }}
+                                        <span id='texto_hijo'>{{ hijo.texto }}</span>
                                     </div>
                                     <!-- /.comment-text -->
                                 </div>

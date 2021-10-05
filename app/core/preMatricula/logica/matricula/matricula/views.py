@@ -2,7 +2,7 @@ from core.preMatricula.models import PreMatriculaEstudiante
 from core.preMatricula.models import Estudiante
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.shortcuts import render
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -124,7 +124,6 @@ def addEstudianteMatricula(request):
         return JsonResponse(respuesta, safe=False)
 
 
-@login_required
 def getDetallePageMatricula(request, id):
     template_name = "matricula/matricula/detalle_matricula_page.html"
     context = {}
@@ -147,7 +146,7 @@ class MatriculaDetailView(DetailView):
         #          for i in range(0, len(lista_estudiante), n)]
         context['listaAlumnos'] = lista_estudiante
         context['base_url'] = "{0}://{1}{2}".format(
-            self.request.scheme, self.request.get_host(), self.request.path)
+            self.request.scheme, self.request.get_host(), '/sistema/matricula-detalle/')
         context['promedioCantidad'] = round(
             (context['cantAlumnos']*100)/self.object.capacidad, 2)
         is_liked = False
@@ -156,8 +155,9 @@ class MatriculaDetailView(DetailView):
         context['is_liked'] = is_liked
         context['listaRelacionado'] = lista_curso_relacionado(
             self.object.pk, 3)
-        context['matriculado'] = esta_matriculado(
-            self.request.user, self.object.pk)
+        if self.request.user.is_authenticated:
+            context['matriculado'] = esta_matriculado(
+                self.request.user, self.object.pk)
         if self.object.estado.nombre == 'cerrado':
             context['cerrado'] = True
         else:

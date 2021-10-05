@@ -27,7 +27,132 @@
 
   <!-- Template Main CSS File -->
   <link href="{% static 'inicio/css/style.css'%}" rel="stylesheet">
+ <style>
+  /* common */
+.ribbon {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+}
+.ribbon::before,
+.ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+  border: 5px solid #2980b9;
+}
+.ribbon span {
+  position: absolute;
+  display: block;
+  width: 258px;
+  padding: 5px 0;
+  background-color: #3498db;
+  box-shadow: 0 5px 10px rgba(0,0,0,.1);
+  color: #fff;
+  font: 700 18px/1 'Lato', sans-serif;
+  text-shadow: 0 1px 1px rgba(0,0,0,.2);
+  text-transform: uppercase;
+  text-align: center;
+}
 
+/* top left*/
+.ribbon-top-left {
+  top: -10px;
+  left: -10px;
+}
+.ribbon-top-left::before,
+.ribbon-top-left::after {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.ribbon-top-left::before {
+  top: 0;
+  right: 0;
+}
+.ribbon-top-left::after {
+  bottom: 0;
+  left: 0;
+}
+.ribbon-top-left span {
+  right: -25px;
+  top: 30px;
+  transform: rotate(-45deg);
+}
+
+/* top right*/
+.ribbon-top-right {
+  top: -10px;
+  right: -10px;
+}
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+.ribbon-top-right::before {
+  top: 0;
+  left: 0;
+}
+.ribbon-top-right::after {
+  bottom: 0;
+  right: 0;
+}
+.ribbon-top-right span {
+  left: -25px;
+  top: 30px;
+  transform: rotate(45deg);
+}
+
+/* bottom left*/
+.ribbon-bottom-left {
+  bottom: -10px;
+  left: -10px;
+}
+.ribbon-bottom-left::before,
+.ribbon-bottom-left::after {
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+.ribbon-bottom-left::before {
+  bottom: 0;
+  right: 0;
+}
+.ribbon-bottom-left::after {
+  top: 0;
+  left: 0;
+}
+.ribbon-bottom-left span {
+  right: -25px;
+  bottom: 30px;
+  transform: rotate(225deg);
+}
+
+/* bottom right*/
+.ribbon-bottom-right {
+  bottom: -10px;
+  right: -10px;
+}
+.ribbon-bottom-right::before,
+.ribbon-bottom-right::after {
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+}
+.ribbon-bottom-right::before {
+  bottom: 0;
+  left: 0;
+}
+.ribbon-bottom-right::after {
+  top: 0;
+  right: 0;
+}
+.ribbon-bottom-right span {
+  left: -25px;
+  bottom: 30px;
+  transform: rotate(-225deg);
+}
+ </style>
 
 </head>
 
@@ -143,12 +268,21 @@
 
         <div class="row">
           <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-            <div class="icon-box">
-              <div class="icon pb-2"><img src="{% static 'inicio/img/python.png'%}" alt="" class="img-fluid"
-                  style="width: 4rem;"></div>
-              <h4 class="title"><a href="">Aprendiendo Python</a></h4>
-              <p class="description">Curso orientado a los interesados en la programación y automatización de procesos.
+            <div class="icon-box p-2" style='text-align: start;'>
+              <div class="ribbon ribbon-top-right"><span>nuevo</span></div>
+              <div class="icon pb-2">
+                <img src="{% static 'inicio/img/python.png'%}" alt="" class="img-fluid ml-4"
+                  style="width: 4rem;">
+              </div>
+              <h4 class="title text-center"><a href="{% url 'prematricula:matricula-page' 1 %}">Aprendiendo Python</a></h4>
+              <p class="description text-center p-2 mb-2" style="background-color: #eb5d1e; border-radius: 10px; color:#ffff"><strong>Curso orientado a los interesados en la programación y automatización de procesos.</strong>
               </p>
+              <div class="icon pb-2 ">
+                  <button class="btn btn-primary w-75 mt-2 btn-sm"  style="border-radius: 15px;"><img src="{% static 'img/iconos/buscar.png' %}" alt="Ver matricula" width="30px" height="30px">Todo sobre el curso</button>
+                
+                  <img src="{% static 'img/iconos/qr.png'%}" alt="" class="img-fluid float-right"
+                  style="width: 3.5rem;">
+              </div>
             </div>
           </div>
 

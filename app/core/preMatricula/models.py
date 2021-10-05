@@ -591,6 +591,7 @@ class Comentario(models.Model):
 
 @receiver(post_save, sender=Comentario)
 def comentarioADD(sender, instance, created, **kwargs):
+    print('comentario nuevo o update ', instance)
     cantidad_comentario = Comentario.objects.filter(
         preMatricula=instance.preMatricula).count()
     context = {}

@@ -77,7 +77,7 @@ urlpatterns = [
          name="matricula-estado"),
     path("matricula-detalle/<int:pk>/", MatriculaDetailView.as_view(),
          name="matricula-detalle"),
-    path("matricula-page/<int:id>/",
+    path("matricula-pagina/<int:id>/",
          getDetallePageMatricula, name="matricula-page"),
     path("matricula-like/",
          likeMatricula, name="matricula-like"),

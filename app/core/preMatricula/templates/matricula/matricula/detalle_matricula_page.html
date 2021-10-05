@@ -22,7 +22,7 @@
       font-size: 0.68rem ! important;
   }
   .animated {
-      animation: up-down 0.3s ease-in-out infinite alternate-reverse both;
+      animation: up-down 0.6s ease-in-out infinite alternate-reverse both;
   }
   .progress{
       height: 0.5rem !important;
@@ -77,6 +77,11 @@
                     [5, 10, 20, "Todos"]
                 ],
                 "order": [[1,'desc']],
+                "language": {
+                       "emptyTable": "No hay comentarios",
+                       "info": "Página _PAGE_ de _PAGES_",
+                       "lengthMenu": "Mostrar _MENU_ comentarios"
+                    },
                 columnDefs: [
                     {
                       targets: 0,
@@ -90,8 +95,8 @@
             });
         }
 
-
-        $('.cargar_matricula').load('{% url "prematricula:matricula-detalle" id_matricula %}', function () {
+    
+        $('.cargar_matricula').html('<div class="text-center"><span class="mr-4">Cargando..</span><div class="spinner-grow" role="status"></div></div>').load('{% url "prematricula:matricula-detalle" id_matricula %}', function () {
            var owl = $('.owl-carousel');
               owl.owlCarousel({
                 margin: 2,
@@ -269,20 +274,8 @@
                         success: function (response) {
                             if (response["error"] == false) {
                                 if (response['estudiante']) {
-                                    mensaje('success',"Comentario enviado correctamente. ");
+                                    mensaje('success',"Hola {{request.user.username}}, su comentario ha sido enviado a los profesores correctamente. Pronto recibirás respuesta y se publicará el comentario. Saludos. ");
                                 } else {
-                                    // $("#cargarComentarios").load(
-                                    //     '{% url "prematricula:comentario-listar" %}', {
-                                    //         'id_matricula': '{{id_matricula}}',
-                                    //         'csrfmiddlewaretoken': function () {
-                                    //             return $(
-                                    //                 'input[name="csrfmiddlewaretoken"]'
-                                    //             ).val();
-                                    //         },
-                                    //     },
-                                    //     function () {
-                                    //         cargarDataTable();
-                                    //     });
                                     mensaje("success",
                                         "Comentario enviado correctamente.");
                                 }
@@ -327,11 +320,14 @@
                 let stilo =promedio+'%'
                 document.getElementById('progres-bar').style.width = stilo;
             }
+
+          
             //connecion al websocket de update de la matricula activa
             let update_websocket = new WebSocket('ws://'
                                                + window.location.host
                                                + '/ws/update-matricula/{{id_matricula}}/'
                                                );
+                                            
             update_websocket.onmessage = function(e){
                 let data = JSON.parse(e.data);
                 let estado =data.matricula.datos.estado 
@@ -402,6 +398,7 @@
             websocker_comentario.onmessage=function(e){
                 let data= JSON.parse(e.data);
                 if (data.comentario.evento=='new' && data.comentario.datos.hijo !=true){
+                    //comentario es nuevo y no es una respuesta
                    $.ajax({
                     type:'POST',
                     url: '{% url "prematricula:row-comentario" %}',
@@ -412,18 +409,15 @@
                     datatype: 'json',
                     success:function(response){
                        let count =tabla.data().count() + 1
-                       let rowNode =  tabla.row.add([response.html,count]).draw(false).nodes().to$(); 
-                       //tabla.order([1, 'asc']).draw();
-                      // cargarDataTable();
+                       tabla.row.add([response.html,count]).draw().node().id='tr_comentario_' +data.comentario.datos.id_comentario ;
+                       tabla.draw(false); 
                        document.querySelector('#cantidad_comentario').innerHTML= data.comentario.datos.cantidad_comentario
                     }
 
                    });
-                }
+                }//firn del if nuevo y no respuesta
                 else if (data.comentario.evento=='new' && data.comentario.datos.hijo){
-                     //buscar en la tabla el comentario A 
-                     let selector = '#card_comentario_'+data.comentario.datos.id_comentario_a
-                     let papa = $(selector)
+                     //el comentario es nuevo y es una respuesta
                      $.ajax({
                          type:'POST',
                          url:'{% url "prematricula:row-comentario-hijo" %}',
@@ -434,10 +428,13 @@
                          },
                          datatype: 'json',
                          success: function(response){
+                             //preparo el selector del papa
+                             //como dato, se debe poner id a las tr de la tabla, porque asi es como funciona el buscar.
+                            let selector= '#tr_comentario_'+data.comentario.datos.id_comentario_a;
+                             //buscar en la tabla el comentario A 
+                            let papa = $(selector);
                             if(papa){
                                 papa.find('form').before(response.html);
-                                console.log('cantidad respuesta',response.cantidad_respuesta);
-                                console.log('cantidad respuesta element ',papa.find('#cant_respuesta'));
                                 papa.find('#cant_respuesta').html(response.cantidad_respuesta);
                                 let badge = papa.find('#badge-respuesta');
                                 let cantidad =parseInt(badge.html());
@@ -446,7 +443,6 @@
                                 else{
                                     cantidad=0;
                                 }
-                                console.log('cantidad que tiene badge',cantidad);
                                 cantidad +=1;
                                 badge.removeClass('d-none') ;  
                                 badge.html(cantidad) ;  
@@ -457,10 +453,88 @@
                              }
                          }
                      });
-                     
-                     //peticion ajax para obtener el comentario hijo formateado
-                     //insertar el comentario formateado en la tabla
-                }
+                }//fin else de nuevo y respuesta
+               else if (data.comentario.evento=='update' && !data.comentario.datos.hijo) {
+                    $.ajax({
+                        type:'POST',
+                        url:'{% url "prematricula:row-comentario" %}',
+                        data:{
+                             "id_comentario":data.comentario.datos.id_comentario,
+                             'csrfmiddlewaretoken': '{{ csrf_token }}'
+                         },
+                        datatype: 'json',
+                         success:function(response){
+                             let selector= '#tr_comentario_'+data.comentario.datos.id_comentario;
+                             let papa = $(selector);
+                             if(papa.length > 0){
+
+                             }
+                             else{
+                                let count =tabla.data().count() + 1
+                                tabla.row.add([response.html,count]).draw().node().id='tr_comentario_' +data.comentario.datos.id_comentario ;
+                                tabla.draw(false); 
+                                document.querySelector('#cantidad_comentario').innerHTML= data.comentario.datos.cantidad_comentario
+                             }
+                            
+                         }
+                    });//fin del ajax 
+               }//fin del else si es update y no es hijo.
+               else if (data.comentario.evento=='update' && data.comentario.datos.hijo){
+                   $.ajax({
+                        type:'POST',
+                        url:'{% url "prematricula:row-comentario-hijo" %}',
+                        data:{
+                             "id_comentario_hijo":data.comentario.datos.id_comentario,
+                             "id_comentario_papa":data.comentario.datos.id_comentario_a,
+                             'csrfmiddlewaretoken': '{{ csrf_token }}'
+                         },
+                        datatype: 'json',
+                         success:function(response){
+                             //buscamos al papa
+                             let selectorPapa= '#tr_comentario_'+data.comentario.datos.id_comentario_a;
+                             let selectorHijo= '#card_comentario_hijo_'+data.comentario.datos.id_comentario;
+                             let papa = $(selectorPapa);
+                             if(papa.length>0){
+                                let hijo = papa.find(selectorHijo);
+                                if(hijo.length>0){
+                                    console.log(hijo.find('#texto_hijo'));
+                                    hijo.find('#texto_hijo').html(response.texto);
+                                }
+                                else{
+                                    papa.find('form').before(response.html);
+                                    papa.find('#cant_respuesta').html(response.cantidad_respuesta);
+                                    let badge = papa.find('#badge-respuesta');
+                                    let cantidad =parseInt(badge.html());
+                                    if (cantidad){
+                                    }
+                                    else{
+                                        cantidad=0;
+                                    }
+                                    cantidad +=1;
+                                    badge.removeClass('d-none') ;  
+                                    badge.html(cantidad) ;  
+                                    badge.show();  
+                                }
+                             }
+                             else{
+
+                             }
+
+                             
+                            //  let papa = $(selector);
+                            //  if(papa.length > 0){
+
+                            //  }
+                            //  else{
+                            //     let count =tabla.data().count() + 1
+                            //     tabla.row.add([response.html,count]).draw().node().id='tr_comentario_' +data.comentario.datos.id_comentario ;
+                            //     tabla.draw(false); 
+                            //     document.querySelector('#cantidad_comentario').innerHTML= data.comentario.datos.cantidad_comentario
+                            //  }
+                            
+                         }
+                    });//fin del ajax 
+               }
 
             };
             //fin websocket comentario

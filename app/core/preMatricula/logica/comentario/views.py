@@ -21,6 +21,7 @@ def rowComentarioHijo(request):
             'comentario/row_comentario_hijo.html', {'comentario': comentario_hijo}, request)
         context['html'] = html_string
         context['cantidad_respuesta'] = cant_comentario_a_papa
+        context['texto'] = comentario_hijo.texto
         return JsonResponse(context, safe=False)
 
 
@@ -56,8 +57,6 @@ def ListarComentariosPorMatricula(request):
 
 def AddComentario(request):
     if request.method == 'POST':
-        print(request.POST)
-        print(request.POST['texto'])
         respuesta = {}
         try:
             action = request.POST['action']
@@ -72,7 +71,7 @@ def AddComentario(request):
                 comentarioa = Comentario.objects.get(pk=id_comentarioa)
                 comentario.respuestaA = comentarioa
             if request.user.perfil.tipo == 'ES':
-                comentario.aprobado = True
+                comentario.aprobado = False
                 respuesta['estudiante'] = True
             else:
                 respuesta['estudiante'] = False
