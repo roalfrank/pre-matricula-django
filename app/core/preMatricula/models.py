@@ -553,7 +553,7 @@ class PreMatriculaEstudiante(models.Model):
 
 
 @receiver(post_delete, sender=PreMatriculaEstudiante)
-def actualizarMatricula(sender, instance, created, **kwargs):
+def actualizarMatricula(sender, instance, **kwargs):
     # conectamos al websocket de de update matricula
     channel_layer = get_channel_layer()
     nombre_grupo = 'update_matricula_' + str(instance.preMatricula.pk)

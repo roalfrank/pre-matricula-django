@@ -97,15 +97,13 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
-                tiempo_inicial = time.time()
                 data = [i.toJson() for i in Estudiante.objects.all()]
                 tiempo_final = time.time()
-                tiempo = tiempo_final - tiempo_inicial
-                print(f'Tiempo demorado en cargar datos estudiante:{tiempo}')
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             # action edit - editando una entidad.
             elif action == 'edit':
+                print(request.POST)
                 estudiante = Estudiante.objects.get(
                     pk=int(request.POST['id_edit']))
                 user_instancia = User.objects.get(
@@ -121,7 +119,7 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     request.POST, instance=estudiante)
                 if all([form_user.is_valid(), form_estudiante.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
-                        form_user.save()
+                        form_user.save(edit=True)
                         perfil = form_perfil.save()
                         form_estudiante.save()
                         data['enviado'] = True
@@ -130,10 +128,13 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['enviado'] = False
                     error = {}
                     if not form_user.is_valid():
+                        print('error formulario user')
                         error.update(form_user.errors.get_json_data())
                     elif not form_estudiante.is_valid():
+                        print('error formulario estudiante')
                         error.update(form_estudiante.errors.get_json_data())
                     elif not form_perfil.is_valid():
+                        print('error formulario perfil')
                         error.update(form_perfil.errors.get_json_data())
                     print(error)
                     data['error'] = json.dumps(error)

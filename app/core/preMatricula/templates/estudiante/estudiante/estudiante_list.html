@@ -367,6 +367,7 @@
       submitHandler: function (form) {
         var parametros = new FormData(form);
         parametros.append('id_edit', id_edit);
+        parametros.append('tipo','ES');
         submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
           parametros,
           function (data) {

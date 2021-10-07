@@ -8,9 +8,11 @@ class UserCrearAutomaticoForm(ModelForm):
     class Meta:
         model = User
         fields = ('username', 'is_active')
+    # si viene de editar no cambia el pasword
 
     def save(self, commit=True, edit=False):
         user = super().save(commit=False)
+        print('ver el valor de edit en save del UserCrearAutomaticoForm', edit)
         if not edit:
             user.set_password(self.cleaned_data["username"])
         if commit:

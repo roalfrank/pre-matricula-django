@@ -1,4 +1,6 @@
 {% load static%}
+{% load filterCustom %}
+{% load qr_code %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,28 +32,20 @@
  <style>
   /* common */
 .ribbon {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   overflow: hidden;
   position: absolute;
 }
-.ribbon::before,
-.ribbon::after {
-  position: absolute;
-  z-index: -1;
-  content: '';
-  display: block;
-  border: 5px solid #2980b9;
-}
+
 .ribbon span {
   position: absolute;
   display: block;
   width: 258px;
-  padding: 5px 0;
-  background-color: #3498db;
+  background-color: #0a9396;
   box-shadow: 0 5px 10px rgba(0,0,0,.1);
   color: #fff;
-  font: 700 18px/1 'Lato', sans-serif;
+  font: 700 15px/1 'Lato', sans-serif;
   text-shadow: 0 1px 1px rgba(0,0,0,.2);
   text-transform: uppercase;
   text-align: center;
@@ -62,19 +56,7 @@
   top: -10px;
   left: -10px;
 }
-.ribbon-top-left::before,
-.ribbon-top-left::after {
-  border-top-color: transparent;
-  border-left-color: transparent;
-}
-.ribbon-top-left::before {
-  top: 0;
-  right: 0;
-}
-.ribbon-top-left::after {
-  bottom: 0;
-  left: 0;
-}
+
 .ribbon-top-left span {
   right: -25px;
   top: 30px;
@@ -83,25 +65,13 @@
 
 /* top right*/
 .ribbon-top-right {
-  top: -10px;
-  right: -10px;
+  top: -5px;
+  right: -5px;
 }
-.ribbon-top-right::before,
-.ribbon-top-right::after {
-  border-top-color: transparent;
-  border-right-color: transparent;
-}
-.ribbon-top-right::before {
-  top: 0;
-  left: 0;
-}
-.ribbon-top-right::after {
-  bottom: 0;
-  right: 0;
-}
+
 .ribbon-top-right span {
-  left: -25px;
-  top: 30px;
+  left: -37px;
+  top: 25px;
   transform: rotate(45deg);
 }
 
@@ -159,29 +129,44 @@
 <body>
 
   <!-- ======= Header ======= -->
-  <header id="header" class="fixed-top">
-    <div class="container-fluid d-flex">
-
+  <header id="header" class="fixed-top" >
+    <div class="container-fluid d-flex"  >
       <div class="logo mr-auto d-flex">
         <!-- Uncomment below if you prefer to use an image logo -->
-        <a href="index.html"><img src="{% static 'inicio/img/logo-icon.png'%}" alt="" class="img-fluid"></a>
-        <h1 class="text-light pl-2"><a href="index.html"><span>Matrícula Online JCC</span></a></h1>
+        <a href="index.html" data-aos="fade-down"><img src="{% static 'inicio/img/logo-icon.png'%}" alt="" class="img-fluid"></a>
+        <h1 class="text-light pl-2"><a href="/"><span>Matrícula Online JCC</span></a></h1>
       </div>
 
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li class="active"><a href="index.html">Inicio</a></li>
-          <li><a href="#about">Sobre nosotros</a></li>
+          <li><a href="#about">Nosotros</a></li>
           <li><a href="#services">Cursos</a></li>
-          <li><a href="#faq">Preguntas y Respuestas</a></li>
-          <li><a href="#clients">Estudiantes opinan</a></li>
+          <li><a href="#faq">Ayuda</a></li>
+          <li><a href="#clients">Opiniones</a></li>
           <li><a href="#contact">Contáctanos</a></li>
 
-          <li class="get-started">
-            {% if user.is_authenticated %}
-              <a href="{% url 'sitio:enrutador-sistema'%}" style="background-color: #ffc107; color: #ffff;"><strong>Ver Sistema</strong></a>
-            {% else %}
-            <a href="{% url 'login:login-user'%}" style="background-color: #ffc107; color: #ffff;"><strong>Empieza Ya</strong></a>
+          <li>
+            {% if request.user.is_authenticated %}
+            <li>
+              <a class="btn btn-sm btn-warning " href="{% url 'login:login-user' %}"  >
+                Entrar en el sistema
+                <i class="icofont-login"></i>
+              </a> 
+              </li>
+            {% else %} 
+            <li>
+             <a class="btn btn-sm btn-warning p-1 px-2 mt-1 font-weight-bold text-uppercase mr-1"  href="{% url 'login:registrar' %}"  >
+                Crear cuenta
+                <i class="icofont-plus"></i>
+              </a>  
+            </li>
+            <li>
+              <a class="btn btn-sm btn-warning p-1 px-2 mr-1 mt-1 font-weight-bold text-uppercase" style="height: 2rem;" href="{% url 'login:login-user' %}"  >
+                Entrar
+                <i class="icofont-login"></i>
+              </a> 
+            </li>
             {% endif %}
           </li>
         </ul>
@@ -196,18 +181,34 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1">
-          <h1>Ahorra tiempo matriculándote en línea.</h1>
-          <h2>Queremos que tu proceso de matrícula en los cursos presenciales sean rápido y ágil.</h2>
+        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1" >
+          <h1 data-aos="fade-right">Ahorra tiempo matriculándote en línea.</h1>
+          <h2 data-aos="zoom-in-right">Queremos que tu proceso de matrícula en los cursos presenciales sean rápido y ágil.</h2>
           {% if user.is_authenticated %}
-              <a href="{% url 'sitio:enrutador-sistema'%}" style="background-color: #ffc107; color: #ffff;" class="btn-get-started scrollto"><strong>Ver Sistema</strong></a>
+              <a href="{% url 'sitio:enrutador-sistema'%}" data-aos="zoom-in-left" class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"><strong>Ver Sistema</strong></a>
             {% else %}
-            <a href="{% url 'login:login-user'%}" class="btn-get-started scrollto" style="background-color: #ffc107; color: #ffff;"><strong>Empieza Ya</strong></a>
+             <span class='d-flex justify-content-start' >
+              <a class="btn btn-sm btn-warning p-1 px-3 mt-1 mr-1 font-weight-bold text-uppercase" data-aos="zoom-in-left" href="{% url 'login:registrar' %}"  >
+                  Crear cuenta
+                  <i class="icofont-plus"></i>
+              </a>  
+              <a class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"  data-aos="zoom-in-left" href="{% url 'login:login-user' %}"  >
+                Entrar
+                <i class="icofont-login"></i>
+              </a> 
+            </span> 
             {% endif %}
           
         </div>
-        <div class="col-lg-6 order-1 order-lg-2 hero-img">
-          <img src="{% static 'inicio/img/p1.png'%}" class="img-fluid animated" alt="" style="max-width: 45%;">
+        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in-left">
+          <span >
+            <img src="{% static 'inicio/img/p1.png'%}"  class="img-fluid animated" alt="" style="max-width: 45%;">
+          </span>
+          <span class='hero-logo' data-aos="fade-left"
+                                  data-aos-easing="linear"
+                                  >
+            <img src="{% static 'img/logan.png'%}" class="img-fluid " alt=""  >
+          </span>
         </div>
       </div>
     </div>
@@ -233,19 +234,15 @@
             </p>
             <div class="row">
               <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <i class="bx bx-receipt"></i>
+                <i class="icofont-graduate-alt"></i>
                 <h4>Cursos Presenciales</h4>
                 <p>Servicio impartido en los locales de las instalaciones de los Joven Club de Computacion y
                   Electrónica.</p>
-                {% if user.is_authenticated %}
-              <a href="{% url 'sitio:enrutador-sistema'%}" style="background-color: #ffc107; color: #ffff;" class="btn"><strong>Ver Sistema</strong></a>
-            {% else %}
-            <a href="{% url 'login:login-user'%}" class="btn" style="background-color: #ffc107; color: #ffff;"><strong>Empieza Ya</strong></a>
-            {% endif %}
+                
               </div>
               <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <i><a href="index.html"><img src="{% static 'inicio/img/logoCursad.svg'%}" alt="" class="img-fluid"
-                      style="max-height: 25%;"></a></i>
+                <a href="index.html"><img src="{% static 'inicio/img/logoCursad.svg'%}" alt="" class="img-fluid"
+                      style="max-height: 3.1rem;"></a>
                 <h4>Cursos Online(CURSAD)</h4>
                 <p>Sitio Formativo de los Joven Club de Computación y Electrónica de forma online.</p>
               </div>
@@ -267,98 +264,46 @@
         </div>
 
         <div class="row">
-          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-            <div class="icon-box p-2" style='text-align: start;'>
+          {% for curso in listado_curso %}
+           <div class="col-md-6 col-lg-3 d-flex align-items-stretch" style="height: 330px;" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box p-2 mb-4" style='text-align: start; width: 100%;'>
               <div class="ribbon ribbon-top-right"><span>nuevo</span></div>
               <div class="icon pb-2">
-                <img src="{% static 'inicio/img/python.png'%}" alt="" class="img-fluid ml-4"
-                  style="width: 4rem;">
+                <img src="{{curso.curso.get_foto}}" alt="" class="img-fluid ml-4 rounded-circle" style='max-width: 60px; height: 60px;box-shadow: 1px 5px 3px rgba(0,0,0,0.25);'>
               </div>
-              <h4 class="title text-center"><a href="{% url 'prematricula:matricula-page' 1 %}">Aprendiendo Python</a></h4>
-              <p class="description text-center p-2 mb-2" style="background-color: #eb5d1e; border-radius: 10px; color:#ffff"><strong>Curso orientado a los interesados en la programación y automatización de procesos.</strong>
+              <h4 class="title text-center mb-1" style="height: 20%;">{{curso.curso.nombre}}</h4>
+              <p class="description text-center p-1" style="height: 38%; background-color: #e9d8a6; border-radius: 10px; color:rgb(19, 17, 17)"><strong>{{curso.curso.descripcion}}</strong>
               </p>
-              <div class="icon pb-2 ">
-                  <button class="btn btn-primary w-75 mt-2 btn-sm"  style="border-radius: 15px;"><img src="{% static 'img/iconos/buscar.png' %}" alt="Ver matricula" width="30px" height="30px">Todo sobre el curso</button>
+              <div class="icon mb-2">
+                  <a style='width: 75%;'  class="btn mt-3 btn-sm botones-accion" href="{% url 'prematricula:matricula-page' curso.pk %}">Detalle<img src="{% static 'img/iconos/buscar.png' %}" alt="Ver matricula" width="20px" height="20px" class="ml-2"></a>
                 
-                  <img src="{% static 'img/iconos/qr.png'%}" alt="" class="img-fluid float-right"
-                  style="width: 3.5rem;">
+                  {% qr_crear base_url curso.pk as urlQR_matricula %}
+                  <span class='qr_cursos'>
+                    {% qr_from_text urlQR_matricula  size=5 error_correction="L" %}
+                  </span>
+                 
               </div>
             </div>
           </div>
-
-          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
-            <div class="icon-box">
-              <div class="icon"><img src="{% static 'inicio/img/excel.png'%}" alt="" class="img-fluid"
-                  style="width: 4rem;"></div>
-              <h4 class="title"><a href="">Aprendiendo excel desde cero.</a></h4>
-              <p class="description">Aprenda excel desde cero con nuestros profesores.</p>
+          {% endfor %}
+          
+          <div class="col-12 p-5">
+            <div style="color: #ffff; background-color: #005f7380; border-radius: 10px;font-size: 32px;font-weight: 700;" class='p-4 text-center'>Para matricular necesitas iniciar sección en nuestra
+              plataforma.
+            <div>
+              <span class='d-flex justify-content-center'>
+              <a class="btn btn-sm btn-warning p-1 px-3 mt-1 mr-1 font-weight-bold text-uppercase"  href="{% url 'login:registrar' %}"  >
+                  Crear cuenta
+                  <i class="icofont-plus"></i>
+              </a>  
+              <a class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"  href="{% url 'login:login-user' %}"  >
+                Entrar
+                <i class="icofont-login"></i>
+              </a> 
+            </span> 
             </div>
-          </div>
-
-          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
-            <div class="icon-box">
-              <div class="icon"><img src="{% static 'inicio/img/word.png'%}" alt="" class="img-fluid"
-                  style="width: 4rem;"></div>
-              <h4 class="title"><a href="">De principiante a experto en Word.</a></h4>
-              <p class="description">Primeros pasos para poder enytrar al mundo de Word.</p>
-            </div>
-          </div>
-
-          <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="400">
-            <div class="icon-box">
-              <div class="icon"><img src="{% static 'inicio/img/ecured.jpg'%}" alt="" class="img-fluid"
-                  style="width: 4rem;"></div>
-              <h4 class="title"><a href="">Escribir artículos para Ecured.</a></h4>
-              <p class="description">Profesores te ayudan a escribir artículos para la enciclopedia colaborativa de
-                Cuba.</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-              <div class="icon-box">
-                <div class="icon pb-2"><img src="{% static 'inicio/img/python.png'%}" alt="" class="img-fluid"
-                    style="width: 4rem;"></div>
-                <h4 class="title"><a href="">Aprendiendo Python</a></h4>
-                <p class="description">Curso orientado a los interesados en la programación y automatización de
-                  procesos.</p>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="200">
-              <div class="icon-box">
-                <div class="icon"><img src="{% static 'inicio/img/excel.png'%}" alt="" class="img-fluid"
-                    style="width: 4rem;"></div>
-                <h4 class="title"><a href="">Aprendiendo excel desde cero.</a></h4>
-                <p class="description">Aprenda excel desde cero con nuestros profesores.</p>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="300">
-              <div class="icon-box">
-                <div class="icon"><img src="{% static 'inicio/img/word.png'%}" alt="" class="img-fluid"
-                    style="width: 4rem;"></div>
-                <h4 class="title"><a href="">De principiante a experto en Word.</a></h4>
-                <p class="description">Primeros pasos para poder enytrar al mundo de Word.</p>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="400">
-              <div class="icon-box">
-                <div class="icon"><img src="{% static 'inicio/img/ecured.jpg'%}" alt="" class="img-fluid"
-                    style="width: 4rem;"></div>
-                <h4 class="title"><a href="">Escribir artículos para Ecured.</a></h4>
-                <p class="description">Profesores te ayudan a escribir artículos para la enciclopedia colaborativa de
-                  Cuba.</p>
-              </div>
-            </div>
-
-          </div>
-          <div class="row pt-5">
-            <div class="col-md-6 col-lg-6 " style="color: #ffff;">Para matricular necesitas iniciar sección en nuestra
-              plataforma.</div>
-            <div class="col-md-6 col-lg-6"><a href="#about" class="btn scrollto"
-                style="background-color: #ffc107; color: #ffff;"><strong>Ver todos los cursos</strong></a></div>
-          </div>
+          </div></div>
+            
         </div>
     </section><!-- End Services Section -->
 
@@ -370,95 +315,100 @@
           <h2>Preguntas y Respuestas</h2>
           <p>Respuestas a las principales preguntas de usuarios.</p>
         </div>
-
-        <ul class="faq-list">
-
-          <li data-aos="fade-up" data-aos-delay="100">
-            <a data-toggle="collapse" class="" href="#faq1">¿Cuanto cuestan los cursos ? <i
-                class="icofont-simple-up"></i></a>
-            <div id="faq1" class="collapse show" data-parent=".faq-list">
-              <p>
-                Para las personas naturales este servicio se brinda de manera gratuita. Personas jurídicas a 60 pesos
-                por hora.
-              </p>
-            </div>
-          </li>
-
-          <li data-aos="fade-up" data-aos-delay="200">
-            <a data-toggle="collapse" href="#faq2" class="collapsed">¿Cuanto duran los cursos? <i
-                class="icofont-simple-up"></i></a>
-            <div id="faq2" class="collapse" data-parent=".faq-list">
-              <p>
-                Los cursos regulares tienen como mínimo una duración de <strong>24 horas</strong> y se clasifican
-                atendiendo a su
-                duración y profundización en: <br> a)<strong>Cursos cortos</strong>, comprenden una duración de
-                <strong>24 horas</strong> y <strong>36 horas</strong> y se imparten exclusivamente en la
-                modalidad presencial. <br> b)<strong>Cursos largos</strong>, comprenden de <strong>48 horas</strong>,
-                <strong>64 horas</strong> y más de <strong>96 horas</strong>, se imparten en las tres modalidades,
-                presencial, semipresencial y a distancia.
-              </p>
-            </div>
-          </li>
-
-          <li data-aos="fade-up" data-aos-delay="300">
-            <a data-toggle="collapse" href="#faq3" class="collapsed">¿Como realizo la matrícula? <i
-                class="icofont-simple-up"></i></a>
-            <div id="faq3" class="collapse" data-parent=".faq-list">
-              <p>
-                <ul>
-                  <li>1. Debe crearte una cuenta para acceder a nuestra plataforma.<a href="#about" class="btn scrollto"
-                      style="background-color: #ffc107; color: #ffff;"><strong>Crear cuenta</strong></a> </li>
-                  <li>2. Accede a la plataforma con tu usuario y contraseña.<a href="#about" class="btn scrollto"
-                      style="background-color: #ffc107; color: #ffff;"><strong>Iniciar sección</strong></a></li>
-                  <li>3. Es necesario completar tu perfil para poder matricularte en los cursos..</li>
-                  <li>4. Elige de los cursos que estan disponible en los Joven Club cual es de su interés.</li>
-                  <li>5. Ya puedes hacer la matrícula.</li>
-                </ul>
-              </p>
-            </div>
-          </li>
-
-          <li data-aos="fade-up" data-aos-delay="400">
-            <a data-toggle="collapse" href="#faq4" class="collapsed">¿Al terminar el curso te dan un certificado o
-              diploma? <i class="icofont-simple-up"></i></a>
-            <div id="faq4" class="collapse" data-parent=".faq-list">
-              <p>
-                Se certifican todos los cursos ofrecidos en las instalaciones de Joven Club de Computación y
-                Electrónica, una vez concluido estos, mediante el certificado que genera el Módulo de Control de
-                Servicios; la
-                entrega del certificado la garantiza el jefe máximo de cada estructura o unidad organizativa.
-              </p>
-            </div>
-          </li>
-
-          <li data-aos="fade-up" data-aos-delay="500">
-            <a data-toggle="collapse" href="#faq5" class="collapsed">¿Que hago si tengo alguna duda con un curso? <i
-                class="icofont-simple-up"></i></a>
-            <div id="faq5" class="collapse" data-parent=".faq-list">
-              <p>
-                Puede contactarnos y plantearnos su duda por diferentes vias: <br> <br>
-                Mediante el formulario de contacto. <a href="#contact" class="btn scrollto"
-                  style="background-color: #ffc107; color: #ffff;"><strong>Contactar</strong></a>
-                <br> Cada curso tiene la posibilidad de interactuar con sus profesores y poder aclarar algunas dudas.
-              </p>
-            </div>
-          </li>
-
-          <li data-aos="fade-up" data-aos-delay="600">
-            <a data-toggle="collapse" href="#faq6" class="collapsed">No encuentro cursos de mi interés. ¿Puedo sugerir
-              algun curso? <i class="icofont-simple-up"></i></a>
-            <div id="faq6" class="collapse" data-parent=".faq-list">
-              <p>
-                En nuestra plataforma usted puede sugerir algun curso que no esté contemplado en el programa del Joven
-                Club de su interés. <br>
-                Nuestros especialistas analizarán y valorarán el interés de otros estudiantes a su sugerencia. El curso
-                se avilita si hay algunos estudiantes interesado y el Joven Club disponga del personal docente necesario
-                para su realización.
-              </p>
-            </div>
-          </li>
-
-        </ul>
+      <div class="row">
+        <div class="col-12 col-lg-8 col-sm-8">
+          <ul class="faq-list">
+  
+            <li data-aos="fade-up" data-aos-delay="100">
+              <a data-toggle="collapse" class="" href="#faq1">¿Cuanto cuestan los cursos ? <i
+                  class="icofont-simple-up"></i></a>
+              <div id="faq1" class="collapse show" data-parent=".faq-list">
+                <p>
+                  Para las <strong>personas naturales</strong> este servicio se brinda de manera <strong>gratuita</strong>. Personas jurídicas a 60 pesos
+                  por hora.
+                </p>
+              </div>
+            </li>
+  
+            <li data-aos="fade-up" data-aos-delay="200">
+              <a data-toggle="collapse" href="#faq2" class="collapsed">¿Cuanto duran los cursos? <i
+                  class="icofont-simple-up"></i></a>
+              <div id="faq2" class="collapse" data-parent=".faq-list">
+                <p>
+                  Los cursos regulares tienen como mínimo una duración de <strong>24 horas</strong> y se clasifican
+                  atendiendo a su
+                  duración y profundización en: <br> a)<strong>Cursos cortos</strong>, comprenden una duración de
+                  <strong>24 horas</strong> y <strong>36 horas</strong> y se imparten exclusivamente en la
+                  modalidad presencial. <br> b)<strong>Cursos largos</strong>, comprenden de <strong>48 horas</strong>,
+                  <strong>64 horas</strong> y más de <strong>96 horas</strong>, se imparten en las tres modalidades,
+                  presencial, semipresencial y a distancia.
+                </p>
+              </div>
+            </li>
+  
+            <li data-aos="fade-up" data-aos-delay="300">
+              <a data-toggle="collapse" href="#faq3" class="collapsed">¿Como realizo la matrícula? <i
+                  class="icofont-simple-up"></i></a>
+              <div id="faq3" class="collapse" data-parent=".faq-list">
+                <p>
+                  <ul>
+                    <li>1. Debe crearte una cuenta para acceder a nuestra plataforma.<a href="#about" class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"
+                        ><strong>Crear cuenta</strong></a> </li>
+                    <li>2. Accede a la plataforma con tu usuario y contraseña.<a href="#about" class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"
+                       ><strong>Iniciar sección</strong></a></li>
+                    <li>3. Es necesario completar tu perfil para poder matricularte en los cursos..</li>
+                    <li>4. Elige de los cursos que estan disponible en los Joven Club cual es de su interés.</li>
+                    <li>5. Ya puedes hacer la matrícula.</li>
+                  </ul>
+                </p>
+              </div>
+            </li>
+  
+            <li data-aos="fade-up" data-aos-delay="400">
+              <a data-toggle="collapse" href="#faq4" class="collapsed">¿Al terminar el curso te dan un certificado o
+                diploma? <i class="icofont-simple-up"></i></a>
+              <div id="faq4" class="collapse" data-parent=".faq-list">
+                <p>
+                  <strong>Se certifican todos los cursos</strong> ofrecidos en las instalaciones de Joven Club de Computación y
+                  Electrónica, una vez concluido estos, mediante el certificado que genera el Módulo de Control de
+                  Servicios; la
+                  entrega del certificado la garantiza el jefe máximo de cada estructura o unidad organizativa.
+                </p>
+              </div>
+            </li>
+  
+            <li data-aos="fade-up" data-aos-delay="500">
+              <a data-toggle="collapse" href="#faq5" class="collapsed">¿Que hago si tengo alguna duda con un curso? <i
+                  class="icofont-simple-up"></i></a>
+              <div id="faq5" class="collapse" data-parent=".faq-list">
+                <p>
+                  Puede contactarnos y plantearnos su duda por diferentes vias: <br> <br>
+                  Mediante el formulario de contacto. <a href="#contact" class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"><strong>Contactar</strong></a>
+                  <br> Cada curso tiene la posibilidad de interactuar con sus profesores y poder aclarar algunas dudas.
+                </p>
+              </div>
+            </li>
+  
+            <li data-aos="fade-up" data-aos-delay="600">
+              <a data-toggle="collapse" href="#faq6" class="collapsed">No encuentro cursos de mi interés. ¿Puedo sugerir
+                algun curso? <i class="icofont-simple-up"></i></a>
+              <div id="faq6" class="collapse" data-parent=".faq-list">
+                <p>
+                  En nuestra plataforma usted puede sugerir algun curso que no esté contemplado en el programa del Joven
+                  Club de su interés. <br>
+                  Nuestros especialistas analizarán y valorarán el interés de otros estudiantes a su sugerencia. El curso
+                  se avilita si hay algunos estudiantes interesado y el Joven Club disponga del personal docente necesario
+                  para su realización.
+                </p>
+              </div>
+            </li>
+  
+          </ul>
+        </div>
+        <div class="col-4 ">
+         <img src="{% static 'img/iconos/pregunta.png' %}" alt="preguntas y respuestas" width="70%" data-aos="fade-left">
+        </div>
+      </div>
 
       </div>
     </section><!-- End F.A.Q Section -->
@@ -471,18 +421,18 @@
           <h2>Testimonios</h2>
           <p style="color: #ffff;">Estudiantes Opinan</p>
         </div>
-        <div class="gtco-testimonials">
+        <div class="gtco-testimonials" data-aos="zoom-out-up">
 
           <div class="owl-carousel owl-carousel1 owl-theme">
             <div>
               <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-1.jpg'%}"
                   alt="">
                 <div class="card-body">
-                  <h5>Roaldys Garcia <br />
+                  <h5>Ernesto Lopez <br />
                     <span></span>
                   </h5>
                   <p class="card-text">“ He tenido una buena experiencia matriculandome en los cursos con esta
-                    plataforma. ” </p>
+                    plataforma.  ” </p>
                 </div>
               </div>
             </div>
@@ -490,10 +440,10 @@
               <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-2.jpg'%}"
                   alt="">
                 <div class="card-body">
-                  <h5>Frank Alejandro<br />
+                  <h5>Alba Rosa<br />
                     <span> </span>
                   </h5>
-                  <p class="card-text">“ Aprendrí mucho en los cursos. ” </p>
+                  <p class="card-text">“ Aprendrí mucho con estos cursos, en especial "Aprendiendo Python". ” </p>
                 </div>
               </div>
             </div>
@@ -501,7 +451,7 @@
               <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-3.jpg'%}"
                   alt="">
                 <div class="card-body">
-                  <h5>Juana Verdecia<br />
+                  <h5>Juan Verdecia<br />
                     <span> </span>
                   </h5>
                   <p class="card-text">“ Al principio no tenía buena prepectiva, pero me ha facinado lo bien que me fue.
@@ -513,7 +463,7 @@
               <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-4.jpg'%}"
                   alt="">
                 <div class="card-body">
-                  <h5>Roberto Rodriguez<br />
+                  <h5>Odelsi Pastrana<br />
                     <span></span>
                   </h5>
                   <p class="card-text">“ Un amigo me lo recomendó y fue una buena experiencia. ” </p>
@@ -605,16 +555,47 @@
   <!-- ======= Footer ======= -->
   <footer id="footer">
 
-    <div class="footer-newsletter" data-aos="fade-up" style="background-color: #449ad2;">
+    <div class="footer-newsletter pt-3" data-aos="fade-up" style="background-color: #449ad2;">
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col-lg-6">
-            <h4 style="color: #ffff;">Subscríbete.</h4>
-            <p style="color: aliceblue;">Mantente informado de los cursos y noticias.</p>
-            <form action="" method="post">
-              <input type="email" name="email" data-rule="email" data-msg="Por favor entre un correo válido."><input
-                type="submit" value="Suscríbete">
-            </form>
+          <div class="col-12">
+            <h4 style="color: #ffff;">OTROS SERVICIOS DE LOS JOVEN CLUB.</h4>
+            <div class="row mt-1 justify-content-around">
+              <div class="otros_servicios d-flex flex-column">
+                    <a href="http://mochila.cubava.cu/">
+                      <img src="{% static 'img/iconos/mochila.png' %}" alt="Mochila Series Novelas Educacion Cuba Joven Club de Computacion" width='150px' height='70px'>
+                    </a>
+                    <span>Mochila</span>
+              </div>
+              
+              <div class="otros_servicios d-flex flex-column">
+                <a href="https://www.ecured.cu/">
+                  <img src="{% static 'img/iconos/ecured.jpg' %}" alt="Ecured Cuba Joven Club de Computacion"  width='70px' height='70px'>
+                </a>
+                <span>Ecured</span>
+              </div>
+              
+              <div class="otros_servicios d-flex flex-column">
+                <a href="https://tendedera.cubava.cu/">
+                  <img src="{% static 'img/iconos/tendedera.png' %}" alt="Tendedera red social Cuba Joven Club de Computacion"  width='70px' height='70px'>
+                </a>
+                <span>Tendedera</span>
+              </div>
+              
+              <div class="otros_servicios d-flex flex-column">
+                <a href="https://revista.jovenclub.cu/">
+                  <img src="{% static 'img/iconos/tino.png' %}" alt="Revista Tino Cuba Joven Club de Computacion"  width='150px' height='70px'>
+                </a>
+                <span>Tino</span>
+              </div>
+              
+              <div class="otros_servicios d-flex flex-column">
+                <a href="http://ludox.cubava.cu/">
+                  <img src="{% static 'img/iconos/ludox.png' %}" alt="Ludox Videojuegos Cuba Joven Club de Computacion"  width='150px' height='70px'>
+                </a>
+                <span>Ludox</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -146,7 +146,7 @@ class MatriculaDetailView(DetailView):
         #          for i in range(0, len(lista_estudiante), n)]
         context['listaAlumnos'] = lista_estudiante
         context['base_url'] = "{0}://{1}{2}".format(
-            self.request.scheme, self.request.get_host(), '/sistema/matricula-detalle/')
+            self.request.scheme, self.request.get_host(), '/sistema/matricula-pagina/')
         context['promedioCantidad'] = round(
             (context['cantAlumnos']*100)/self.object.capacidad, 2)
         is_liked = False
