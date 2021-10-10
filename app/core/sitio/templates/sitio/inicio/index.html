@@ -53,13 +53,14 @@
 
 /* top left*/
 .ribbon-top-left {
-  top: -10px;
-  left: -10px;
+  top: -2px;
+  left: -2px;
 }
 
 .ribbon-top-left span {
   right: -25px;
   top: 30px;
+  padding-left: 20%;
   transform: rotate(-45deg);
 }
 
@@ -133,7 +134,7 @@
     <div class="container-fluid d-flex"  >
       <div class="logo mr-auto d-flex">
         <!-- Uncomment below if you prefer to use an image logo -->
-        <a href="index.html" data-aos="fade-down"><img src="{% static 'inicio/img/logo-icon.png'%}" alt="" class="img-fluid"></a>
+        <a href="/" data-aos="fade-down"><img loading='lazy' src="{% static 'inicio/img/logo-icon.png'%}" alt="" class="img-fluid"></a>
         <h1 class="text-light pl-2"><a href="/"><span>Matrícula Online JCC</span></a></h1>
       </div>
 
@@ -150,7 +151,7 @@
             {% if request.user.is_authenticated %}
             <li>
               <a class="btn btn-sm btn-warning " href="{% url 'login:login-user' %}"  >
-                Entrar en el sistema
+                Ver sistema
                 <i class="icofont-login"></i>
               </a> 
               </li>
@@ -202,12 +203,12 @@
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in-left">
           <span >
-            <img src="{% static 'inicio/img/p1.png'%}"  class="img-fluid animated" alt="" style="max-width: 45%;">
+            <img  loading='lazy' src="{% static 'inicio/img/p1.png'%}"  class="img-fluid animated" alt="" style="max-width: 45%;">
           </span>
           <span class='hero-logo' data-aos="fade-left"
                                   data-aos-easing="linear"
                                   >
-            <img src="{% static 'img/logan.png'%}" class="img-fluid " alt=""  >
+            <img loading='lazy' src="{% static 'img/logan.png'%}" class="img-fluid " alt=""  >
           </span>
         </div>
       </div>
@@ -223,7 +224,7 @@
 
         <div class="row justify-content-between">
           <div class="col-lg-5 d-flex align-items-center justify-content-center about-img">
-            <img src="{% static 'inicio/img/about-img.svg'%}" class="img-fluid" alt="" data-aos="zoom-in">
+            <img  loading='lazy' src="{% static 'inicio/img/about-img.svg'%}" class="img-fluid" alt="" data-aos="zoom-in">
           </div>
           <div class="col-lg-6 pt-5 pt-lg-0">
             <h3 data-aos="fade-up">Joven Club de Computación</h3>
@@ -241,7 +242,7 @@
                 
               </div>
               <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <a href="index.html"><img src="{% static 'inicio/img/logoCursad.svg'%}" alt="" class="img-fluid"
+                <a href="index.html"><img loading='lazy' src="{% static 'inicio/img/logoCursad.svg'%}" alt="" class="img-fluid"
                       style="max-height: 3.1rem;"></a>
                 <h4>Cursos Online(CURSAD)</h4>
                 <p>Sitio Formativo de los Joven Club de Computación y Electrónica de forma online.</p>
@@ -267,9 +268,9 @@
           {% for curso in listado_curso %}
            <div class="col-md-6 col-lg-3 d-flex align-items-stretch" style="height: 330px;" data-aos="zoom-in" data-aos-delay="100">
             <div class="icon-box p-2 mb-4" style='text-align: start; width: 100%;'>
-              <div class="ribbon ribbon-top-right"><span>nuevo</span></div>
-              <div class="icon pb-2">
-                <img src="{{curso.curso.get_foto}}" alt="" class="img-fluid ml-4 rounded-circle" style='max-width: 60px; height: 60px;box-shadow: 1px 5px 3px rgba(0,0,0,0.25);'>
+              <div class="ribbon ribbon-top-left"><span>nuevo</span></div>
+              <div class="icon pb-2 text-center">
+                <img loading='lazy' src="{{curso.curso.get_foto}}" alt="" class="img-fluid  rounded-circle" style='max-width: 60px; height: 60px;box-shadow: 1px 5px 3px rgba(0,0,0,0.25);'>
               </div>
               <h4 class="title text-center mb-1" style="height: 20%;">{{curso.curso.nombre}}</h4>
               <p class="description text-center p-1" style="height: 38%; background-color: #e9d8a6; border-radius: 10px; color:rgb(19, 17, 17)"><strong>{{curso.curso.descripcion}}</strong>
@@ -292,6 +293,12 @@
               plataforma.
             <div>
               <span class='d-flex justify-content-center'>
+          {% if user.is_authenticated %}
+            <a class="btn btn-sm btn-warning p-1 px-3 mt-1 mr-1 font-weight-bold text-uppercase"  href="{% url 'login:login-user' %}"  >
+                  Ver sistema
+                  <i class="icofont-login"></i>
+              </a>  
+          {% else %}
               <a class="btn btn-sm btn-warning p-1 px-3 mt-1 mr-1 font-weight-bold text-uppercase"  href="{% url 'login:registrar' %}"  >
                   Crear cuenta
                   <i class="icofont-plus"></i>
@@ -300,6 +307,7 @@
                 Entrar
                 <i class="icofont-login"></i>
               </a> 
+          {% endif %}
             </span> 
             </div>
           </div></div>
@@ -406,7 +414,7 @@
           </ul>
         </div>
         <div class="col-4 ">
-         <img src="{% static 'img/iconos/pregunta.png' %}" alt="preguntas y respuestas" width="70%" data-aos="fade-left">
+         <img loading='lazy' src="{% static 'img/iconos/pregunta.png' %}" alt="preguntas y respuestas" width="70%" data-aos="fade-left">
         </div>
       </div>
 
@@ -425,7 +433,7 @@
 
           <div class="owl-carousel owl-carousel1 owl-theme">
             <div>
-              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-1.jpg'%}"
+              <div class="card text-center"><img loading='lazy' class="card-img-top" src="{% static 'inicio/img/team/team-1.jpg'%}"
                   alt="">
                 <div class="card-body">
                   <h5>Ernesto Lopez <br />
@@ -437,7 +445,7 @@
               </div>
             </div>
             <div>
-              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-2.jpg'%}"
+              <div class="card text-center"><img class="card-img-top" loading='lazy' src="{% static 'inicio/img/team/team-2.jpg'%}"
                   alt="">
                 <div class="card-body">
                   <h5>Alba Rosa<br />
@@ -448,7 +456,7 @@
               </div>
             </div>
             <div>
-              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-3.jpg'%}"
+              <div class="card text-center"><img class="card-img-top" loading='lazy' src="{% static 'inicio/img/team/team-3.jpg'%}"
                   alt="">
                 <div class="card-body">
                   <h5>Juan Verdecia<br />
@@ -460,7 +468,7 @@
               </div>
             </div>
             <div>
-              <div class="card text-center"><img class="card-img-top" src="{% static 'inicio/img/team/team-4.jpg'%}"
+              <div class="card text-center"><img class="card-img-top" loading='lazy' src="{% static 'inicio/img/team/team-4.jpg'%}"
                   alt="">
                 <div class="card-body">
                   <h5>Odelsi Pastrana<br />
@@ -559,39 +567,39 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12">
-            <h4 style="color: #ffff;">OTROS SERVICIOS DE LOS JOVEN CLUB.</h4>
-            <div class="row mt-1 justify-content-around">
+            <h4 style="color: #ffff;" data-aos="zoom-in" data-aos-delay="100">OTROS SERVICIOS DE LOS JOVEN CLUB.</h4>
+            <div class="row mt-1 justify-content-around" data-aos="zoom-in" data-aos-delay="100">
               <div class="otros_servicios d-flex flex-column">
                     <a href="http://mochila.cubava.cu/">
-                      <img src="{% static 'img/iconos/mochila.png' %}" alt="Mochila Series Novelas Educacion Cuba Joven Club de Computacion" width='150px' height='70px'>
+                      <img loading='lazy' src="{% static 'img/iconos/mochila.png' %}" alt="Mochila Series Novelas Educacion Cuba Joven Club de Computacion" width='150px' height='70px'>
                     </a>
                     <span>Mochila</span>
               </div>
               
               <div class="otros_servicios d-flex flex-column">
                 <a href="https://www.ecured.cu/">
-                  <img src="{% static 'img/iconos/ecured.jpg' %}" alt="Ecured Cuba Joven Club de Computacion"  width='70px' height='70px'>
+                  <img loading='lazy' src="{% static 'img/iconos/ecured.jpg' %}" alt="Ecured Cuba Joven Club de Computacion"  width='70px' height='70px'>
                 </a>
                 <span>Ecured</span>
               </div>
               
               <div class="otros_servicios d-flex flex-column">
                 <a href="https://tendedera.cubava.cu/">
-                  <img src="{% static 'img/iconos/tendedera.png' %}" alt="Tendedera red social Cuba Joven Club de Computacion"  width='70px' height='70px'>
+                  <img loading='lazy' src="{% static 'img/iconos/tendedera.png' %}" alt="Tendedera red social Cuba Joven Club de Computacion"  width='70px' height='70px'>
                 </a>
                 <span>Tendedera</span>
               </div>
               
               <div class="otros_servicios d-flex flex-column">
                 <a href="https://revista.jovenclub.cu/">
-                  <img src="{% static 'img/iconos/tino.png' %}" alt="Revista Tino Cuba Joven Club de Computacion"  width='150px' height='70px'>
+                  <img loading='lazy' src="{% static 'img/iconos/tino.png' %}" alt="Revista Tino Cuba Joven Club de Computacion"  width='150px' height='70px'>
                 </a>
                 <span>Tino</span>
               </div>
               
               <div class="otros_servicios d-flex flex-column">
                 <a href="http://ludox.cubava.cu/">
-                  <img src="{% static 'img/iconos/ludox.png' %}" alt="Ludox Videojuegos Cuba Joven Club de Computacion"  width='150px' height='70px'>
+                  <img loading='lazy' src="{% static 'img/iconos/ludox.png' %}" alt="Ludox Videojuegos Cuba Joven Club de Computacion"  width='150px' height='70px'>
                 </a>
                 <span>Ludox</span>
               </div>

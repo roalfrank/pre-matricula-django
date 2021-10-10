@@ -56,20 +56,23 @@
 {% endblock %}
 {% block columns %}
 <tr>
-  <th style="width: 5%;">Selecciona</th>
+  <th >Selecciona</th>
   <th>Id</th>
-  <th style="width: 30%;">Nombre</th>
-  <th style="width: 10%;">Usuario</th>
-  <th style="width: 20%;">Carnet</th>
-  <th style="width: 15%;">Provincia</th>
-  <th style="width: 10%;">Correo</th>
+  <th >Nombre</th>
+  <th>Usuario</th>
+  <th >Carnet</th>
+  <th >Provincia</th>
+  <th >Correo</th>
   <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
-  <th style="width: 50%;">Acción</th>
+  <th >Acción</th>
   <!-- {%endif%} -->
 
 </tr>
 {% endblock %}
 {% block boton_accion%}
+<button type="button" class="btn btn-default btn-xs mr-2" id='btnprueba'>
+  <i class="fa fa-plus mr-2"></i><span>probando</span>
+</button>
 <!-- {% if perms.user.add_estudiante%} -->
 <button type="button" class="btn btn-default btn-xs" id='btnNuevo'>
   <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
@@ -222,26 +225,39 @@
       });
     });
 
-     var tblListar = $("#data").DataTable({
-      responsive: true,
-      autoWidth: false,
-      destroy: true,
-      deferRender: true,
-      loading: true,
-      ajax: {
-        url: window.location.pathname,
-        type: 'POST',
-        data: {
-          'action': 'cargarDatos',
-          'csrfmiddlewaretoken': function () {
-            return $('input[name="csrfmiddlewaretoken"]').val();
-          },
-        },
-        dataSrc: '',
+    var tblListar = $("#data").DataTable({
+      'serverSide':true,
+      'processing':true,
+      'buttons': [
+        'copy', 'excel', 'pdf'
+    ],
+      responsive: {
+        details: true,
+    },
+      'ajax':function(data,callback,settings){
+        console.log(data);
+         $.post(window.location.pathname,{
+           'action': 'cargarDatos',
+           'csrfmiddlewaretoken': function () {
+             return $('input[name="csrfmiddlewaretoken"]').val();
+           },
+           limite:data.length,
+           inicio:data.start,
+           busqueda:data.search.value
 
+         },function(response){
+           console.log(response);
+               callback({
+                 recordsTotal:response.total,
+                 recordsFiltered:response.total,
+                 data:response.lista
+
+               });
+         });
       },
-      columns: [{
-          "data": 'usuario'
+        columns: [{
+          "data": 'usuario',
+         
         },
         {
           "data": "usuario"
@@ -270,6 +286,7 @@
       ],
       columnDefs: [{
           targets: 0,
+          
           orderable: false,
           class: 'text-center',
           render: function (data, type, row) {
@@ -289,6 +306,7 @@
         //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
           targets: [-1],
+          responsivePriority: 2,
           class: "text-center",
           orderable: false,
           render: function (data, type, row) {
@@ -318,7 +336,114 @@
       initComplete: function (settings, json) {
         tooltip();
       }
+ 
+
+    });//fin de DataTable server
+    $('#btnprueba').on('click',function(e){
+       e.preventDefault();
+       var busqe =JSON.stringify({columna:'2'}); 
+       console.log(JSON.stringify({columna:'2'}));
+       console.log(typeof(JSON.stringify({columna:'2'})));
+       tblListar.search(busqe).draw();
+
     });
+    //  var tblListar = $("#data").DataTable({
+    //   responsive: true,
+    //   autoWidth: false,
+    //   destroy: true,
+    //   deferRender: true,
+    //   loading: true,
+    //   ajax: {
+    //     url: window.location.pathname,
+    //     type: 'POST',
+    //     data: {
+    //       'action': 'cargarDatos',
+    //       'csrfmiddlewaretoken': function () {
+    //         return $('input[name="csrfmiddlewaretoken"]').val();
+    //       },
+    //     },
+    //     dataSrc: '',
+
+    //   },
+    //   columns: [{
+    //       "data": 'usuario'
+    //     },
+    //     {
+    //       "data": "usuario"
+    //     },
+    //     {
+    //       "data": "nombre_usuario"
+    //     },
+    //     {
+    //       "data": "username"
+    //     },
+    //     {
+    //       "data": "ci"
+    //     },
+    //     {
+    //       "data": "provincia"
+    //     },
+    //     {
+    //       "data": "correo"
+    //     },
+
+    //     //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+    //     {
+    //       "data": "nombre"
+    //     }
+    //     //{%endif%}
+    //   ],
+    //   columnDefs: [{
+    //       targets: 0,
+    //       orderable: false,
+    //       class: 'text-center',
+    //       render: function (data, type, row) {
+    //         var buttons =
+    //           '<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div>';
+    //         return buttons
+    //       }
+    //     },
+    //     {
+    //       targets: [1],
+    //       visible: false,
+    //     },
+    //     {
+    //       targets: [2, 4, 5, 6],
+    //       class: "text-center"
+    //     },
+    //     //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+    //     {
+    //       targets: [-1],
+    //       class: "text-center",
+    //       orderable: false,
+    //       render: function (data, type, row) {
+    //         console.log(row.usuario)
+    //         var buttons = ''
+    //         buttons =
+    //         //{% if perms.user.view_estudiante%}
+    //           '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver Estudiante"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+    //         //{%endif%}
+    //           //{% if perms.user.change_estudiante%}
+    //         buttons +=
+    //           '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar Estudiante"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+    //         //{%endif%}
+    //         //{% if perms.user.delete_estudiante%} 
+    //         buttons +=
+    //           '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar Estudiante"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+    //         //{%endif%}
+    //         return buttons
+    //       }
+    //     },
+    //     //{%endif%}
+
+    //   ],
+    //   order: [
+    //     [4, 'asc']
+    //   ],
+    //   initComplete: function (settings, json) {
+    //     tooltip();
+    //   }
+    // });
 
     $('#btnDeleteAll').on('click', function () {
       delete_select(tblListar);

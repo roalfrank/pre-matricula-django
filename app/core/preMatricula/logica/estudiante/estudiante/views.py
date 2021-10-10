@@ -1,11 +1,11 @@
 import json
-import time
 from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
+from django.db.models import Q
 from core.preMatricula.models import Estudiante
 from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
@@ -97,8 +97,28 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
-                data = [i.toJson() for i in Estudiante.objects.all()]
-                tiempo_final = time.time()
+                limite = int(request.POST['limite'])
+                inicio = int(request.POST['inicio'])
+                busqueda = request.POST['busqueda']
+                if busqueda != '':
+                    busqueda_json = json.loads(busqueda)
+                    print('columna a buscar', busqueda_json['columna'])
+
+                print(busqueda)
+                #busqueda_json = json.loads(busqueda)
+                #print('columna a buscar', busqueda_json.columna)
+                estudiantes = Estudiante.objects.filter(
+                    Q(usuario__perfil__nombre__icontains=busqueda) | Q(
+                        usuario__username__icontains=busqueda) | Q(usuario__perfil__ci__icontains=busqueda) | Q(usuario__perfil__correo__icontains=busqueda)
+                )
+                print(request.POST)
+
+                lista = [i.toJson()
+                         for i in estudiantes[inicio:inicio+limite]]
+                data = {
+                    'total': estudiantes.count(),
+                    'lista': lista
+                }
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             # action edit - editando una entidad.
