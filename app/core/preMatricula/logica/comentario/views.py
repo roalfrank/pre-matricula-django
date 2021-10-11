@@ -36,7 +36,7 @@ def rowComentario(request):
         context['html'] = html_string
         #context['fecha'] = naturaltime(comentario.fecha_comentario)
         context['fecha'] = comentario.fecha_comentario
-
+        context['texto'] = comentario.texto
         return JsonResponse(context, safe=False)
 
 

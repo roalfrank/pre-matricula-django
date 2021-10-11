@@ -21,7 +21,7 @@
                             {{comentario.usuario.username}}
                             <span class="text-muted float-right mt-3">{{comentario.fecha_comentario|naturaltime}}</span>
                             </span><!-- /.username -->
-                            {{comentario.texto}}
+                            <span  class='comentario-texto-papa'>{{comentario.texto}}</span>
                         </div>
                         <!-- /.comment-text -->
                         {% comentario_hijos request comentario as listaHijos %}
