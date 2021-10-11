@@ -467,6 +467,7 @@
                              let selector= '#tr_comentario_'+data.comentario.datos.id_comentario;
                              let papa = $(selector);
                              if(papa.length > 0){
+                                 papa.find('.comentario-texto-papa').html(response.texto);
 
                              }
                              else{
