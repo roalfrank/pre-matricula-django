@@ -1,6 +1,17 @@
-from django.db import models
-from django.forms import model_to_dict
+import json
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.dispatch import receiver
+from django.db.models.signals import post_delete, m2m_changed, post_save
+from config.settings import MEDIA_URL, STATIC_URL
 from django.contrib.auth.models import User
+from django.forms import model_to_dict
+from django.db import models
+import random
+import qrcode
+from datetime import datetime
+import time
+
 
 # Create your models here.
 
@@ -136,27 +147,29 @@ class Cargo(models.Model):
 
 
 class Instructor(models.Model):
-    ci = models.IntegerField(
-        verbose_name="Carnet Identidad", unique=True)
+
     usuario_siscae = models.CharField(
         max_length=50, verbose_name="Usuario del siscae", null=True, blank=False)
     usuario = models.OneToOneField(
-        User, on_delete=models.CASCADE, verbose_name="Usuario")
+        User, on_delete=models.CASCADE, verbose_name="Usuario",  primary_key=True)
     jcb = models.ForeignKey(
         JCB, on_delete=models.RESTRICT, verbose_name='Joven Club')
     cargo = models.ForeignKey(
         Cargo, on_delete=models.RESTRICT, verbose_name='Cargo')
 
     def __str__(self):
-        return self.usuario.perfil.nombre
+        return f"{self.usuario.username}-{self.usuario.perfil.nombre}"
 
 
 class Maestro(models.Model):
     instructor = models.OneToOneField(
-        Instructor, on_delete=models.CASCADE, verbose_name='Instructor')
+        Instructor, on_delete=models.CASCADE, verbose_name='Instructor', primary_key=True)
 
     def __str__(self):
-        return self.instructor
+        return self.instructor.usuario.username
+
+    def get_nombre(self):
+        return f"{self.instructor.usuario.perfil.nombre} {self.instructor.usuario.perfil.apellido1} {self.instructor.usuario.perfil.apellido2}"
 
 # todo sobre los estudiantes
 
@@ -215,15 +228,35 @@ class Estudiante(models.Model):
     categoria_ocupacional = models.ForeignKey(
         CategoriaOcupacional, on_delete=models.RESTRICT, verbose_name='Categoría Ocupacional')
     usuario = models.OneToOneField(
-        User, on_delete=models.RESTRICT, verbose_name='usuario')
+        User, on_delete=models.CASCADE, verbose_name='usuario', primary_key=True)
+    creado_por = models.ForeignKey(
+        User, on_delete=models.SET_NULL, verbose_name='Creado por', null=True, blank=True, default=None, related_name="creado_por")
     ocupacion = models.ForeignKey(
         Ocupacion, on_delete=models.RESTRICT, verbose_name='Ocupación')
 
     def __str__(self):
-        return self.usuario.perfil
+        return self.usuario.username
 
     def toJson(self):
-        return model_to_dict(self)
+        tiempo_inicial = time.time()
+        #estudiante = {}
+        estudiante = model_to_dict(self, fields=['usuario'])
+        estudiante['nombre_usuario'] = self.usuario.perfil.nombre
+        estudiante['username'] = self.usuario.username
+        estudiante['provincia'] = self.usuario.perfil.municipio.provincia.nombre
+        estudiante['ci'] = self.usuario.perfil.ci
+        estudiante['correo'] = self.usuario.perfil.correo
+        tiempo_final = time.time()
+        tiempo = tiempo_final - tiempo_inicial
+        print(f'Tiempo demorado estudiante:{tiempo}')
+        return estudiante
+
+    def datosAllJson(self):
+        estudiante = model_to_dict(self)
+        estudiante.update(self.usuario.perfil.toJson())
+        estudiante['nombre_usuario'] = self.usuario.perfil.nombre
+        estudiante['username'] = self.usuario.username
+        return estudiante
 
 
 # mucho a mucho cursosiscae y estudiante
@@ -241,7 +274,8 @@ class EstudianteCursoSiscae(models.Model):
 
 
 class Gestor(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.RESTRICT)
+    usuario = models.OneToOneField(
+        User, on_delete=models.RESTRICT, primary_key=True)
     jcm = models.ForeignKey(JCM, on_delete=models.RESTRICT,
                             verbose_name='Joven Club Municipal')
 
@@ -267,7 +301,7 @@ class GestorEstudiante(models.Model):
 
 class InstructorEstudiante(models.Model):
     instructor = models.ForeignKey(
-        Gestor, on_delete=models.CASCADE, verbose_name='Gestor')
+        Instructor, on_delete=models.CASCADE, verbose_name='Gestor')
     estudiante = models.ForeignKey(
         Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
     fecha_creado = models.DateTimeField(auto_now=True)
@@ -282,15 +316,22 @@ class Curso(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre Curso')
     duracion = models.IntegerField(verbose_name='Duración en Horas')
     descripcion = models.TextField(verbose_name='Descripción del Curso')
-    corto = models.BooleanField(verbose_name='Tipo de Curso')
+    corto = models.BooleanField(verbose_name='corto')
     nextCurso = models.ForeignKey(
         'preMatricula.Curso', on_delete=models.SET_NULL, null=True, blank=True)
+    foto = models.ImageField(
+        upload_to='curso/foto', default='curso_default.png', verbose_name="Foto", null=True, blank=True)
 
     def __str__(self):
         tipo_curso = "Largo"
         if self.corto:
             tipo_curso = "Corto"
         return f"{self.nombre}-{self.duracion} - {tipo_curso}"
+
+    def get_foto(self):
+        if self.foto:
+            return '{}{}'.format(MEDIA_URL, self.foto)
+        return '{}{}'.format(STATIC_URL, 'img/curso_default.png')
 
 
 # Modalidad de la preMatricula
@@ -334,6 +375,8 @@ class TipoGrupo(models.Model):
 class PreMatricula(models.Model):
     curso = models.ForeignKey(
         Curso, on_delete=models.RESTRICT, verbose_name='Curso')
+    jcb = models.ForeignKey(
+        JCB, on_delete=models.CASCADE, verbose_name='Joven Club', blank=True, null=True, default=None)
     capacidad = models.IntegerField(
         verbose_name='Capacidad Total a Matricular')
     frecuencia = models.IntegerField(verbose_name='Frecuencia semanal')
@@ -345,11 +388,101 @@ class PreMatricula(models.Model):
         Modalidad, on_delete=models.RESTRICT, verbose_name='Modalidad')
     tipo_grupo = models.ForeignKey(
         TipoGrupo, on_delete=models.RESTRICT, verbose_name='Tipo Grupo')
+    likes = models.ManyToManyField(
+        User, related_name='likes', blank=True, default=None)
+    fecha_creado = models.DateTimeField(auto_now=True)
+
+    def toJson(self):
+        jsonMatricula = model_to_dict(
+            self, exclude=['curso', 'jcb', 'tipo_grupo', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
+        jsonMatricula['estado'] = self.estado.nombre
+        jsonMatricula['fecha_inicio'] = self.fecha_inicio.strftime(
+            '%d/%m/%Y')
+        jsonMatricula['fecha_fin'] = self.fecha_fin.strftime('%d/%m/%Y')
+        jsonMatricula['nombre_curso'] = self.curso.nombre
+        jsonMatricula['descripcion_curso'] = self.curso.descripcion
+        jsonMatricula['horas'] = self.tipo_grupo.nombre
+        jsonMatricula['modalidad'] = self.modalidad.nombre
+        return jsonMatricula
 
     def __str__(self):
         return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.estado})"
 
-# clase de relacion mucho a mucho con maestro
+    def numero_comentario(self):
+        return Comentario.objects.filter(preMatricula=self).count()
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('prematricula:matricula-page')
+
+    def cantidadEstudiante(self):
+        estudiantes = PreMatriculaEstudiante.objects.filter(
+            preMatricula=self).count()
+        return estudiantes
+
+    def esNuevo(self):
+        fecha_now = datetime.now()
+        print("fecha actual", fecha_now)
+        print("fecha crado", self.fecha_creado.replace(tzinfo=None))
+        resta = fecha_now - self.fecha_creado.replace(tzinfo=None)
+        if resta.days < 7:
+            return True
+        return False
+
+    def actualizad_estado(self):
+        cantidad_estudiante = self.cantidadEstudiante()
+        if self.cantidadEstudiante() < self.capacidad:
+            estado = EstadoMatricula.objects.filter(nombre='abierto').first()
+            if estado:
+                self.estado = estado
+        elif cantidad_estudiante == self.capacidad:
+            estado = EstadoMatricula.objects.filter(nombre='cerrado').first()
+            if estado:
+                self.estado = estado
+        else:
+            estado = EstadoMatricula.objects.filter(
+                nombre='en proceso').first()
+            if estado:
+                self.estado = estado
+        self.save()
+
+    def listadoEstudiante(self):
+        estudiantes = PreMatriculaEstudiante.objects.filter(
+            preMatricula=self)
+        return estudiantes
+
+# singal para cuando se edita una matricula
+
+
+# @receiver(post_save, sender=PreMatricula)
+# def change_matricula(sender, instance, created, **kwargs):
+#     print('datos update', kwargs)
+#     if not created:
+#         print('dentro de post_save no creado')
+#         jsonMatricula = instance.toJson()
+#         # conectamos al websocket de like
+#         print(jsonMatricula)
+#         channel_layer = get_channel_layer()
+#         nombre_grupo = 'update_matricula_' + str(instance.pk)
+#         # lanzamiento de mensaje a websocket
+#         async_to_sync(channel_layer.group_send)(nombre_grupo, {
+#             'type': 'send_message',
+#             'matricula': jsonMatricula
+#         })
+# signal para cuando se cambia el like de la matricula y asi lanzar un mensaje al websocket de like
+
+
+@receiver(m2m_changed, sender=PreMatricula.likes.through)
+def like_change(sender, instance, action, **kwargs):
+    contador_like = instance.likes.all().count()
+    # conectamos al websocket de like
+    channel_layer = get_channel_layer()
+    nombre_grupo = 'like_matricula_' + str(instance.pk)
+    # lanzamiento de mensaje a websocket
+    async_to_sync(channel_layer.group_send)(nombre_grupo, {
+        'type': 'send_message',
+        'contador_like': contador_like
+    })
 
 
 class PreMatriculaMaestro(models.Model):
@@ -359,7 +492,7 @@ class PreMatriculaMaestro(models.Model):
         Maestro, on_delete=models.CASCADE, verbose_name='Maestro')
 
     def __str__(self):
-        return self.preMatricula + self.maestro
+        return self.preMatricula.curso.nombre + self.maestro.instructor.usuario.perfil.nombre
 
 # clase para mucho a mucho con estudiantes y matriculas
 
@@ -370,28 +503,133 @@ class PreMatriculaEstudiante(models.Model):
     estudiante = models.ForeignKey(
         Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
     activo = models.BooleanField(
-        verbose_name='El Estudiante ha sido chequeado')
+        verbose_name='El Estudiante ha sido chequeado', default=False)
 
     def __str__(self):
-        return self.preMatricula + "- " + self.estudiante
+        return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.perfil.nombre
+
+    def save(self, *args, **kwargs):
+        cantidad_estudiante = self.preMatricula.cantidadEstudiante()
+        if cantidad_estudiante >= self.preMatricula.capacidad:
+            return False
+
+        # conectamos al websocket de de update matricula
+        channel_layer = get_channel_layer()
+        nombre_grupo = 'update_matricula_' + str(self.preMatricula.pk)
+        cant_mas_uno = cantidad_estudiante + 1
+        if cant_mas_uno == self.preMatricula.capacidad:
+            cerrado = EstadoMatricula.objects.filter(nombre='cerrado').first()
+            if cerrado:
+                self.preMatricula.estado = cerrado
+                self.preMatricula.save()
+            # lanzamiento de mensaje a websocket de update matricula
+            async_to_sync(channel_layer.group_send)(nombre_grupo, {
+                'type': 'send_message',
+                'evento': 'cerrado',
+                'datos': {
+                    'cant_estudiante': cant_mas_uno,
+                    'estado': cerrado.nombre
+                }
+            })
+        else:
+            # lanzamiento sin el estado
+            async_to_sync(channel_layer.group_send)(nombre_grupo, {
+                'type': 'send_message',
+                'evento': 'no cerrado',
+                'datos': {
+                        'cant_estudiante': cant_mas_uno,
+                        'estado': self.preMatricula.estado.nombre
+                }
+            })
+        return super().save(self, *args, **kwargs)
+
+    # def delete(self, *args, **kwargs):
+    #     matricula = self.preMatricula
+    #     print('matricula se borra un estudiante', matricula)
+    #     object_delete = super().delete(self, *args, **kwargs)
+    #     print('matricula borro un estudiante', matricula)
+    #     matricula.actualizad_estado()
+    #     return object_delete
+
+
+@receiver(post_delete, sender=PreMatriculaEstudiante)
+def actualizarMatricula(sender, instance, **kwargs):
+    # conectamos al websocket de de update matricula
+    channel_layer = get_channel_layer()
+    nombre_grupo = 'update_matricula_' + str(instance.preMatricula.pk)
+    instance.preMatricula.actualizad_estado()
+    cant_estudiante = instance.preMatricula.cantidadEstudiante()
+    async_to_sync(channel_layer.group_send)(nombre_grupo, {
+        'type': 'send_message',
+        'evento': 'no cerrado',
+        'datos': {
+            'cant_estudiante': cant_estudiante,
+            'estado': instance.preMatricula.estado.nombre
+        }
+    })
 
 # los estudiantes pueden comentar
 
 
 class Comentario(models.Model):
     texto = models.TextField(verbose_name='Texto del comentario')
-    fecha_comentario = models.DateField(
+    fecha_comentario = models.DateTimeField(
         auto_now=True, verbose_name='Fecha Creado')
     preMatricula = models.ForeignKey(
         PreMatricula, on_delete=models.CASCADE, verbose_name='Pre matricula')
-    estudiante = models.ForeignKey(
-        Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
+
+    usuario = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name='Usuario')
+    respuestaA = models.ForeignKey(
+        'preMatricula.Comentario', on_delete=models.CASCADE, verbose_name='Respuesta a', null=True, blank=True, default=None)
+    aprobado = models.BooleanField(default=True)
+    leido = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.preMatricula + '-' + self.estudiante+'-'+self.fecha_comentario
+        return f'{self.preMatricula.curso.nombre}-{self.usuario.perfil.nombre}-{self.fecha_comentario}'
 
+
+@receiver(post_save, sender=Comentario)
+def comentarioADD(sender, instance, created, **kwargs):
+    print('comentario nuevo o update ', instance)
+    cantidad_comentario = Comentario.objects.filter(
+        preMatricula=instance.preMatricula).count()
+    context = {}
+    datos = {}
+    datos['id_comentario'] = instance.pk
+    datos['cantidad_comentario'] = cantidad_comentario
+    context['type'] = 'send_message'
+    # conectamos al websocket de de comentario_matricula_
+    channel_layer = get_channel_layer()
+    nombre_grupo = 'comentario_matricula_' + str(instance.preMatricula.pk)
+    hijo = False
+    if created:
+        if instance.aprobado:
+
+            if instance.respuestaA:
+                hijo = True
+                datos['id_comentario_a'] = instance.respuestaA.pk
+
+            context['evento'] = 'new'
+            datos['hijo'] = hijo
+            context['datos'] = datos
+        else:
+            context['evento'] = 'new_no_aprobado'
+    else:
+        if instance.aprobado:
+            if instance.respuestaA:
+                hijo = True
+                datos['id_comentario_a'] = instance.respuestaA.pk
+            context['evento'] = 'update'
+            datos['hijo'] = hijo
+            context['datos'] = datos
+        else:
+            context['evento'] = 'update_no_aprobado'
+    print('contecto que se envia', context)
+    async_to_sync(channel_layer.group_send)(nombre_grupo, context)
 
 # cursos de interes para los estudiantes
+
 
 class CursoInteres(models.Model):
     frecuencia = models.IntegerField(verbose_name='Frecuencia')
@@ -401,7 +639,7 @@ class CursoInteres(models.Model):
         Municipio, on_delete=models.RESTRICT, verbose_name='Municipio')
 
     def __str__(self):
-        return self.curso + '-' + self.municipio
+        return self.curso.nombre + '-' + self.municipio.nombre
 
 # mucho a mucho con estudiantes y curso interes
 
@@ -409,10 +647,11 @@ class CursoInteres(models.Model):
 class EstudianteCursoInteres(models.Model):
     cursoInteres = models.ForeignKey(
         CursoInteres, on_delete=models.CASCADE, verbose_name='Curso de Interes')
-    estudiante = models.ForeignKey(
-        Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
+
     sugerencia = models.CharField(max_length=200, verbose_name='Sugerencia')
     fecha_creado = models.DateField(verbose_name='fecha creado')
+    estudiante = models.ForeignKey(
+        Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
 
     def __str__(self):
-        return self.cursoInteres + '-' + self.estudiante + '-' + self.fecha_creado
+        return self.cursoInteres.curso.nombre + '-' + self.estudiante.usuario.perfil.nombre

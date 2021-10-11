@@ -19,14 +19,82 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'lib/adminlte-master/css/adminlte.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/sitio.css' %}">
+  <style>
+    .btn-flotante {
+      padding: 0.3rem 0.3rem; /* Relleno del boton */
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      transition: all 300ms ease 0ms;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.55);
+      z-index: 99;
+      border-radius: 10px 10px;
+      background-color: white;
+    }
+    .badge_chat_soporte_boton{
+      position: absolute !important;
+      top: -8px !important;
+      right: -4px !important;
+    }
   
+    #chat_soporte{
+      position: fixed;
+      bottom: 10px;
+      right: -350px;;
+      width: 20rem;
+      -webkit-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+      -ms-transition: all 0.4s;
+      transition: all 0.4s;
+      z-index: 99;
+    }
+    .chat_soporte_cerrado{
+      right: -350px !important;
+    }
+    .chat_soporte_abierto{
+      right: 25px !important;
+    }
+    .presione-btn{
+      position: absolute;
+      top: 200px;
+      left: -190px;
+      -webkit-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+      -ms-transition: all 0.4s;
+      transition: all 0.4s;
+      background-color: #26bdef ;
+      border-radius: 20px 20px 0px 20px;
+    }
+    .btn-flotante:hover {
+      box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.5);
+      transform: translateY(-7px);
+    }
+    .btn-flotante:hover >.presione-btn {
+      top: -30px;
+    }
+
+    #btn-flotante-a:hover + .presione-btn {
+      display: inline !important; 
+      transform: translateY(-7px);
+      box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.2);
+      right: 50px;
+    }
+    @media only screen and (max-width: 600px) {
+      .btn-flotante {
+        font-size: 14px;
+        padding: 12px 20px;
+        bottom: 20px;
+        right: 20px;
+      }
+    } 
+  </style>
   {%block head%}
 
   {%endblock%}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed" style="color: {{sitio.color_text_body}};">
 <div class="wrapper">
-
+  {% if request.user.is_authenticated %}
 {% include "header.html" %}
 
 {% include "sider.html" %}
@@ -62,8 +130,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
+    {% endif %}
     <!-- /.content-header -->
-
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
@@ -86,11 +154,90 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div>
   </aside>
   <!-- /.control-sidebar -->
-{% include "footer.html" %}
-  
+{% if request.user.is_authenticated %}  
+   {% include "footer.html" %}
+{% endif %}  
 </div>
 <!-- ./wrapper -->
+<div class="card card-primary card-outline direct-chat direct-chat-primary " id='chat_soporte'>
+              <div class="card-header p-2 text-center">
 
+                <img class="direct-chat-img elevation-1" src="{% static 'img/soporte.png' %}" alt="Message User Image">
+                <h3 class="card-title ml-4">Centro de ayuda</h3>
+                <div class="card-tools">
+                  <span title="3 New Messages" class="badge bg-primary">3</span>
+                  <button type="button" class="btn btn-tool" id='cerrar_chat_soporte'>
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <small class='ml-2' style="font-size: 70%;">
+                <span><strong>7797-87-87</strong>(<a href="">centroayuda@cha.jovenclub.cu</a>)</span>
+                <span></span>
+                </small>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body p-2" id='contenedor_chat_soporte'>
+                <!-- Conversations are loaded here -->
+                <div class="direct-chat-messages">
+                  <!-- Message. Default to the left -->
+                  <div class="direct-chat-msg">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-left">Soporte</span>
+                      <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img elevation-1" src="{% static 'img/soporte.png' %}" alt="Message User Image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                      <small class='text_chat_soporte'>Saludos <strong>{{request.user.username}}</strong> en que podemos ayudarle?. 
+                      Pregunte y en breve lo contactamos. 
+                      </small>
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
+                  <!-- /.direct-chat-msg -->
+
+                  <!-- Message to the right -->
+                  <div class="direct-chat-msg right">
+                    <div class="direct-chat-infos clearfix">
+                      <span class="direct-chat-name float-right">{{request.user.username}}</span>
+                      <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
+                    </div>
+                    <!-- /.direct-chat-infos -->
+                    <img class="direct-chat-img elevation-1" src="{{request.user.perfil.get_image}}" alt="usuario">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                      <small class='text_chat_soporte'>Tengo una duda sobre un curso?</small>
+                    </div>
+                    <!-- /.direct-chat-text -->
+                  </div>
+                  <!-- /.direct-chat-msg -->
+                  
+                </div>
+                <!--/.direct-chat-messages-->
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                <form action="#" method="post">
+                  <div class="input-group">
+                    <input type="text" name="message" placeholder="Escribir mensaje ..." class="form-control input-sm" style="height: 1.9rem;">
+                    <span class="input-group-append">
+                      <button type="submit" class="btn btn-primary btn-sm">Mandar</button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <span id='btn-flotante-chat' class='bg-info'>
+              <a href="#" class="btn btn-sm btn-white btn-flotante"  id='btn-flotante-a' >
+                <!-- <i class="nav-icon fas fa-comments mr-1"></i> -->
+                <img src="{% static 'img/soporte.png' %}" alt="soporte ayuda" width="30px" height="30px">
+                <span class='presione-btn p-0 pl-2 pr-2 pt-1 pb-2'><strong>Centro de ayuda.</br> Horario 8:30am - 5:30pm.</strong></span>
+                <span class='badge badge_chat_soporte_boton  bg-primary navbar-badge'>3</span>
+              </a>
+              
+            </span>
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
@@ -104,6 +251,73 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{% static 'lib/adminlte-master/js/adminlte.min.js' %}"></script>
 <script src="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.js'%}"></script>
 <script src="{% static 'js/funcion.js' %}"></script>
+<script>
+  $(function(){
+    $('#btn-flotante-a').on('click',function(e){
+          e.preventDefault();
+          $('#chat_soporte').removeClass('chat_soporte_cerrado');
+         $('#chat_soporte').addClass('chat_soporte_abierto');
+         $('#btn-flotante-chat').hide();
+    });
+    $('#cerrar_chat_soporte').on('click', function(){
+       $('#chat_soporte').removeClass('chat_soporte_abierto');
+        $('#chat_soporte').addClass('chat_soporte_cerrado');
+        
+        $('#btn-flotante-chat').show('slow');
+    });
+    console.log($('.direct-chat-messages').prop("scrollHeight"));
+    $('.direct-chat-messages').scrollTop($('.direct-chat-messages').prop("scrollHeight"));
+    // declare all characters
+    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    function generateString(length) {
+        let result = ' ';
+        const charactersLength = characters.length;
+        for ( let i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        return result;
+    }
+    const messages = $('.direct-chat-messages');
+
+    function appendMessage() {
+      const message = messages.find('.direct-chat-msg').first(); 
+      let newMessage =  message.clone();
+      console.log(newMessage);
+      newMessage.find('.text_chat_soporte').html(generateString(5));
+      messages.append(newMessage);
+    }
+    function appendMessageDerecho() {
+      const message = messages.find('.right').first(); 
+      let newMessage =  message.clone();
+      console.log(newMessage);
+      newMessage.find('.text_chat_soporte').html(generateString(5));
+      messages.append(newMessage);
+    }
+
+    function getMessages() {
+      appendMessage();
+      scrollToBottom();
+      //appendMessageDerecho()
+      setTimeout(function(){
+        appendMessageDerecho();
+        scrollToBottom();
+      },3000);
+      // After getting your messages.
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      $('.direct-chat-messages').scrollTop($('.direct-chat-messages').prop("scrollHeight"));
+    }
+
+    scrollToBottom();
+
+    //setInterval(getMessages, 5000);
+  });
+ 
+</script>
 {%block js%}
 {%endblock%}
 

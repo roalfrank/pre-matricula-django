@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from django.urls.base import reverse_lazy
+from core.preMatricula.models import PreMatricula
 
 from config import settings
 
@@ -9,7 +11,13 @@ from config import settings
 
 
 def index(request):
-    return render(request, "sitio/inicio/index.html")
+    context = {}
+    context['base_url'] = "{0}://{1}{2}".format(
+        request.scheme, request.get_host(), '/sistema/matricula-pagina/')
+    context['listado_curso'] = PreMatricula.objects.all().order_by(
+        "-fecha_creado")[0:8]
+    print(context['listado_curso'])
+    return render(request, "sitio/inicio/index.html", context)
 
 
 @login_required

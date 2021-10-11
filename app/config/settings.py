@@ -38,13 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # app del sistema
+    'channels',
     "core.sitio",
     "core.login",
     "core.user",
     "widget_tweaks",
     "django.contrib.humanize",
     "core.preMatricula",
-    "core.estudiante"
+    "core.estudiante",
+    "qr_code"
 ]
 
 MIDDLEWARE = [
@@ -76,7 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
+ASGI_APPLICATION = 'config.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -88,6 +90,14 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)]
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -134,17 +144,23 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
-
+# url donde se manda a los usuarios que se logean correctamente
+# segun el grupo al que pertenece el usuatio esta url se encarga de redirecionalo al panel que tiene acceso
 LOGIN_REDIRECT_URL = '/enrutador-sistema/'
 
+# url al que el sistema se dirige al cerrar seccion el usuario
 LOGOUT_REDIRECT_URL = '/login/'
 
+# url al que el usuario se le redirecciona  al entrar al sistema
 LOGIN_URL = '/login/'
 
+# variables necesaria para administrar el cierre de seccion al pasar mas de 3600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
 
+
+# configuracion del motor de correo para gmail
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST='smtp.gmail.com'
 # EMAIL_HOST_USER =  'roaldys@gmail.com'
@@ -152,6 +168,8 @@ SESSION_SAVE_EVERY_REQUEST = True
 # EMAIL_HOST_PASSWORD = ''
 # EMAIL_USE_TLS=True
 # EMAIL_PORT=587
+
+# configuracion del motor de correo para utilizar a correo.cha.jovenclub.cu
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('host_smtp')
 EMAIL_HOST_USER = os.environ.get('user_smtp')
