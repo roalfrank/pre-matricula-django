@@ -1,1 +1,0 @@
-d-none d-sm-block       ------------  esconder cuando es en pequeños dispositivos
