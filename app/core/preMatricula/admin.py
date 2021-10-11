@@ -31,4 +31,3 @@ admin.site.register(Discapacidad)
 admin.site.register(Gestor)
 admin.site.register(GestorEstudiante)
 admin.site.register(EstudianteCursoSiscae)
-

@@ -1,0 +1,675 @@
+{% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}
+{% block head_list %}
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
+<style>
+  .select2-container {
+    background-color: #fff;
+  }
+
+  .modal-header {
+    padding: 0.5rem 1.2rem !important;
+  }
+
+  .modal-body {
+    padding: 0 1rem;
+  }
+
+  .select2-container--bootstrap4 .select2-selection--single {
+    height: calc(1.8125rem + 2px) !important;
+  }
+  .modal-body .card {
+    background-color: #fff;
+  }
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #26bdef;
+  } 
+  .nav-link.active:hover{
+    color: #dad6d6 !important;
+  } 
+  .modal a:hover{
+    color: #26bdef !important;
+  }
+  .list-group-item{
+    padding: 0;
+    
+  }
+  .modal-footer{
+    padding-top: 0 !important;
+  }
+  #badge_frecuencia_interes{
+    position: absolute;
+    margin-left: 0.2rem;
+  }
+#tb-interes_info,#tb-matriculado_info{
+  padding-top: 2rem;
+}
+#tb-interes_paginate,#tb-matriculado_paginate{
+  margin: -0.5rem;
+}
+
+
+.pagination{
+  font-size: smaller;
+}
+</style>
+{% endblock %}
+{% block columns %}
+<tr>
+  <th >Selecciona</th>
+  <th>Id</th>
+  <th >Nombre</th>
+  <th>Usuario</th>
+  <th >Carnet</th>
+  <th >Provincia</th>
+  <th >Correo</th>
+  <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
+  <th >Acción</th>
+  <!-- {%endif%} -->
+
+</tr>
+{% endblock %}
+{% block boton_accion%}
+<button type="button" class="btn btn-default btn-xs mr-2" id='btnprueba'>
+  <i class="fa fa-plus mr-2"></i><span>probando</span>
+</button>
+<!-- {% if perms.user.add_estudiante%} -->
+<button type="button" class="btn btn-default btn-xs" id='btnNuevo'>
+  <i class="fa fa-plus mr-2"></i><span>Nuevo Registro</span>
+</button>
+<!-- {%endif%}
+  {% if perms.user.delete_estudiante%} -->
+<button type="button" class="btn btn-danger  ml-1 btn-xs" style="float: left;" id='btnDeleteAll'>
+  <i class="fa fa-trash-alt mr-1"></i><span>Borrar selección</span>
+</button>
+<!-- {% endif %} -->
+{% endblock%}
+{%block class_modal%}modal-lg{% endblock %}
+{%block form_modal%}
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.nombre.label_tag}}
+      {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.apellido1.label_tag}}
+      {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.apellido2.label_tag}}
+      {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.ci.label_tag}}
+      {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_user.username.label_tag}}
+      {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.correo.label_tag}}
+      {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.telefono.label_tag}}
+      {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.provincia.label_tag}}
+      {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_perfil.municipio.label_tag}}
+      {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-8">
+    <div class="form-group">
+      {{form_perfil.direccion.label_tag}}
+      {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.usuario_sisce.label_tag}}
+      {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.ocupacion.label_tag}}
+      {{form_estudiante.ocupacion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.categoria_ocupacional.label_tag}}
+      {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.discapacidad.label_tag}}
+      {{form_estudiante.discapacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
+{% if request.user.is_staff %}
+<div class="row justify-content-end">
+    <div class="form-group mb-1 mr-1">
+      <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
+    </div>
+</div>
+{% endif %}
+
+{%endblock%}
+
+{%block js_listar%}
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %} "></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
+<script>
+  $(function () {
+
+    var select_municipio = $('#id_municipio');
+
+    $('.select2').select2({
+      theme: 'bootstrap4',
+      language: 'es',
+    });
+    $('#id_provincia').on('change', function () {
+      var id = $(this).val();
+      $.ajax({
+        url: "{% url 'prematricula:buscar-municipios'  %}",
+        type: 'POST',
+        data: {
+          'id_provincia': id,
+          csrfmiddlewaretoken: function () {
+            return $('input[name="csrfmiddlewaretoken"]').val();
+          },
+        },
+        dataType: 'json'
+      }).done(function (data) {
+        console.log(data);
+        select_municipio.html('').select2({
+          theme: 'bootstrap4',
+          language: 'es',
+          data: data
+        });
+
+      });
+    });
+
+    var tblListar = $("#data").DataTable({
+      'serverSide':true,
+      'processing':true,
+      'buttons': [
+        'copy', 'excel', 'pdf'
+    ],
+      responsive: {
+        details: true,
+    },
+      'ajax':function(data,callback,settings){
+        console.log(data);
+         $.post(window.location.pathname,{
+           'action': 'cargarDatos',
+           'csrfmiddlewaretoken': function () {
+             return $('input[name="csrfmiddlewaretoken"]').val();
+           },
+           limite:data.length,
+           inicio:data.start,
+           busqueda:data.search.value
+
+         },function(response){
+           console.log(response);
+               callback({
+                 recordsTotal:response.total,
+                 recordsFiltered:response.total,
+                 data:response.lista
+
+               });
+         });
+      },
+        columns: [{
+          "data": 'usuario',
+         
+        },
+        {
+          "data": "usuario"
+        },
+        {
+          "data": "nombre_usuario"
+        },
+        {
+          "data": "username"
+        },
+        {
+          "data": "ci"
+        },
+        {
+          "data": "provincia"
+        },
+        {
+          "data": "correo"
+        },
+
+        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+        {
+          "data": "nombre"
+        }
+        //{%endif%}
+      ],
+      columnDefs: [{
+          targets: 0,
+          
+          orderable: false,
+          class: 'text-center',
+          render: function (data, type, row) {
+            var buttons =
+              '<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div>';
+            return buttons
+          }
+        },
+        {
+          targets: [1],
+          visible: false,
+        },
+        {
+          targets: [2, 4, 5, 6],
+          class: "text-center"
+        },
+        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+        {
+          targets: [-1],
+          responsivePriority: 2,
+          class: "text-center",
+          orderable: false,
+          render: function (data, type, row) {
+            console.log(row.usuario)
+            var buttons = ''
+            buttons =
+            //{% if perms.user.view_estudiante%}
+              '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver Estudiante"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+            //{%endif%}
+              //{% if perms.user.change_estudiante%}
+            buttons +=
+              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar Estudiante"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+            //{%endif%}
+            //{% if perms.user.delete_estudiante%} 
+            buttons +=
+              '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar Estudiante"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+            //{%endif%}
+            return buttons
+          }
+        },
+        //{%endif%}
+
+      ],
+      order: [
+        [4, 'asc']
+      ],
+      initComplete: function (settings, json) {
+        tooltip();
+      }
+ 
+
+    });//fin de DataTable server
+    $('#btnprueba').on('click',function(e){
+       e.preventDefault();
+       var busqe =JSON.stringify({columna:'2'}); 
+       console.log(JSON.stringify({columna:'2'}));
+       console.log(typeof(JSON.stringify({columna:'2'})));
+       tblListar.search(busqe).draw();
+
+    });
+    //  var tblListar = $("#data").DataTable({
+    //   responsive: true,
+    //   autoWidth: false,
+    //   destroy: true,
+    //   deferRender: true,
+    //   loading: true,
+    //   ajax: {
+    //     url: window.location.pathname,
+    //     type: 'POST',
+    //     data: {
+    //       'action': 'cargarDatos',
+    //       'csrfmiddlewaretoken': function () {
+    //         return $('input[name="csrfmiddlewaretoken"]').val();
+    //       },
+    //     },
+    //     dataSrc: '',
+
+    //   },
+    //   columns: [{
+    //       "data": 'usuario'
+    //     },
+    //     {
+    //       "data": "usuario"
+    //     },
+    //     {
+    //       "data": "nombre_usuario"
+    //     },
+    //     {
+    //       "data": "username"
+    //     },
+    //     {
+    //       "data": "ci"
+    //     },
+    //     {
+    //       "data": "provincia"
+    //     },
+    //     {
+    //       "data": "correo"
+    //     },
+
+    //     //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+    //     {
+    //       "data": "nombre"
+    //     }
+    //     //{%endif%}
+    //   ],
+    //   columnDefs: [{
+    //       targets: 0,
+    //       orderable: false,
+    //       class: 'text-center',
+    //       render: function (data, type, row) {
+    //         var buttons =
+    //           '<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div>';
+    //         return buttons
+    //       }
+    //     },
+    //     {
+    //       targets: [1],
+    //       visible: false,
+    //     },
+    //     {
+    //       targets: [2, 4, 5, 6],
+    //       class: "text-center"
+    //     },
+    //     //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+    //     {
+    //       targets: [-1],
+    //       class: "text-center",
+    //       orderable: false,
+    //       render: function (data, type, row) {
+    //         console.log(row.usuario)
+    //         var buttons = ''
+    //         buttons =
+    //         //{% if perms.user.view_estudiante%}
+    //           '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver Estudiante"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+    //         //{%endif%}
+    //           //{% if perms.user.change_estudiante%}
+    //         buttons +=
+    //           '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar Estudiante"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+    //         //{%endif%}
+    //         //{% if perms.user.delete_estudiante%} 
+    //         buttons +=
+    //           '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar Estudiante"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+    //         //{%endif%}
+    //         return buttons
+    //       }
+    //     },
+    //     //{%endif%}
+
+    //   ],
+    //   order: [
+    //     [4, 'asc']
+    //   ],
+    //   initComplete: function (settings, json) {
+    //     tooltip();
+    //   }
+    // });
+
+    $('#btnDeleteAll').on('click', function () {
+      delete_select(tblListar);
+    });
+
+    $("#btnNuevo").on("click", function () {
+      abrir_modal_nuevo("Nuevo Estudiante");
+    });
+    
+    $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+      abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
+    });
+     //botones del nav de detalle
+    
+    $('#data tbody').on('click', 'a[rel="view"]', function (element) {
+      var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
+      //paso a data una lista de los valores de la row a editar
+      var data = tblListar.row(tr.row).data();
+      //window.location.href='{url "prematricula:estudiante-detail"}'+data.usuario+'/'
+      //abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
+      modal_title.find('span').html('Datos de Estudiante');
+      modal_title.find('i').removeClass().addClass('fa fa-edit');
+      console.log('estoy en view');
+      $('.modal-footer').html('');
+      $('#contenido-modal').load('/sistema/estudiante-detail/'+data.usuario+'/',function() {
+                 $('#modal-nuevo').modal('show');
+                 $('#tb-matriculado').DataTable({responsive: true,autoWidth: false,columnDefs:[{
+                    targets: [2],
+                    orderable: false,
+                 }]});
+                 $('#tb-interes').DataTable({responsive: true,autoWidth: false,columnDefs:[{
+                    targets: [2],
+                    orderable: false,
+                 }]});
+
+      });
+      estudiante_view = true
+    });
+
+    $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
+      delete_registro(tblListar, element.currentTarget);
+    });
+   
+    
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        var parametros = new FormData(form);
+        parametros.append('id_edit', id_edit);
+        parametros.append('tipo','ES');
+        submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
+          parametros,
+          function (data) {
+            $('span').remove('.invalid-feedback');
+            if (data.enviado) {
+              $("#modal-nuevo").modal("hide");
+              tblListar.ajax.reload();
+              mensaje("success", "Guardado el Registro - " + data.nombre);
+              id_edit = null;
+            } else {
+              var error = JSON.parse(data.error)
+              var listado_error = []
+              for (const key in error) {
+                listado_error.push(`${key}: ${error[key][0]['message']}`)
+                var element = $(`#formRegistro [name="${key}"]`)
+                element.addClass("is-invalid");
+                var html = `<span class='invalid-feedback'>${error[key][0]['message']}</span>`
+                element.closest(".form-group").append(html);
+              }
+              mensaje("error", "Error Guardando el Registro - " + listado_error);
+            }
+          })
+      }
+    });
+    
+    //validacion del formulario 
+    $("#formRegistro").validate({
+      rules: {
+        username: {
+          remote: {
+                      url: "{% url 'prematricula:unique-username' %}",
+                      type: "post",
+                      data: {
+                            'username': function() {
+                              return $("#id_username").val();
+                            },
+                            id_edit:function(){
+                              return id_edit;
+                            },
+                            csrfmiddlewaretoken:function(){
+                                  return $('input[name="csrfmiddlewaretoken"]').val();
+                                },
+                        }
+                  }
+        },
+        nombre: {
+          required: true,
+          maxlength: 100,
+        },
+        direccion: {
+          required: true,
+        },
+        ci: {
+          required: true,
+          minlength: 11,
+          maxlength: 11,
+          number: true,
+          digits: true,
+        },
+        correo: {
+          email: true,
+        },
+        telefono: {
+          digits: true
+        },
+      },
+      messages: {
+        telefono: {
+          digits: 'Solo dígitos'
+        },
+        nombre: {
+          required: "El  nombre del estudiante es necesario",
+          maxlength: "No esta permitido mas de 100 caracteres",
+        },
+        apellido1: {
+          required: "El apellido paterno es necesario",
+        },
+        apellido2: {
+          required: "El apellido materno es necesario",
+        },
+        correo: {
+          required: "El correo es necesario",
+          email: 'No es válido el correo',
+        },
+        ocupacion: {
+          required: "La ocupación es necesario",
+        },
+        categoria_ocupacional: {
+          required: "La categoria ocupacional es necesario",
+        },
+        discapacidad: {
+          required: "La discapacidad es necesaria",
+        },
+        ci: {
+          required: "El carnet es necesario",
+          minlength: '11 numeros son necesarios',
+          maxlength: 'Hay más de 11 números',
+          number: 'El carnet es solo números',
+          digits: 'Solo números',
+        },
+        username: {
+          required: "El usuario es necesario",
+          remote:'Ya existe este usuario.'
+        },
+        direccion: {
+          required: "La dirección es necesaria",
+        },
+        provincia: {
+          required: "La provincia es necesaria"
+        },
+        municipio: {
+          required: "El municipio es necesario"
+        }
+      },
+      errorElement: "span",
+      errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        element.closest(".form-group").append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass("is-invalid");
+      },
+    });
+  });
+</script>
+{%endblock%}
+
+{% block delete_registro_varios%}
+select_item.push(data.usuario);
+{% endblock %}
+
+{% block delete_registro%}
+id: data.usuario,
+{% endblock%}
+
+{% block abrir_modal_editar%}
+//con esto obtengo el tr del boton edit de la tabla
+var tr = tabla.cell($(element).closest('td,li')).index();
+//paso a data una lista de los valores de la row a editar
+var data = tabla.row(tr.row).data();
+
+$.ajax({
+url: "{% url 'prematricula:estudiante-datos'  %}",
+type: 'POST',
+data: {
+'id_estudiante': data.usuario,
+csrfmiddlewaretoken: function () {
+return $('input[name="csrfmiddlewaretoken"]').val();
+},
+},
+dataType: 'json'
+}).done(function (respuesta) {
+if(respuesta['enviado']){
+var elements = document.getElementById("formRegistro").elements;
+for (var i = 0, element; element = elements[i++];) {
+if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
+console.log(element);
+element.value= respuesta[element.name]
+}
+}
+$('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
+setTimeout(() => {
+$('#id_municipio').val(respuesta['municipio'].toString()).trigger("change");
+}, 100);
+$('input[name="action"]').val("edit");
+id_edit = data.usuario;
+modal_title.find('span').html(titulo);
+modal_title.find('i').removeClass().addClass('fa fa-edit');
+$('#modal-nuevo').modal('show');
+
+}
+else{
+console.log('problema con el ajax en editar estudiante');
+}
+});
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html'%}
+{% load static%}
+{% block titulo %}<img src="{% static 'img/iconos/curso.png' %}" alt="Fecha fin"
+    style="width: 2.5rem; margin-right: 1rem;" srcset="">Detalle del Curso{%endblock%}
+{%block contenido%}
+<div class="probando"></div>
+{%endblock%}
+{%block js%}
+<script>
+    $(function () {
+        $('.probando').load('{% url "prematricula:matricula-detalle" 2%}', function () {
+            $('[data-toggle="popover"]').popover({
+                html: true,
+                content: function () {
+                    var content = $(this).attr("data-popover-content");
+                    return $(content).children(".popover-body").html();
+                },
+                title: function () {
+                    var title = $(this).attr("data-popover-content");
+                    return $(title).children(".popover-heading").html();
+                }
+            });
+        });
+    });
+</script>
+{%endblock%}
