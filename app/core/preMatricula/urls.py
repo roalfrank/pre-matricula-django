@@ -8,6 +8,7 @@ from core.preMatricula.logica.tbentidad.entidadJcm.views import JcmView
 from core.preMatricula.logica.tbentidad.entidadJcb.views import JcbView
 # importaciones para instructores
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
+from core.preMatricula.logica.instructor.instructor.views import InstructorView, InstructorDetailView, InstructorDetailCargarFormAddView, buscarInstructor
 # importaciones para estudiantes
 from core.preMatricula.logica.estudiante.estudianteocupacion.views import OcupacionEstudianteView
 from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import DiscapacidadEstudianteView
@@ -50,6 +51,12 @@ urlpatterns = [
     # --- Istructor enlaces -----
     path("cargo-instructor/", CargoInstructorView.as_view(),
          name="cargo-instructor"),
+    path("instructor/", InstructorView.as_view(), name="instructor"),
+    path("instructor-detail/<int:pk>/",
+         InstructorDetailView.as_view(), name="instructor-detail"),
+    path("instructor-add-form/",
+         InstructorDetailCargarFormAddView.as_view(), name="instructor-add-form"),
+    path("instructor-datos/", buscarInstructor, name="instructor-datos"),
 
     # --Estudiante enlaces -----
     path("estudiante-ocupacion/", OcupacionEstudianteView.as_view(),

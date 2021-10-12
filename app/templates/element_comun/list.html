@@ -174,11 +174,13 @@
            cargar_extra_on_hide_modal=false      
         }
     var elements = document.getElementById("formRegistro").elements;
-
+   // {% block on_hidden_modal_extra %}
+   // {% endblock %}
     for (var i = 0, element; element = elements[i++];) {
       if (element.classList.contains("is-invalid")) {
         element.classList.remove("is-invalid");
       }
+
     }
     $('span').remove('.invalid-feedback');
 

@@ -1,0 +1,98 @@
+{% load widget_tweaks %}
+<div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.nombre.label_tag}}
+          {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.apellido1.label_tag}}
+          {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.apellido2.label_tag}}
+          {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.ci.label_tag}}
+          {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_user.username.label_tag}}
+          {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.correo.label_tag}}
+          {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.telefono.label_tag}}
+          {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.provincia.label_tag}}
+          {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.municipio.label_tag}}
+          {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-8">
+        <div class="form-group">
+          {{form_perfil.direccion.label_tag}}
+          {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_instructor.usuario_siscae.label_tag}}
+          {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_instructor.jcb.label_tag}}
+          {{form_instructor.jcb|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_instructor.cargo.label_tag}}
+          {{form_instructor.cargo|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+       {% if request.user.is_staff %}
+      <div class="col-4">
+        <div class="form-group">
+          <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
+          <span><strong class="mr-4">Maestro:</strong><input type="checkbox" name="maestro" autocomplete="off" class="form-check-input" id="id_maestro" ></span>
+        </div>
+      </div>
+       {% endif %}
+    </div>
+    

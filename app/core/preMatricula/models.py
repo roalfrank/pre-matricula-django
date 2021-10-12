@@ -160,6 +160,25 @@ class Instructor(models.Model):
     def __str__(self):
         return f"{self.usuario.username}-{self.usuario.perfil.nombre}"
 
+    def toJson(self):
+        instrutor = model_to_dict(self, fields=['usuario', 'jcb'])
+        instrutor['nombre_usuario'] = self.usuario.perfil.nombre
+        instrutor['username'] = self.usuario.username
+        instrutor['ci'] = self.usuario.perfil.ci
+        instrutor['correo'] = self.usuario.perfil.correo
+        if self.usuario.perfil.tipo == 'PR':
+            instrutor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
+        else:
+            instrutor['icono'] = ''
+        return instrutor
+
+    def datosAllJson(self):
+        instructor = model_to_dict(self)
+        instructor.update(self.usuario.perfil.toJson())
+        instructor['nombre_usuario'] = self.usuario.perfil.nombre
+        instructor['username'] = self.usuario.username
+        return instructor
+
 
 class Maestro(models.Model):
     instructor = models.OneToOneField(
@@ -238,17 +257,12 @@ class Estudiante(models.Model):
         return self.usuario.username
 
     def toJson(self):
-        tiempo_inicial = time.time()
-        #estudiante = {}
         estudiante = model_to_dict(self, fields=['usuario'])
         estudiante['nombre_usuario'] = self.usuario.perfil.nombre
         estudiante['username'] = self.usuario.username
         estudiante['provincia'] = self.usuario.perfil.municipio.provincia.nombre
         estudiante['ci'] = self.usuario.perfil.ci
         estudiante['correo'] = self.usuario.perfil.correo
-        tiempo_final = time.time()
-        tiempo = tiempo_final - tiempo_inicial
-        print(f'Tiempo demorado estudiante:{tiempo}')
         return estudiante
 
     def datosAllJson(self):
