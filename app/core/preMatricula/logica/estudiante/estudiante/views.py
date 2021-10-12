@@ -97,21 +97,33 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
+                print(request.POST)
                 limite = int(request.POST['limite'])
                 inicio = int(request.POST['inicio'])
                 busqueda = request.POST['busqueda']
                 if busqueda != '':
+                    lista_filtro = {
+                        'nombre': 'usuario__perfil__nombre__icontains',
+                        'ci': 'usuario__perfil__ci__icontains',
+                        'username': 'usuario__username__icontains',
+                        'correo': 'usuario__perfil__correo__icontains',
+                        'apellido1': 'usuario__perfil__apellido1__icontains',
+                        'apellido2': 'usuario__perfil__apellido2__icontains',
+                        'municipio': 'usuario__perfil__municipio__pk',
+                        'provincia': 'usuario__perfil__municipio__provincia__pk'
+                    }
                     busqueda_json = json.loads(busqueda)
-                    print('columna a buscar', busqueda_json['columna'])
+                    filtros = busqueda_json['filtro']
+                    condicion = Q()
+                    for key, value in filtros.items():
+                        condicion.add(Q(**{lista_filtro[key]: value}), Q.AND)
 
-                print(busqueda)
-                #busqueda_json = json.loads(busqueda)
-                #print('columna a buscar', busqueda_json.columna)
-                estudiantes = Estudiante.objects.filter(
-                    Q(usuario__perfil__nombre__icontains=busqueda) | Q(
-                        usuario__username__icontains=busqueda) | Q(usuario__perfil__ci__icontains=busqueda) | Q(usuario__perfil__correo__icontains=busqueda)
-                )
-                print(request.POST)
+                    estudiantes = Estudiante.objects.filter(condicion)
+                else:
+                    estudiantes = Estudiante.objects.filter(
+                        Q(usuario__perfil__nombre__icontains=busqueda) | Q(
+                            usuario__username__icontains=busqueda) | Q(usuario__perfil__ci__icontains=busqueda) | Q(usuario__perfil__correo__icontains=busqueda)
+                    )
 
                 lista = [i.toJson()
                          for i in estudiantes[inicio:inicio+limite]]
