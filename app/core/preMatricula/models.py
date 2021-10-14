@@ -85,7 +85,7 @@ class Region(models.Model):
         JCP, verbose_name="Joven Club Provincial", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"({self.jcp.entidad.nombre})-{self.nombre}- ({self.codigo_region})"
+        return f"Region-{self.nombre}-({self.jcp.entidad.nombre})"
 
     def toJson(self):
         item = model_to_dict(self)
@@ -102,7 +102,7 @@ class JCM(models.Model):
         Region, on_delete=models.CASCADE, verbose_name="Región")
 
     def __str__(self):
-        return f"{self.entidad.nombre}-({self.codigo_jcm})"
+        return f"{self.entidad.nombre}"
 
     def toJson(self):
         item = self.entidad.toJson()
@@ -122,7 +122,7 @@ class JCB(models.Model):
         JCM, on_delete=models.CASCADE, verbose_name="Joven Club Municipal")
 
     def __str__(self):
-        return f"{self.entidad.nombre}-({self.codigo_jcb})"
+        return f"{self.entidad.nombre}"
 
     def toJson(self):
         item = self.entidad.toJson()
@@ -159,6 +159,30 @@ class Instructor(models.Model):
 
     def __str__(self):
         return f"{self.usuario.username}-{self.usuario.perfil.nombre}"
+
+    def toJson(self):
+        instrutor = model_to_dict(self, fields=['usuario'])
+        instrutor['nombre_usuario'] = self.usuario.perfil.get_nombre()
+        instrutor['username'] = self.usuario.username
+        instrutor['ci'] = self.usuario.perfil.ci
+        instrutor['correo'] = self.usuario.perfil.correo
+        instrutor['jcb'] = self.jcb.entidad.nombre
+        instrutor['image_user'] = self.usuario.perfil.get_image()
+        if self.usuario.perfil.tipo == 'PR':
+            instrutor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
+        else:
+            instrutor['icono'] = ''
+        return instrutor
+
+    def datosAllJson(self):
+        instructor = model_to_dict(self)
+        instructor.update(self.usuario.perfil.toJson())
+        instructor['nombre_usuario'] = self.usuario.perfil.nombre
+        instructor['username'] = self.usuario.username
+        instructor['id_jcp'] = self.jcb.jcm.region.jcp.id
+        instructor['id_region'] = self.jcb.jcm.region.id
+        instructor['id_jcm'] = self.jcb.jcm.id
+        return instructor
 
 
 class Maestro(models.Model):
@@ -238,17 +262,13 @@ class Estudiante(models.Model):
         return self.usuario.username
 
     def toJson(self):
-        tiempo_inicial = time.time()
-        #estudiante = {}
         estudiante = model_to_dict(self, fields=['usuario'])
-        estudiante['nombre_usuario'] = self.usuario.perfil.nombre
+        estudiante['nombre_usuario'] = self.usuario.perfil.get_nombre()
         estudiante['username'] = self.usuario.username
         estudiante['provincia'] = self.usuario.perfil.municipio.provincia.nombre
         estudiante['ci'] = self.usuario.perfil.ci
         estudiante['correo'] = self.usuario.perfil.correo
-        tiempo_final = time.time()
-        tiempo = tiempo_final - tiempo_inicial
-        print(f'Tiempo demorado estudiante:{tiempo}')
+        estudiante['image_user'] = self.usuario.perfil.get_image()
         return estudiante
 
     def datosAllJson(self):

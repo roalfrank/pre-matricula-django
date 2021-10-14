@@ -13,3 +13,8 @@ def comentario_hijos(request, comentario_papa):
 @register.simple_tag
 def qr_crear(base_url, id):
     return str(base_url) + str(id)+'/'
+
+
+@register.filter(name='has_group')
+def has_group(user, group_name):
+    return user.groups.filter(name=group_name).exists()

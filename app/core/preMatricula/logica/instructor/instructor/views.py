@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required, login_required
 import json
 from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,65 +7,47 @@ from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
-from core.preMatricula.models import Estudiante
+from core.preMatricula.models import Instructor, Maestro
+from core.preMatricula.logica.estudiante.estudiante.form import UserCrearAutomaticoForm
 from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
-from .form import UserCrearAutomaticoForm, EstudianteForm
+from .form import InstructorForm
+#from core.preMatricula.logica.instructor.form import UserCrearAutomaticoForm
 from core.login.form import UserPerfilRegistrationForm
-from core.preMatricula.utils.general import listado_matricula_estudiante
 
 
-# class EstudianteView(ListView):
-#     model = Estudiante
-#     template_name = "estudiante/estudiante/list.html"
-#     paginate_by = 2
-
-#     # def get_queryset(self):
-#     #     datos = self.model.objects.all()
-#     #     return datos
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         print(context)
-#         # return context
-class EstudianteDetailCargarFormAddView(TemplateView):
-    template_name = "estudiante/estudiante/form_add.html"
+class InstructorDetailCargarFormAddView(TemplateView):
+    template_name = "instructor/instructor/form_add.html"
 
     def get_context_data(self, **kwargs):
-        print(self.request.GET.get('next'))
         context = super().get_context_data(**kwargs)
         context['form_perfil'] = UserPerfilRegistrationForm()
-        context['form_estudiante'] = EstudianteForm()
+        context['form_instructor'] = InstructorForm()
         context['form_user'] = UserCrearAutomaticoForm()
-        print('estoy en add form estudiante')
         return context
 
 
-class EstudianteDetailView(DetailView):
-    model = Estudiante
-    template_name = "estudiante/estudiante/detailEstudiante.html"
+class InstructorDetailView(DetailView):
+    model = Instructor
+    template_name = "instructor/instructor/detailInstructor.html"
 
     def get_context_data(self, **kwargs):
-        print(self.request.GET.get('next'))
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next')
-        context['matriculados'] = self.get_object(
-        ).prematriculaestudiante_set.all()
-        print(context['matriculados'])
-        context['interes'] = self.get_object(
-        ).estudiantecursointeres_set.all()
-        print('curso interes', context['interes'])
+        if self.get_object().usuario.groups.filter(name='Maestro').exists():
+            context['cursos'] = Maestro.objects.filter(
+                instructor=self.get_object()).first().prematriculamaestro_set.all()
         return context
 
 
-class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
-    #model = Estudiante
-    template_name = "estudiante/estudiante/estudiante_list.html"
-    permiso_vista = 'view_estudiante'
+class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
+    #model = Instructor
+    template_name = "instructor/instructor/instructor_list.html"
+    permiso_vista = 'view_intructor'
     permiso_crud = {
-        'add': 'add_estudiante',
-        'change': 'change_estudiante',
-        'delete': 'delete_estudiante',
+        'add': 'add_intructor',
+        'change': 'change_intructor',
+        'delete': 'delete_intructor',
     }
 
     def post(self, request, *args, **kwargs):
@@ -75,21 +58,28 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
             if action == 'add':
                 form_user = UserCrearAutomaticoForm(request.POST)
                 form_perfil = UserPerfilRegistrationForm(request.POST)
-                form_estudiante = EstudianteForm(request.POST)
-                if all([form_user.is_valid(), form_estudiante.is_valid(), form_perfil.is_valid()]):
+                form_instructor = InstructorForm(request.POST)
+                tipo = request.POST['tipo']
+                if all([form_user.is_valid(), form_instructor.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
                         user = form_user.save(commit=False)
                         user.save()
-                        grupo_estudiante = Group.objects.filter(
-                            name='Estudiante')[0]
-                        user.groups.add(grupo_estudiante)
+                        grupo_instructor = Group.objects.filter(
+                            name='Instructor')[0]
+                        user.groups.add(grupo_instructor)
                         perfil = form_perfil.save(commit=False)
                         perfil.user = user
                         perfil.save()
-                        estudiante = form_estudiante.save(commit=False)
-                        estudiante.usuario = user
-                        estudiante.creado_por = request.user
-                        estudiante.save()
+                        instructor = form_instructor.save(commit=False)
+                        instructor.usuario = user
+                        instructor.save()
+                        # si es maestro creo el maestro en la tabla
+                        if tipo == 'PR':
+                            grupo_maestro = Group.objects.filter(
+                                name='Maestro')[0]
+                            user.groups.add(grupo_maestro)
+                            Maestro.objects.create(instructor=instructor)
+
                         data['enviado'] = True
                         data['nombre'] = perfil.nombre
                 else:
@@ -97,7 +87,6 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
-                print(request.POST)
                 limite = int(request.POST['limite'])
                 inicio = int(request.POST['inicio'])
                 busqueda = request.POST['busqueda']
@@ -110,50 +99,75 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                         'apellido1': 'usuario__perfil__apellido1__icontains',
                         'apellido2': 'usuario__perfil__apellido2__icontains',
                         'municipio': 'usuario__perfil__municipio__pk',
-                        'provincia': 'usuario__perfil__municipio__provincia__pk'
+                        'provincia': 'usuario__perfil__municipio__provincia__pk',
+                        'jcp': 'jcb__jcm__region__jcp__pk',
+                        'region': 'jcb__jcm__region__pk',
+                        'jcm': 'jcb__jcm__pk',
+                        'jcb': 'jcb__pk',
                     }
                     busqueda_json = json.loads(busqueda)
                     filtros = busqueda_json['filtro']
                     condicion = Q()
                     for key, value in filtros.items():
-                        condicion.add(Q(**{lista_filtro[key]: value}), Q.AND)
+                        if key == 'tipo' and value != '':
+                            condicion.add(
+                                Q(**{'usuario__perfil__tipo': value}), Q.AND)
+                        else:
+                            condicion.add(
+                                Q(**{lista_filtro[key]: value}), Q.AND)
 
-                    estudiantes = Estudiante.objects.filter(condicion)
+                    instructors = Instructor.objects.filter(condicion)
                 else:
-                    estudiantes = Estudiante.objects.filter(
+                    instructors = Instructor.objects.filter(
                         Q(usuario__perfil__nombre__icontains=busqueda) | Q(
                             usuario__username__icontains=busqueda) | Q(usuario__perfil__ci__icontains=busqueda) | Q(usuario__perfil__correo__icontains=busqueda)
                     )
 
                 lista = [i.toJson()
-                         for i in estudiantes[inicio:inicio+limite]]
+                         for i in instructors[inicio:inicio+limite]]
                 data = {
-                    'total': estudiantes.count(),
+                    'total': instructors.count(),
                     'lista': lista
                 }
                 respuesta = JsonResponse(data, safe=False)
                 return respuesta
             # action edit - editando una entidad.
             elif action == 'edit':
-                print(request.POST)
-                estudiante = Estudiante.objects.get(
+                instructor = Instructor.objects.get(
                     pk=int(request.POST['id_edit']))
                 user_instancia = User.objects.get(
-                    pk=estudiante.usuario.pk)
+                    pk=instructor.usuario.pk)
                 perfil_instancia = Perfil.objects.get(
-                    pk=estudiante.usuario.perfil.pk)
+                    pk=instructor.usuario.perfil.pk)
 
                 form_user = UserCrearAutomaticoForm(
                     request.POST, instance=user_instancia)
                 form_perfil = UserPerfilRegistrationForm(
                     request.POST, instance=perfil_instancia)
-                form_estudiante = EstudianteForm(
-                    request.POST, instance=estudiante)
-                if all([form_user.is_valid(), form_estudiante.is_valid(), form_perfil.is_valid()]):
+                form_instructor = InstructorForm(
+                    request.POST, instance=instructor)
+                tipo = request.POST['tipo']
+                if all([form_user.is_valid(), form_instructor.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
-                        form_user.save(edit=True)
+                        user = form_user.save(edit=True)
                         perfil = form_perfil.save()
-                        form_estudiante.save()
+                        instructor = form_instructor.save()
+                        print('datos cambiados en perfil',
+                              form_perfil.changed_data)
+                        # si es maestro creo el maestro en la tabla
+                        if form_perfil.has_changed() and 'tipo' in form_perfil.changed_data:
+                            if tipo == 'PR':
+                                grupo_maestro = Group.objects.filter(
+                                    name='Maestro')[0]
+                                user.groups.add(grupo_maestro)
+                                Maestro.objects.create(instructor=instructor)
+                            else:
+                                grupo_maestro = Group.objects.filter(
+                                    name='Maestro')[0]
+                                user.groups.remove(grupo_maestro)
+                                maestro = Maestro.objects.get(
+                                    instructor=instructor)
+                                maestro.delete()
                         data['enviado'] = True
                         data['nombre'] = perfil.nombre
                 else:
@@ -162,9 +176,9 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     if not form_user.is_valid():
                         print('error formulario user')
                         error.update(form_user.errors.get_json_data())
-                    elif not form_estudiante.is_valid():
-                        print('error formulario estudiante')
-                        error.update(form_estudiante.errors.get_json_data())
+                    elif not form_instructor.is_valid():
+                        print('error formulario instructor')
+                        error.update(form_instructor.errors.get_json_data())
                     elif not form_perfil.is_valid():
                         print('error formulario perfil')
                         error.update(form_perfil.errors.get_json_data())
@@ -181,10 +195,8 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                         id_deletes.append(id)
                     else:
                         id_deletes.extend(id)
-                    print('id usuarios a borrar', id_deletes)
                     delet_registro = User.objects.filter(
                         pk__in=id_deletes)
-                    print('enditades usarios a borrar', delet_registro)
                     for registro in delet_registro:
                         try:
                             registro.delete()
@@ -213,9 +225,21 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print(context)
-        context['title'] = "Lista de Estudiantes"
+        context['title'] = "Lista de instructors"
         context['icono_titulo'] = "fas fa-tachometer-alt"
         context['form_perfil'] = UserPerfilRegistrationForm()
-        context['form_estudiante'] = EstudianteForm()
+        context['form_instructor'] = InstructorForm()
         context['form_user'] = UserCrearAutomaticoForm()
         return context
+
+
+@ login_required
+@ permission_required('preMatricula.view_instructor', raise_exception=True)
+def buscarInstructor(request):
+    if request.method == 'POST':
+        id_instructor = int(request.POST['id_instructor'])
+        instructor = Instructor.objects.filter(pk=id_instructor)[0]
+        datos = instructor.datosAllJson()
+        datos['enviado'] = True
+        return JsonResponse(datos, safe=False)
+    return JsonResponse([], safe=False)
