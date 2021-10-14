@@ -10,6 +10,8 @@
 {% endblock  %}
 
 {% block contenido %}
+  {% block busqueda %}
+  {% endblock %}
 <div class='d-flex justify-content-end pb-2'>
   {% block boton_accion%}
   <button type="button" class="btn btn-default btn-xs" id='btnNuevo'>
@@ -45,7 +47,7 @@
 <div class="modal fade" id="modal-nuevo">
   <form action="post" id='formRegistro'>
     <div class="modal-dialog {%block class_modal%}{% endblock %} ">
-      <div class="modal-content">
+      <div class="modal-content bg-white">
         <div class="modal-header">
           <h4 class="modal-title"><i class=""></i><span class="pl-2"></span></h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -104,7 +106,6 @@
             action:"delete",
             csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
             }
-        console.log(contexto);
         with_ajax(url_deletes,"Eliminando","Estas seguro de eliminar los registro seleccionados",contexto,function(data){
             if (data.hasOwnProperty('error')){
                 mensaje("error","Estos registros están Restringido:  - "+data.error );
@@ -164,19 +165,22 @@
   }
   /*eliminamos la clase is-valid si se cierra el modal*/
   $('#modal-nuevo').on('hidden.bs.modal', function (e) {
-    if (estudiante_view) {
+    //compruebo si se ha utilizado la vista de detalles para asi cuando se cierra este modal poder cargar el formulario 
+    if (cargar_extra_on_hide_modal) {
            $('.modal-footer').html('<button type="submit" class="btn btn-primary vw-100">Guardar</button>');
-           $('#contenido-modal').load('{% url "prematricula:estudiante-add-form"%}',function() {
-                 //$('#modal-nuevo').modal('show');
-           });
-           estudiante_view=false      
+           //{% block on_hide_modal %}
+          
+           //{% endblock %}
+           cargar_extra_on_hide_modal=false      
         }
     var elements = document.getElementById("formRegistro").elements;
-
+   // {% block on_hidden_modal_extra %}
+   // {% endblock %}
     for (var i = 0, element; element = elements[i++];) {
       if (element.classList.contains("is-invalid")) {
         element.classList.remove("is-invalid");
       }
+
     }
     $('span').remove('.invalid-feedback');
 

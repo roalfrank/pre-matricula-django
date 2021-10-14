@@ -8,6 +8,19 @@ from .form import RegionForm
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 
 
+def buscarRegion(request):
+    if request.method == "POST":
+        try:
+            id_jcp = int(request.POST['id_jcp'])
+        except:
+            return JsonResponse([], safe=False)
+        regiones = [{'id': i.id, 'text': i.__str__()}
+                    for i in Region.objects.filter(jcp__id=id_jcp)]
+        return JsonResponse(regiones, safe=False)
+
+    return JsonResponse([], safe=False)
+
+
 class RegionListView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
     template_name = "tbentidad/entidad-region/list.html"
     permiso_vista = 'view_region'

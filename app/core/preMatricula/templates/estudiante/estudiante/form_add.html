@@ -52,11 +52,12 @@
       {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.municipio.label_tag}}
-      {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
-    </div>
+  <div class="col-12 col-md-4">
+      <div class="form-group">
+          <label for="id_municipio">Municipio:</label>
+          <select  name='municipio' class="form-control form-control-sm select2" id="id_municipio">
+          </select>
+      </div>
   </div>
 </div>
 <div class="row">

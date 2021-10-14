@@ -10,6 +10,19 @@ from core.preMatricula.logica.tbentidad.entidadJcp.form import EntidadForm
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 
 
+def buscarJCB(request):
+    if request.method == "POST":
+        try:
+            id_jcm = int(request.POST['id_jcm'])
+        except:
+            return JsonResponse([], safe=False)
+        jcbs = [{'id': i.id, 'text': i.__str__()}
+                for i in JCB.objects.filter(jcm__id=id_jcm)]
+        return JsonResponse(jcbs, safe=False)
+
+    return JsonResponse([], safe=False)
+
+
 class JcbView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
     template_name = "tbentidad/entidad-jcb/list.html"
     permiso_vista = 'view_jcb'
