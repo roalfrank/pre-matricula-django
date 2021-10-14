@@ -3,9 +3,9 @@ from django.urls import path
 from core.preMatricula.logica.tbentidad.Provincia.views import ProvinciaListView, buscarMunicipios
 from core.preMatricula.logica.tbentidad.entidadMunicipio.views import MunicipioView
 from core.preMatricula.logica.tbentidad.entidadJcp.views import JcpView
-from core.preMatricula.logica.tbentidad.entidadRegion.views import RegionListView
-from core.preMatricula.logica.tbentidad.entidadJcm.views import JcmView
-from core.preMatricula.logica.tbentidad.entidadJcb.views import JcbView
+from core.preMatricula.logica.tbentidad.entidadRegion.views import RegionListView, buscarRegion
+from core.preMatricula.logica.tbentidad.entidadJcm.views import JcmView, buscarJCM
+from core.preMatricula.logica.tbentidad.entidadJcb.views import JcbView, buscarJCB
 # importaciones para instructores
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 from core.preMatricula.logica.instructor.instructor.views import InstructorView, InstructorDetailView, InstructorDetailCargarFormAddView, buscarInstructor
@@ -47,6 +47,9 @@ urlpatterns = [
     path("entidad-region/", RegionListView.as_view(), name="entidad-region"),
     path("entidad-jcm/", JcmView.as_view(), name="entidad-jcm"),
     path("entidad-jcb/", JcbView.as_view(), name="entidad-jcb"),
+    path("entidad-jcb/buscar/", buscarJCB, name="entidad-jcb-buscar"),
+    path("entidad-jcm/buscar/", buscarJCM, name="entidad-jcm-buscar"),
+    path("entidad-region/buscar/", buscarRegion, name="entidad-region-buscar"),
 
     # --- Istructor enlaces -----
     path("cargo-instructor/", CargoInstructorView.as_view(),

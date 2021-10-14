@@ -3,6 +3,29 @@
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+  @media (max-width:674px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+  }
+  @media (max-width:464px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+  }
+  .info-instructor-tabla{
+    background-color: #343a401c;
+    border-radius: 10px;  
+  }
+   .info-instructor-tabla dl{
+    margin-bottom: 0px!important;
+  }
   .select2-container {
     background-color: #fff;
   }
@@ -56,24 +79,25 @@
 {% endblock %}
 {% block columns %}
 <tr>
-  <th >Selecciona</th>
+  <th style="width:2%;" >Select</th>
   <th>Id</th>
-  <th >Nombre</th>
+  <th style="width:93%;">Nombre</th>
   <th>Usuario</th>
   <th >Carnet</th>
   <th >Provincia</th>
   <th >Correo</th>
+  <th >image</th>
   <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
-  <th >Acción</th>
+  <th style="width:5%;">Acción</th>
   <!-- {%endif%} -->
 </tr>
 {% endblock %}
 
 {% block busqueda %}
-    <div class="card collapsed-card mb-1">
+    <div class="card collapsed-card mb-1" id='card_busqueda'>
             <div class="card-header p-0 pl-2 py-1">
                 <div class="card-title">
-                    <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50' id='resumen_busqueda'>Todos</span></small>
+                    <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50 ' id='resumen_busqueda'>Todos</span></small>
                 </div>
                 <div class="card-tools pr-4">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -138,10 +162,10 @@
               <!-- /.card-body -->
               <div class="card-footer p-2">
                 <button id='buscar_btn' class="btn btn-primary btn-xs">
-                  Buscar<i class="fa fa-search pl-2"></i>
+                  Realizar Busqueda<i class="fa fa-search pl-2"></i>
                 </button>
                 <button  id='cancelar_buscar_btn' class="btn btn-danger btn-xs">
-                  Cancelar <i class="fa fa-trash-alt ml-1"></i>
+                  Cancelar y Mostrar Todos<i class="fa fa-trash-alt ml-1"></i>
                 </button>
               </div>
             </form>
@@ -206,12 +230,13 @@
           {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
-        <div class="form-group">
-          {{form_perfil.municipio.label_tag}}
-          {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
+     <div class="col-12 col-md-4">
+        <div class="form-group ">
+            <label for="id_municipio">Municipio:</label>
+            <select  name='municipio' class="form-control form-control-sm select2" id="id_municipio">
+            </select>
         </div>
-      </div>
+    </div>
     </div>
     <div class="row">
       <div class="col-8">
@@ -376,7 +401,9 @@
         {
           "data": "correo"
         },
-
+        {
+          "data": "image_user"
+        },
         //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
           "data": "nombre"
@@ -395,12 +422,57 @@
           }
         },
         {
-          targets: [1],
+          targets: [1,3,4,5,6,7],
           visible: false,
         },
         {
-          targets: [2, 4, 5, 6],
-          class: "text-center"
+          targets: [2],
+          orderable: false,
+          render: function (data, type, row) {
+            var buttons =
+              `<div class="card p-1 m-1">
+                <div class='card-body p-1 m-1'>
+                  
+                  <div class='row'>
+                    <div class='col-md-2 col-lg-1 col-sm-2 d-flex flex-column '>
+                      <img src='${row.image_user}' class=' mx-auto img-circle elevation-2' alt='image usuario' width='40px' height='40px'>
+                      <small class='text-center'>${row.username}</small>
+                    </div>
+                    <div class='col-md-10 col-lg-11 col-sm-10 info-instructor-tabla p-0 px-2 pt-2 text-center'>
+                      <small>
+                        <div class='row'>
+                          <div class='col-md-5 col-lg-6 col-xl-4 col-sm-7'>
+                            <dl>
+                              <dt>Nombre</dt>
+                              <dd>${data}</dd>
+                            </dl>
+                          </div>
+                          <div class='col-md-3 col-lg-2 col-xl-3 col-sm-3'>
+                            <dl>
+                              <dt>Carnet Indentidad</dt>
+                              <dd>${row.ci}</dd>
+                            </dl>
+                          </div>
+                          <div class='col-md-4 col-lg-4 col-xl-3 d-none d-md-block'>
+                            <dl>
+                              <dt>Correo</dt>
+                              <dd>${row.correo}</dd>
+                            </dl>
+                          </div>
+                           <div class='col-xl-2 d-none d-xl-block '>
+                            <dl>
+                              <dt>JCCB</dt>
+                              <dd>${row.provincia}</dd>
+                            </dl>
+                          </div>
+                        </div>  
+                      </small>
+                    </div>
+                  </div>
+                </div>
+               </div>`;
+            return buttons
+          }
         },
         //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
@@ -453,11 +525,11 @@
     });//fin de DataTable server
     
     //agregamos los botones a la tabla
-    $('#data_filter').html('<!-- {% if perms.user.add_estudiante%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_estudiante%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} -->');
+    $('#data_filter').html('<!-- {% if perms.user.add_estudiante%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_estudiante%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
      
     //tratamientos a los botones de las busquedas
     //boton para cancelar la busqueda
-    $('#cancelar_buscar_btn').on('click',function(e){
+    let funcionCancelarBusqueda = function (e) {
       e.preventDefault();
       //obtener todos los elementos del formulario de busqueda
       var elements = document.getElementById("form_busqueda").elements;
@@ -489,19 +561,32 @@
                     }); 
       //llamo al metodo buscar de datatable y pinto la busqueda
       tblListar.search(dict_busqueda_json).draw();
+    }
+    $('#cancelar_buscar_btn').on('click',function(e){
+      funcionCancelarBusqueda(e);
+    });
+    $('#cancelar_buscar_btn_tabla').on('click',function(e){
+      funcionCancelarBusqueda(e);
     });
      //boton de busquar 
      $('#buscar_btn').on('click',function(e){
       e.preventDefault();
       //listado de los datos a busquar
       let dict_busqueda = new Object()
+      let dict_busqueda_text = ''
       //todos los elementos del formulario
       var elements = document.getElementById("form_busqueda").elements;
       //recorro cada elemento y si tiene datos lo incorporo a la lista
       for (var i = 0, element; element = elements[i++];) {
         if(element.value!=''){
           dict_busqueda[element.name]=element.value;
+          if(element.nodeName=='SELECT'){
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
           }
+          else{
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
+          }
+        }
       }
       //si la lista no esta vacia procedo a realizar la busqueda
       if(Object.keys(dict_busqueda).length>0){
@@ -510,7 +595,8 @@
                     filtro:dict_busqueda
                     }); 
         tblListar.search(dict_busqueda_json).draw();
-        $('#resumen_busqueda').html('Personalizada');
+        $('#resumen_busqueda').html(dict_busqueda_text);
+        $('#card_busqueda').CardWidget('collapse');
       }
       
     });
@@ -738,4 +824,10 @@
         }
     });
 
+{% endblock %}
+<!-- esto es bloque para agregar mas funciones para inicializar los datos cuando se esconde el modal del registro -->
+{% block on_hidden_modal_extra %}
+  $('#id_provincia').val('').trigger("change");
+  //$('#id_municipio').html('');
+  $('#id_cargo').val('').trigger("change");
 {% endblock %}

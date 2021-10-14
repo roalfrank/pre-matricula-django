@@ -1,7 +1,7 @@
 from django.forms import ModelForm, ModelChoiceField, Select
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from core.user.models import User, Perfil
-from core.preMatricula.models import Provincia
+from core.preMatricula.models import Provincia, JCP
 
 
 class UserRegistrationForm(UserCreationForm):

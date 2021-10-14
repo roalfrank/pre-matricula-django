@@ -1,5 +1,6 @@
 {% load humanize%}
 {% load static %}
+{% load filterCustom %}
 
 <div class="row">
     <div class="col-md-4">
@@ -61,67 +62,260 @@
                 <ul class="nav nav-pills">
                     <li class="nav-item"><a class="nav-link active" id="nav_perfil" href="#perfil" data-toggle="tab"><i
                                 class="fas fa-user"></i> Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link" id="nav_matriculado" href="#matriculado" data-toggle="tab"><i
-                                class="fa fa-address-card"></i> Cursos matrículados <span
-                                class="badge badge-success"> {{matriculados.count}} <span></a></li>
-                    <li class="nav-item"><a class="nav-link" id="nav_interes" href="#interes" data-toggle="tab"><i
-                                class="fas fa-bullhorn"></i> Cursos de interés <span
-                                class="badge badge-warning">{{ interes.count }}</span></a></li>
+                    <li class="nav-item"><a class="nav-link" id="nav_jovenClub" href="#jovenClub" data-toggle="tab"><i
+                                class="fa fa-address-card"></i> Joven Club </a></li>
+                    <li class="nav-item"><a class="nav-link" id="nav_conocimiento" href="#conocimiento" data-toggle="tab"><i
+                                class="fas fa-bullhorn"></i> Habilidad <span
+                                class="badge badge-warning">3</span></a></li>
+                    {% if request.user|has_group:"Admin" %} 
+                        <li class="nav-item"><a class="nav-link" id="nav_trazas" href="#trazas" data-toggle="tab"><i
+                                class="fas fa-bullhorn"></i> Trazas </a></li>
+                    {% endif %}
+                    {% if object.usuario|has_group:"Maestro" %} 
+                        <li class="nav-item"><a class="nav-link" id="nav_cursos" href="#cursos" data-toggle="tab"><i
+                                    class="fas fa-bullhorn"></i> Cursos <span
+                                    class="badge badge-success">{{cursos.count}}</span></a></li>
+                    {% endif %}
                 </ul>
             </div><!-- /.card-header -->
             <div class="card-body">
                 <div class="tab-content">
                     <div class="tab-pane active" id="perfil">
                         <div class="card">
-                            <div class="card-body p-0">
-                                <ul class="list-group list-group-unbordered mb-0">
-                                    <li class="list-group-item pr-3 pl-3 bg-light">
-                                        <small> <b>Nombre:</b></small>
-                                        <div class="text-right">{{object.usuario.perfil.nombre}}</div>
-                                    </li>
-                                    <li class="list-group-item pr-3 pl-3">
-                                        <small><b>Appellidos:</b></small>
-                                        <div class="text-right">{{object.usuario.perfil.apellido1}} {{object.usuario.perfil.apellido2}}
-                                        </div>
-                                    </li>
-
-                                    <li class="list-group-item pr-3 pl-3 bg-light">
-                                        <small> <b>Provincia:</b></small>
-                                        <div class="text-right">{{object.usuario.perfil.municipio.provincia.nombre}}
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item pr-3 pl-3">
-                                        <small><b>Municipio:</b></small>
-                                        <div class="text-right">{{object.usuario.perfil.municipio.nombre}}</div>
-                                    </li>
-                                    <li class="list-group-item pr-3 pl-3 bg-light">
-                                        <small><b>Dirección:</b></small>
-                                        <div class="text-right">{{object.usuario.perfil.direccion}}</div>
-                                    </li>
-                                    <li class="list-group-item pr-3 pl-3">
-                                        <small><b>Teléfono:</b></small>
-                                        <div class="text-right">{{object.usuario.perfil.telefono}}</div>
-                                    </li>
-                                    <li class="list-group-item pr-3 pl-3 bg-light">
-                                        <small><b>Ususario Siscae:</b></small>
-                                        <div class="text-right">
-                                            {% if object.usuario_sisce%}
-                                            {{object.usuario_sisce}}
-                                            {%else%}
-                                            no tiene
-                                            {% endif %}
-                                        </div>
-                                    </li>
-                                </ul>
+                            <div class="card-header p-1 px-2">
+                                <div>
+                                    <span>Datos</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="card card-info card-outline">
+                                      <div class="card-header p-1">
+                                          <strong class="">Nombre:</strong>
+                                          <div class="card-tools px-3">
+                                          {{object.usuario.perfil.nombre}}
+                                          </div>
+                                      </div>
+                                </div>
+                                <div class="card card-info card-outline">
+                                      <div class="card-header p-1">
+                                          <strong class="">Appellidos:</strong>
+                                          <div class="card-tools px-3">
+                                          {{object.usuario.perfil.apellido1}} {{object.usuario.perfil.apellido2}}
+                                          </div>
+                                      </div>
+                                </div>
+                                <div class="card card-info card-outline">
+                                      <div class="card-header p-1">
+                                          <strong class="">Teléfono:</strong>
+                                          <div class="card-tools px-3">
+                                         {{object.usuario.perfil.telefono}}
+                                          </div>
+                                      </div>
+                                </div>
+                                <div class="card card-info card-outline mb-1">
+                                      <div class="card-header p-1">
+                                          <strong class="">Ususario Siscae:</strong>
+                                          <div class="card-tools px-3">
+                                          {% if object.usuario_sisce%}
+                                              {{object.usuario_sisce}}
+                                          {%else%}
+                                              no tiene
+                                          {% endif %}
+                                          </div>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-1">
+                            <div class="card-header p-1 px-2">
+                                <div>
+                                    <span>Localización</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="card card-info card-outline">
+                                      <div class="card-header p-1">
+                                          <strong class="">Dirección:</strong>
+                                          <div class="card-tools px-3">
+                                         {{object.usuario.perfil.direccion}}
+                                          </div>
+                                      </div>
+                                </div>
+                                <div class="card card-info card-outline">
+                                      <div class="card-header p-1">
+                                          <strong class="">Provincia:</strong>
+                                          <div class="card-tools px-3">
+                                         {{object.usuario.perfil.municipio.provincia.nombre}}
+                                          </div>
+                                      </div>
+                                </div>
+                                <div class="card card-info card-outline mb-1">
+                                      <div class="card-header p-1">
+                                          <strong class="">Municipio:</strong>
+                                          <div class="card-tools px-3">
+                                        {{object.usuario.perfil.municipio.nombre}}
+                                          </div>
+                                      </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane" id="matriculado">
+                    <div class="tab-pane" id="jovenClub">
+                               <div class="card">
+                                   <div class="card-body p-0">
+                                        <ul class="list-group list-group-unbordered mb-0">
+                                            <li class="list-group-item pr-3 pl-3 bg-light">
+                                                <small> <b>Joven Club Provincial:</b></small>
+                                                <div class="text-right">{{object.jcb.jcm.region.jcp.entidad.nombre}}</div>
+                                            </li>
+                                            <li class="list-group-item pr-3 pl-3">
+                                                <small><b>Región:</b></small>
+                                                <div class="text-right">{{object.jcb.jcm.region.nombre}}
+                                                </div>
+                                            </li>
+
+                                            <li class="list-group-item pr-3 pl-3 bg-light">
+                                                <small> <b>Joven Club Municipal:</b></small>
+                                                <div class="text-right">{{object.jcb.jcm.entidad.nombre}}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                               </div>
+                               <div class="card">
+                                   <div class="card-body p-0">
+                                        <ul class="list-group list-group-unbordered mb-0">
+                                            <li class="list-group-item pr-3 pl-3 bg-light">
+                                                <small> <b>Joven Club Base:</b></small>
+                                                <div class="text-right">{{object.jcb.entidad.nombre}}</div>
+                                            </li>
+                                            <li class="list-group-item pr-3 pl-3">
+                                                <small><b>Dirección:</b></small>
+                                                <div class="text-right">{{object.jcb.entidad.nombre}}
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item pr-3 pl-3 bg-light">
+                                                <small><b>Provincia:</b></small>
+                                                <div class="text-right">{{object.jcb.entidad.municipio.provincia.nombre}}
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item pr-3 pl-3">
+                                                <small><b>Municipio:</b></small>
+                                                <div class="text-right">{{object.jcb.entidad.municipio.nombre}}
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item pr-3 pl-3 bg-light">
+                                                <small> <b>Teléfono:</b></small>
+                                                <div class="text-right">{{object.jcb.entidad.telefono}}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                   </div>
+                               </div>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                    <div class="tab-pane" id="conocimiento">
+                     
+                                <div class="info-box mb-3 bg-info p-0">
+                                    <span class="info-box-icon"><img src="{% static 'img/icon-cursos/python.png' %}" alt="Curso Python Joven Club Cuba" class='img-size-32'></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text p-2">Photoshop<span class='float-right bg-gradient-info px-3 elevation-2' style='border-radius:3px'>Basico</span></span>
+                                    </div>
+                                </div>
+                                <div class="info-box mb-3 bg-light p-0">
+                                    <span class="info-box-icon"><img src="{% static 'img/icon-cursos/python.png' %}" alt="Curso Python Joven Club Cuba" class='img-size-32'></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text p-2">Photoshop<span class='float-right bg-gradient-light px-3 elevation-2' style='border-radius:3px'>Basico</span></span>
+                                    </div>
+                                </div>
+                                <div class="info-box mb-3 bg-info p-0">
+                                    <span class="info-box-icon"><img src="{% static 'img/icon-cursos/python.png' %}" alt="Curso Python Joven Club Cuba" class='img-size-32'></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text p-2">Photoshop<span class='float-right bg-gradient-info px-3 elevation-2' style='border-radius:3px'>Basico</span></span>
+                                    </div>
+                                </div>
+                                <div class="info-box mb-3 bg-light p-0">
+                                    <span class="info-box-icon"><img src="{% static 'img/icon-cursos/python.png' %}" alt="Curso Python Joven Club Cuba" class='img-size-32'></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text p-2">Photoshop<span class='float-right bg-gradient-light px-3 elevation-2' style='border-radius:3px'>Avanzado</span></span>
+                                    </div>
+                                </div>
+                                <div class="info-box mb-3 bg-info p-0">
+                                    <span class="info-box-icon"><img src="{% static 'img/icon-cursos/python.png' %}" alt="Curso Python Joven Club Cuba" class='img-size-32'></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text p-2">Photoshop<span class='float-right bg-gradient-info px-3 elevation-2' style='border-radius:3px'>Basico</span></span>
+                                    </div>
+                                </div>
+                           
+                    </div>
+                {% if request.user|has_group:"Admin" %} 
+                    <div class="tab-pane" id="trazas">
+                            <div class="timeline">
+                            <!-- timeline time label -->
+                            <div class="time-label">
+                                <span class="bg-red">20 Oct. 2021</span>
+                            </div>
+                            <!-- /.timeline-label -->
+                            <!-- timeline item -->
+                            <div>
+                                <i class="fas fa-envelope bg-blue"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                    <h3 class="timeline-header">Mandó un mensaje a <strong>Centro de Ayuda</strong></h3>
+
+                                    <div class="timeline-body">
+                                        Hola estoy necesitado de ver porque no se me muestran los curso.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END timeline item -->
+                            <!-- timeline item -->
+                            <div>
+                                <i class="fas fa-graduation-cap bg-green"></i>
+                                <div class="timeline-item">
+                                <span class="time"><i class="fas fa-clock"></i> 5 mins ago</span>
+                                <h3 class="timeline-header no-border">Matriculado en el curso<a href="#">Aprendiendo Django</a></h3>
+                                </div>
+                            </div>
+                            <!-- END timeline item -->
+                            <!-- timeline item -->
+                            <div>
+                                <i class="fas fa-comments bg-yellow"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
+                                    <h3 class="timeline-header">Chat con maestro <a href="#">Maria Garcia</a></h3>
+                                    <div class="timeline-body">
+                                        Hola profe tengo una pregunta.
+                                        Pudieran ser 3 frecuencias a la semana?
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END timeline item -->
+                            <!-- timeline time label -->
+                            <div class="time-label">
+                                <span class="bg-green">15 Oct. 2021</span>
+                            </div>
+                            <!-- /.timeline-label -->
+                            <!-- timeline item -->
+                            <div>
+                                <i class="fa fa-thumbs-up bg-info"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
+                                    <h3 class="timeline-header">Le gusta el curso <a href="#">Ecured para principiantes</a></h3>
+                                </div>
+                            </div>
+                            <!-- END timeline item -->
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if object.usuario|has_group:"Maestro" %} 
+                    <div class="tab-pane" id="cursos">
                         <div class="card">
-                            
                             <div class="card-body table-responsive p-2">
-                                {% if matriculados%}
+                                {% if cursos%}
                                 <table id="tb-matriculado" class="table table-striped table-valign-middle">
                                     <thead>
                                         <tr>
@@ -131,25 +325,25 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for matricula in matriculados %}
+                                        {% for curso in cursos %}
                                         <tr>
                                             <td>
                                                 <small>
-                                                    {{matricula.preMatricula.curso.nombre}} <small><span  id='badge_frecuencia_interes' class="badge badge-success">{{matricula.preMatricula.frecuencia}}fr</span></small>
+                                                    {{curso.preMatricula.curso.nombre}} <small><span  id='badge_frecuencia_interes' class="badge badge-success">{{curso.preMatricula.tipo_grupo.nombre}}</span></small>
                                                 </small>
                                             </td>
                                             <td>
                                                 <small class="text-success">
-                                                    {{matricula.preMatricula.fecha_inicio}}
+                                                    {{curso.preMatricula.fecha_inicio}}
                                                 </small>
                                                 <div>
                                                 <small class="text-danger">
-                                                    {{matricula.preMatricula.fecha_fin}}
+                                                    {{curso.preMatricula.fecha_fin}}
                                                 </small>
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="{% url 'prematricula:matricula-page'  matricula.preMatricula.pk %}" class="text-perfil">
+                                                <a href="{% url 'prematricula:matricula-page'  curso.preMatricula.pk %}" class="text-perfil">
                                                    <i class="fas fa-search text-success"></i>
                                                 </a>
                                             </td>
@@ -159,54 +353,15 @@
                                 </table>
                                 {% else %}
                                 <div class="text-center mb-3">
-                                    <img src="{% static 'img/triste.png'%}" alt="No tiene cursos matriculados">
-                                    <h4>No tiene cursos matriculados</h4>
+                                    <img src="{% static 'img/triste.png'%}" alt="No tiene cursos">
+                                    <h4>No tiene cursos</h4>
                                 </div>
                                 {% endif %}
                             </div>
                         </div>
+                     
                     </div>
-                    <!-- /.tab-pane -->
-
-                    <div class="tab-pane" id="interes">
-                        <div class="card">
-                            <div class="card-body table-responsive p-2">
-                                {% if interes %}
-                                <table id="tb-interes" class="table table-striped table-valign-middle p-2">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 50%;" class='text-center'>Nombre</th>
-                                            <th style="width: 50%;" class='text-center'>Municipio</th>
-                                            <th style="width: 5%;" class='text-center'>Ver</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for curso_interes in interes %}
-                                        <tr>
-                                           <td>
-                                               <small>{{curso_interes.cursoInteres.curso.nombre}} <small><span  id='badge_frecuencia_interes' class="badge badge-success">{{curso_interes.cursoInteres.frecuencia}}fr</span></small> </small>
-                                               
-                                           </td>
-                                           <td>
-                                               <small> {{curso_interes.cursoInteres.municipio.nombre}}</small>
-                                           </td>
-                                           <td>
-                                               <a href="#" class="text-perfil">
-                                                  <i class="fas fa-search text-success"></i>
-                                               </a>
-                                           </td>
-                                       </tr>
-                                        {%endfor%}
-                                    </tbody>
-                                </table>
-                                {% else %}
-                                <div class="text-center p-3">
-                                    <h4>No tiene cursos de interés</h4>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                {% endif %}
                 </div>
                 <!-- /.tab-content -->
             </div><!-- /.card-body -->

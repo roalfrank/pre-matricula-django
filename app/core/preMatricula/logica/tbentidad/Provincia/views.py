@@ -11,9 +11,11 @@ from core.preMatricula.utils.general import regionProvincia, jcmProvincia
 
 
 def buscarMunicipios(request, region=None):
-
     if request.method == "POST":
-        id_provincia = int(request.POST['id_provincia'])
+        try:
+            id_provincia = int(request.POST['id_provincia'])
+        except:
+            return JsonResponse([], safe=False)
         municipios = [{'id': i.id, 'text': i.nombre}
                       for i in Municipio.objects.filter(provincia__id=id_provincia)]
         if region == 1:

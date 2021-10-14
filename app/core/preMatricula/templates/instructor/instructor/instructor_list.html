@@ -3,6 +3,38 @@
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+  #conocimiento .info-box{
+    min-height: 0px !important;
+  }
+  @media (max-width:674px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+  }
+  @media (max-width:464px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+  }
+  .info-instructor-tabla{
+    background-color: #343a401c;
+    border-radius: 10px;  
+  }
+   .info-instructor-tabla dl{
+    margin-bottom: 0px!important;
+  }
+  .badge-tabla{
+    position: absolute;
+    font-size: 0.5rem;
+    top: -6px;
+  }
+
   .select2-container {
     background-color: #fff;
   }
@@ -10,7 +42,9 @@
   .modal-header {
     padding: 0.5rem 1.2rem !important;
   }
-
+  #data td{
+     padding: 1px!important;
+  }
   .modal-body {
     padding: 0 1rem;
   }
@@ -41,6 +75,7 @@
     position: absolute;
     margin-left: 0.2rem;
   }
+  
 #tb-interes_info,#tb-matriculado_info{
   padding-top: 2rem;
 }
@@ -56,22 +91,23 @@
 {% endblock %}
 {% block columns %}
 <tr>
-  <th >Selecciona</th>
+  <th style="width:2%;">Select</th>
   <th>Id</th>
   <th>icono</th>
-  <th >Nombre</th>
+  <th style="width:93%;">Nombre</th>
   <th>Usuario</th>
   <th >Carnet</th>
   <th >JCB</th>
   <th >Correo</th>
+  <th >Correo</th>
   <!-- {% if perms.user.change_instructor or perms.user.delete_instructor %} -->
-  <th >Acción</th>
+  <th style="width:5%;">Acción</th>
   <!-- {%endif%} -->
 </tr>
 {% endblock %}
 
 {% block busqueda %}
-    <div class="card collapsed-card mb-1">
+    <div id='card_busqueda' class="card collapsed-card mb-1">
             <div class="card-header p-0 pl-2 py-1">
                 <div class="card-title">
                     <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50' id='resumen_busqueda'>Todos</span></small>
@@ -134,15 +170,49 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_jcp_busqueda" class='m-0'>JCC Provincial</label>
+                        {{form_instructor.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:id_jcp_busqueda'}}
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_region_busqueda" class='m-0'>Región</label>
+                        <select  class='select2 form-control form-control-sm' name="region" id="id_region_busqueda" ></select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_jcm_busqueda" class='m-0'>JCC Municipal</label>
+                        <select class='select2 form-control form-control-sm' name="jcm" id="id_jcm_busqueda" ></select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_jcb_busqueda" class='m-0' >JCC Base</label>
+                        <select class='select2 form-control form-control-sm' name="jcb" id="id_jcb_busqueda" required></select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                         <label for="id_maestro_busqueda" class='m-0' >Tipo</label>
+                          <select class='select2 form-control form-control-sm' name="tipo" autocomplete="off" class="form-check-input" id="id_maestro_busqueda" >
+                            <option value=''>Todos</option>
+                            <option value='PR'>Maestro</option>
+                            <option value='IN'>Instructor</option>
+                          </select></span>
+                      </div>
+                    </div>
                 </div>
               </div>
               <!-- /.card-body -->
               <div class="card-footer p-2">
                 <button id='buscar_btn' class="btn btn-primary btn-xs">
-                  Buscar<i class="fa fa-search pl-2"></i>
+                  Realizar Busqueda<i class="fa fa-search pl-2"></i>
                 </button>
                 <button  id='cancelar_buscar_btn' class="btn btn-danger btn-xs">
-                  Cancelar <i class="fa fa-trash-alt ml-1"></i>
+                  Cancelar y Mostrar Todos<i class="fa fa-trash-alt ml-1"></i>
                 </button>
               </div>
             </form>
@@ -154,103 +224,112 @@
 
 {%block class_modal%}modal-lg{% endblock %}
 {%block form_modal%}
-    <div class="row">
-      <div class="col-4">
+ <div class="row">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.nombre.label_tag}}
           {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.apellido1.label_tag}}
           {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.apellido2.label_tag}}
           {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.ci.label_tag}}
           {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_user.username.label_tag}}
           {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.correo.label_tag}}
           {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.telefono.label_tag}}
           {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_perfil.provincia.label_tag}}
           {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_perfil.municipio.label_tag}}
-          {{form_perfil.municipio|add_class:'form-control form-control-sm select2 '|attr:'autocomplete:off'}}
+          <label for="id_municipio">Municipio</label>
+          <select  class='select2 form-control form-control-sm' name="municipio" id="id_municipio" required></select>
         </div>
       </div>
-    </div>
-    <div class="row">
       <div class="col-8">
         <div class="form-group">
           {{form_perfil.direccion.label_tag}}
           {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_instructor.usuario_siscae.label_tag}}
           {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-4">
+       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_instructor.jcb.label_tag}}
-          {{form_instructor.jcb|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+          <label for="id_jcp">JCC Provincial</label>
+          {{form_instructor.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group">
+          <label for="id_region">Región</label>
+          <select  class='select2 form-control form-control-sm' name="region" id="id_region" ></select>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group">
+          <label for="id_jcm">JCC Municipal</label>
+          <select class='select2 form-control form-control-sm' name="jcm" id="id_jcm" ></select>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group">
+          <label for="id_jcb">JCC Base</label>
+          <select class='select2 form-control form-control-sm' name="jcb" id="id_jcb" required></select>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           {{form_instructor.cargo.label_tag}}
           {{form_instructor.cargo|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
         </div>
       </div>
       {% if request.user.is_staff %}
-      <div class="col-4">
-        <div class="form-group">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group pt-4">
           <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
           <span><strong class="mr-4">Maestro:</strong><input type="checkbox" name="maestro" autocomplete="off" class="form-check-input" id="id_maestro" ></span>
         </div>
       </div>
        {% endif %}
-    </div>
-
+</div>
 {%endblock%}
 
 {%block js_listar%}
@@ -258,12 +337,82 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
+
+    $('#id_jcp').trigger('change');
     funcion_vincular_select= function(){
-      var select_municipio = $('#id_municipio');
-      $('.select2').select2({
+       $('.select2').select2({
         theme: 'bootstrap4',
         language: 'es',
       });
+      //vinculaciones de las entidades
+      $('#id_jcp').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:entidad-region-buscar'  %}",
+          type: 'POST',
+          data: {
+            'id_jcp': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+          $('#id_region').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          }).trigger("change");
+  
+        });
+      });
+      $('#id_region').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:entidad-jcm-buscar'  %}",
+          type: 'POST',
+          data: {
+            'id_region': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+          $('#id_jcm').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          }).trigger("change");
+  
+        });
+      });
+      $('#id_jcm').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:entidad-jcb-buscar'  %}",
+          type: 'POST',
+          data: {
+            'id_jcm': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+          $('#id_jcb').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          }).trigger("change");
+  
+        });
+      });
+      //fin vinculaciones de las entidades
+      //vinculadciones de las provincias y municipios
+
+      //fin de las vinculaciones de provincias y municipios
+      var select_municipio = $('#id_municipio');
       $('#id_provincia').on('change', function () {
         var id = $(this).val();
         $.ajax({
@@ -286,12 +435,84 @@
         });
       });
     }
+     $('#id_jcp_busqueda').trigger('change');
     var vincular_busqueda_provincia_municipio= function(){
-      var select_municipio = $('#inputMunicipio');
       $('.select2').select2({
         theme: 'bootstrap4',
         language: 'es',
       });
+     
+      //vinculaciones de las entidades
+      $('#id_jcp_busqueda').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:entidad-region-buscar'  %}",
+          type: 'POST',
+          data: {
+            'id_jcp': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+           var newOption = new Option('--------', '', false, true);
+          $('#id_region_busqueda').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          }).append(newOption).trigger("change");
+  
+        });
+      });
+      $('#id_region_busqueda').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:entidad-jcm-buscar'  %}",
+          type: 'POST',
+          data: {
+            'id_region': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+           var newOption = new Option('--------', '', false, true);
+          $('#id_jcm_busqueda').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          }).append(newOption).trigger("change");
+  
+        });
+      });
+      $('#id_jcm_busqueda').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:entidad-jcb-buscar'  %}",
+          type: 'POST',
+          data: {
+            'id_jcm': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+           var newOption = new Option('--------', '', false, true);
+          $('#id_jcb_busqueda').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          }).append(newOption).trigger("change");
+  
+        });
+      });
+      //fin vinculaciones de las entidades
+
+      var select_municipio = $('#inputMunicipio');
+      
       $('#inputProvincia').on('change', function () {
         var id = $(this).val();
         if(id==''){
@@ -375,6 +596,9 @@
         {
           "data": "correo"
         },
+        {
+          "data": "image_user"
+        },
 
         //{% if perms.user.change_instructor or perms.user.delete_instructor %}
         {
@@ -394,7 +618,7 @@
           }
         },
         {
-          targets: [1,2],
+          targets: [1,2, 4, 5, 6,7,8],
           visible: false,
         },
         {
@@ -404,20 +628,50 @@
             var buttons =
               `<div class="card p-1 m-1">
                 <div class='card-body p-1 m-1'>
-                  <span class='badge badge-danger navbar-badge' style=''>${row.icono}</span>
-                  <span>
-                    ${data}
-                  </span>
+                  
+                  <div class='row'>
+                    <div class='col-md-2 col-lg-1 col-sm-2 d-flex flex-column '>
+                      <img src='${row.image_user}' class=' mx-auto img-circle elevation-2' alt='image usuario' width='40px' height='40px'>
+                      <span class='badge badge-info badge-tabla' style=''>${row.icono}</span>  
+                      <small class='text-center'>${row.username}</small>
+                    </div>
+                    <div class='col-md-10 col-lg-11 col-sm-10 info-instructor-tabla p-0 px-2 pt-2 text-center'>
+                      <small>
+                        <div class='row'>
+                          <div class='col-md-5 col-lg-6 col-xl-4 col-sm-7'>
+                            <dl>
+                              <dt>Nombre</dt>
+                              <dd>${data}</dd>
+                            </dl>
+                          </div>
+                          <div class='col-md-3 col-lg-2 col-xl-3 col-sm-3'>
+                            <dl>
+                              <dt>Carnet Indentidad</dt>
+                              <dd>${row.ci}</dd>
+                            </dl>
+                          </div>
+                          <div class='col-md-4 col-lg-4 col-xl-3 d-none d-md-block'>
+                            <dl>
+                              <dt>Correo</dt>
+                              <dd>${row.correo}</dd>
+                            </dl>
+                          </div>
+                           <div class='col-xl-2 d-none d-xl-block '>
+                            <dl>
+                              <dt>JCCB</dt>
+                              <dd>${row.jcb}</dd>
+                            </dl>
+                          </div>
+                        </div>  
+                      </small>
+                    </div>
+                  </div>
                 </div>
                </div>`;
             return buttons
           }
         },
-        {
-          targets: [3, 4, 5, 6,7],
-          class: "text-center",
-          orderable: false,
-        },
+       
         //{% if perms.user.change_instructor or perms.user.delete_instructor %}
         {
           targets: [-1],
@@ -469,12 +723,12 @@
     });//fin de DataTable server
     
     //agregamos los botones a la tabla
-    $('#data_filter').html('<!-- {% if perms.user.add_instructor%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_instructor%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} -->');
+    $('#data_filter').html('<!-- {% if perms.user.add_instructor%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_instructor%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
      
     //tratamientos a los botones de las busquedas
     //boton para cancelar la busqueda
-    $('#cancelar_buscar_btn').on('click',function(e){
-      e.preventDefault();
+    let functionCancelarBusqueda = function(e){
+        e.preventDefault();
       //obtener todos los elementos del formulario de busqueda
       var elements = document.getElementById("form_busqueda").elements;
       //iteramos todos para inicializarlos a todos
@@ -497,6 +751,7 @@
           element.value='';
         }
       }
+      //boton para 
       //actualizo los datos en el titulo de la caja de busqueda
       $('#resumen_busqueda').html('Todos');
       //genero un diccionario con filtro vacio para criterio de busqueda sea todo
@@ -505,6 +760,12 @@
                     }); 
       //llamo al metodo buscar de datatable y pinto la busqueda
       tblListar.search(dict_busqueda_json).draw();
+    }
+    $('#cancelar_buscar_btn').on('click',function(e){
+      functionCancelarBusqueda(e);
+    });
+    $('#cancelar_buscar_btn_tabla').on('click',function(e){
+      functionCancelarBusqueda(e);
     });
      //boton de busquar 
      $('#buscar_btn').on('click',function(e){
@@ -513,11 +774,18 @@
       let dict_busqueda = new Object()
       //todos los elementos del formulario
       var elements = document.getElementById("form_busqueda").elements;
+      let dict_busqueda_text = ''
       //recorro cada elemento y si tiene datos lo incorporo a la lista
       for (var i = 0, element; element = elements[i++];) {
         if(element.value!=''){
           dict_busqueda[element.name]=element.value;
+          if(element.nodeName=='SELECT'){
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
           }
+          else{
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
+          }
+        }
       }
       //si la lista no esta vacia procedo a realizar la busqueda
       if(Object.keys(dict_busqueda).length>0){
@@ -526,7 +794,8 @@
                     filtro:dict_busqueda
                     }); 
         tblListar.search(dict_busqueda_json).draw();
-        $('#resumen_busqueda').html('Personalizada');
+        $('#resumen_busqueda').html(dict_busqueda_text);
+        $('#card_busqueda').CardWidget('collapse');
       }
       
     });
@@ -642,6 +911,21 @@
         },
       },
       messages: {
+        usuario_siscae:{
+          required: "El usuario siscae es necesario",
+        },
+        jcp:{
+          required: "El joven club provincial es necesario",
+        },
+        region:{
+          required: "La region es necesario",
+        },
+        jcm:{
+          required: "El joven club municipal es necesario",
+        },
+        jcb:{
+          required: "El joven club base es necesario",
+        },
         telefono: {
           digits: 'Solo dígitos'
         },
@@ -758,6 +1042,17 @@
                   }
             }
             }
+            //aqui inicializo a todos los select
+            $('#id_jcp').val(respuesta['id_jcp'].toString()).trigger("change");
+            setTimeout(() => {
+               $('#id_region').val(respuesta['id_region'].toString()).trigger("change");
+            }, 100);
+            setTimeout(() => {
+               $('#id_jcm').val(respuesta['id_jcm'].toString()).trigger("change");
+            }, 100);
+            setTimeout(() => {
+               $('#id_jcb').val(respuesta['jcb'].toString()).trigger("change");
+            }, 100);
             $('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
             setTimeout(() => {
                $('#id_municipio').val(respuesta['municipio'].toString()).trigger("change");
@@ -779,7 +1074,8 @@
 <!-- esto es bloque para agregar mas funciones para inicializar los datos cuando se esconde el modal del registro -->
 {% block on_hidden_modal_extra %}
   $('#id_provincia').val('').trigger("change");
-  $('#id_municipio').html('');
+  //$('#id_municipio').html('');
   $('#id_jcb').val('').trigger("change");
   $('#id_cargo').val('').trigger("change");
+  $('#id_jcp').val('').trigger("change");
 {% endblock %}

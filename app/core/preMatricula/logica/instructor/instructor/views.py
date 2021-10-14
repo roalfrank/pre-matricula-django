@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
-from core.preMatricula.models import Instructor
+from core.preMatricula.models import Instructor, Maestro
 from core.preMatricula.logica.estudiante.estudiante.form import UserCrearAutomaticoForm
 from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
@@ -34,7 +34,9 @@ class InstructorDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next')
-
+        if self.get_object().usuario.groups.filter(name='Maestro').exists():
+            context['cursos'] = Maestro.objects.filter(
+                instructor=self.get_object()).first().prematriculamaestro_set.all()
         return context
 
 
@@ -57,6 +59,7 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                 form_user = UserCrearAutomaticoForm(request.POST)
                 form_perfil = UserPerfilRegistrationForm(request.POST)
                 form_instructor = InstructorForm(request.POST)
+                tipo = request.POST['tipo']
                 if all([form_user.is_valid(), form_instructor.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
                         user = form_user.save(commit=False)
@@ -70,6 +73,13 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                         instructor = form_instructor.save(commit=False)
                         instructor.usuario = user
                         instructor.save()
+                        # si es maestro creo el maestro en la tabla
+                        if tipo == 'PR':
+                            grupo_maestro = Group.objects.filter(
+                                name='Maestro')[0]
+                            user.groups.add(grupo_maestro)
+                            Maestro.objects.create(instructor=instructor)
+
                         data['enviado'] = True
                         data['nombre'] = perfil.nombre
                 else:
@@ -89,13 +99,22 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                         'apellido1': 'usuario__perfil__apellido1__icontains',
                         'apellido2': 'usuario__perfil__apellido2__icontains',
                         'municipio': 'usuario__perfil__municipio__pk',
-                        'provincia': 'usuario__perfil__municipio__provincia__pk'
+                        'provincia': 'usuario__perfil__municipio__provincia__pk',
+                        'jcp': 'jcb__jcm__region__jcp__pk',
+                        'region': 'jcb__jcm__region__pk',
+                        'jcm': 'jcb__jcm__pk',
+                        'jcb': 'jcb__pk',
                     }
                     busqueda_json = json.loads(busqueda)
                     filtros = busqueda_json['filtro']
                     condicion = Q()
                     for key, value in filtros.items():
-                        condicion.add(Q(**{lista_filtro[key]: value}), Q.AND)
+                        if key == 'tipo' and value != '':
+                            condicion.add(
+                                Q(**{'usuario__perfil__tipo': value}), Q.AND)
+                        else:
+                            condicion.add(
+                                Q(**{lista_filtro[key]: value}), Q.AND)
 
                     instructors = Instructor.objects.filter(condicion)
                 else:
@@ -127,11 +146,28 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     request.POST, instance=perfil_instancia)
                 form_instructor = InstructorForm(
                     request.POST, instance=instructor)
+                tipo = request.POST['tipo']
                 if all([form_user.is_valid(), form_instructor.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
-                        form_user.save(edit=True)
+                        user = form_user.save(edit=True)
                         perfil = form_perfil.save()
-                        form_instructor.save()
+                        instructor = form_instructor.save()
+                        print('datos cambiados en perfil',
+                              form_perfil.changed_data)
+                        # si es maestro creo el maestro en la tabla
+                        if form_perfil.has_changed() and 'tipo' in form_perfil.changed_data:
+                            if tipo == 'PR':
+                                grupo_maestro = Group.objects.filter(
+                                    name='Maestro')[0]
+                                user.groups.add(grupo_maestro)
+                                Maestro.objects.create(instructor=instructor)
+                            else:
+                                grupo_maestro = Group.objects.filter(
+                                    name='Maestro')[0]
+                                user.groups.remove(grupo_maestro)
+                                maestro = Maestro.objects.get(
+                                    instructor=instructor)
+                                maestro.delete()
                         data['enviado'] = True
                         data['nombre'] = perfil.nombre
                 else:
