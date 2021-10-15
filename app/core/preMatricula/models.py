@@ -300,7 +300,33 @@ class Gestor(models.Model):
                             verbose_name='Joven Club Municipal')
 
     def __str__(self):
-        return self.usuario.perfil
+        return self.usuario.perfil.get_nombre()
+
+    def toJson(self):
+        gestor = model_to_dict(self, fields=['usuario'])
+        gestor['nombre_usuario'] = self.usuario.perfil.get_nombre()
+        gestor['username'] = self.usuario.username
+        gestor['provincia'] = self.usuario.perfil.municipio.provincia.nombre
+        gestor['ci'] = self.usuario.perfil.ci
+        gestor['correo'] = self.usuario.perfil.correo
+        gestor['jcm'] = self.jcm.entidad.nombre
+        print('jcm', self.jcm.entidad.nombre)
+        gestor['image_user'] = self.usuario.perfil.get_image()
+        if self.usuario.perfil.tipo == 'PR':
+            gestor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
+        else:
+            gestor['icono'] = ''
+        return gestor
+
+    def datosAllJson(self):
+        gestor = model_to_dict(self)
+        gestor.update(self.usuario.perfil.toJson())
+        gestor['nombre_usuario'] = self.usuario.perfil.nombre
+        gestor['username'] = self.usuario.username
+        gestor['id_jcp'] = self.jcm.region.jcp.id
+        gestor['id_region'] = self.jcm.region.id
+        gestor['id_jcm'] = self.jcm.id
+        return gestor
 # fin del gestor
 
 # relacion Mucho a Mucho de Gesto y estudiante , un gestor puede crear muchas estudiantes

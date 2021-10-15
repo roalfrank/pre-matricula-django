@@ -58,6 +58,7 @@ def buscarEstudiante(request):
         estudiante = Estudiante.objects.filter(pk=id_estudiante)[0]
         datos = estudiante.datosAllJson()
         datos['enviado'] = True
+        datos['is_active'] = estudiante.usuario.is_active
         return JsonResponse(datos, safe=False)
     return JsonResponse([], safe=False)
 

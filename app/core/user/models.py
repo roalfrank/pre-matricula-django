@@ -39,6 +39,7 @@ class Perfil(models.Model):
         choices=CHOICE_TIPO,
         default=ESTUDIANTE,
     )
+    gestor = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nombre}{self.user.username}"

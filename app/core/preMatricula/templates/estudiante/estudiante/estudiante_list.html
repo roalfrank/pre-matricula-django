@@ -806,8 +806,13 @@
             var elements = document.getElementById("formRegistro").elements;
             for (var i = 0, element; element = elements[i++];) {
                 if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
-                element.value= respuesta[element.name]
-            }
+                  if(element.name=='is_active'){
+                       element.checked = respuesta[element.name];
+                    }
+                  else{
+                       element.value= respuesta[element.name]
+                    }
+                }
             }
             $('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
             setTimeout(() => {
