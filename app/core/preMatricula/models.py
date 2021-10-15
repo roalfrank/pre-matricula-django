@@ -295,8 +295,8 @@ class EstudianteCursoSiscae(models.Model):
 
 class Gestor(models.Model):
     usuario = models.OneToOneField(
-        User, on_delete=models.RESTRICT, primary_key=True)
-    jcm = models.ForeignKey(JCM, on_delete=models.RESTRICT,
+        User, on_delete=models.CASCADE, primary_key=True)
+    jcm = models.ForeignKey(JCM, on_delete=models.CASCADE,
                             verbose_name='Joven Club Municipal')
 
     def __str__(self):
