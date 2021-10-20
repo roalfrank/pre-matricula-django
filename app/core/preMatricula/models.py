@@ -168,6 +168,7 @@ class Instructor(models.Model):
         instrutor['correo'] = self.usuario.perfil.correo
         instrutor['jcb'] = self.jcb.entidad.nombre
         instrutor['image_user'] = self.usuario.perfil.get_image()
+        instrutor['tipo'] = self.usuario.perfil.tipo
         if self.usuario.perfil.tipo == 'PR':
             instrutor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
         else:
@@ -304,6 +305,7 @@ class Gestor(models.Model):
 
     def toJson(self):
         gestor = model_to_dict(self, fields=['usuario'])
+        gestor['id_gestor'] = self.pk
         gestor['nombre_usuario'] = self.usuario.perfil.get_nombre()
         gestor['username'] = self.usuario.username
         gestor['provincia'] = self.usuario.perfil.municipio.provincia.nombre
@@ -312,6 +314,7 @@ class Gestor(models.Model):
         gestor['jcm'] = self.jcm.entidad.nombre
         print('jcm', self.jcm.entidad.nombre)
         gestor['image_user'] = self.usuario.perfil.get_image()
+        gestor['tipo'] = self.usuario.perfil.tipo
         if self.usuario.perfil.tipo == 'PR':
             gestor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
         else:

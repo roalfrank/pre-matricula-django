@@ -31,6 +31,25 @@
   <link href="{% static 'inicio/css/style.css'%}" rel="stylesheet">
  <style>
   /* common */
+  .animate-btn{
+    animation: animacionbtn 4s infinite ;
+  }
+  @keyframes animacionbtn{
+  0%{
+    transform: rotate(0deg)!important;
+  } 
+  2%{
+    transform: rotate(-5deg)!important;
+  }
+  5%{
+    transform: rotate(5deg)!important;
+  }
+  100%{
+    transform: rotate(0deg)!important;
+  }
+
+
+  } 
 .ribbon {
   width: 120px;
   height: 120px;
@@ -140,7 +159,7 @@
 
       <nav class="nav-menu d-none d-lg-block">
         <ul>
-          <li class="active"><a href="index.html">Inicio</a></li>
+          <li class="active"><a href="/">Inicio</a></li>
           <li><a href="#about">Nosotros</a></li>
           <li><a href="#services">Cursos</a></li>
           <li><a href="#faq">Ayuda</a></li>
@@ -303,7 +322,7 @@
                   Crear cuenta
                   <i class="icofont-plus"></i>
               </a>  
-              <a class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase"  href="{% url 'login:login-user' %}"  >
+              <a class="btn btn-sm btn-warning p-1 px-3 mt-1 font-weight-bold text-uppercase animate-btn"  href="{% url 'login:login-user' %}"  >
                 Entrar
                 <i class="icofont-login"></i>
               </a> 

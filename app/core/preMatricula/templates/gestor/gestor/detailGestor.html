@@ -63,18 +63,13 @@
                     <li class="nav-item"><a class="nav-link active" id="nav_perfil" href="#perfil" data-toggle="tab"><i
                                 class="fas fa-user"></i> Perfil</a></li>
                     <li class="nav-item"><a class="nav-link" id="nav_jovenClub" href="#jovenClub" data-toggle="tab"><i
-                                class="fa fa-address-card"></i> Joven Club </a></li>
+                                class="fa fa-address-card"></i> Joven Club Municipal </a></li>
                     <li class="nav-item"><a class="nav-link" id="nav_conocimiento" href="#conocimiento" data-toggle="tab"><i
                                 class="fas fa-bullhorn"></i> Habilidad <span
                                 class="badge badge-warning">3</span></a></li>
                     {% if request.user|has_group:"Admin" %} 
                         <li class="nav-item"><a class="nav-link" id="nav_trazas" href="#trazas" data-toggle="tab"><i
                                 class="fas fa-bullhorn"></i> Trazas </a></li>
-                    {% endif %}
-                    {% if object.usuario|has_group:"Maestro" %} 
-                        <li class="nav-item"><a class="nav-link" id="nav_cursos" href="#cursos" data-toggle="tab"><i
-                                    class="fas fa-bullhorn"></i> Cursos <span
-                                    class="badge badge-success">{{cursos.count}}</span></a></li>
                     {% endif %}
                 </ul>
             </div><!-- /.card-header -->
@@ -167,51 +162,21 @@
                                         <ul class="list-group list-group-unbordered mb-0">
                                             <li class="list-group-item pr-3 pl-3 bg-light">
                                                 <small> <b>Joven Club Provincial:</b></small>
-                                                <div class="text-right">{{object.jcb.jcm.region.jcp.entidad.nombre}}</div>
+                                                <div class="text-right">{{object.jcm.region.jcp.entidad.nombre}}</div>
                                             </li>
                                             <li class="list-group-item pr-3 pl-3">
                                                 <small><b>Región:</b></small>
-                                                <div class="text-right">{{object.jcb.jcm.region.nombre}}
+                                                <div class="text-right">{{object.jcm.region.nombre}}
                                                 </div>
                                             </li>
 
                                             <li class="list-group-item pr-3 pl-3 bg-light">
                                                 <small> <b>Joven Club Municipal:</b></small>
-                                                <div class="text-right">{{object.jcb.jcm.entidad.nombre}}
+                                                <div class="text-right">{{object.jcm.entidad.nombre}}
                                                 </div>
                                             </li>
                                         </ul>
                                     </div>
-                               </div>
-                               <div class="card">
-                                   <div class="card-body p-0">
-                                        <ul class="list-group list-group-unbordered mb-0">
-                                            <li class="list-group-item pr-3 pl-3 bg-light">
-                                                <small> <b>Joven Club Base:</b></small>
-                                                <div class="text-right">{{object.jcb.entidad.nombre}}</div>
-                                            </li>
-                                            <li class="list-group-item pr-3 pl-3">
-                                                <small><b>Dirección:</b></small>
-                                                <div class="text-right">{{object.jcb.entidad.nombre}}
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item pr-3 pl-3 bg-light">
-                                                <small><b>Provincia:</b></small>
-                                                <div class="text-right">{{object.jcb.entidad.municipio.provincia.nombre}}
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item pr-3 pl-3">
-                                                <small><b>Municipio:</b></small>
-                                                <div class="text-right">{{object.jcb.entidad.municipio.nombre}}
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item pr-3 pl-3 bg-light">
-                                                <small> <b>Teléfono:</b></small>
-                                                <div class="text-right">{{object.jcb.entidad.telefono}}
-                                                </div>
-                                            </li>
-                                        </ul>
-                                   </div>
                                </div>
                     </div>
                     <!-- /.tab-pane -->
@@ -311,57 +276,7 @@
                 </div>
                 {% endif %}
 
-                {% if object.usuario|has_group:"Maestro" %} 
-                    <div class="tab-pane" id="cursos">
-                        <div class="card">
-                            <div class="card-body table-responsive p-2">
-                                {% if cursos%}
-                                <table id="tb-matriculado" class="table table-striped table-valign-middle">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 50%;">Nombre</th>
-                                            <th style="width: 100%;">Fecha</th>
-                                            <th style="width: 2%;">Ver</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for curso in cursos %}
-                                        <tr>
-                                            <td>
-                                                <small>
-                                                    {{curso.preMatricula.curso.nombre}} <small><span  id='badge_frecuencia_interes' class="badge badge-success">{{curso.preMatricula.tipo_grupo.nombre}}</span></small>
-                                                </small>
-                                            </td>
-                                            <td>
-                                                <small class="text-success">
-                                                    {{curso.preMatricula.fecha_inicio}}
-                                                </small>
-                                                <div>
-                                                <small class="text-danger">
-                                                    {{curso.preMatricula.fecha_fin}}
-                                                </small>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'prematricula:matricula-page'  curso.preMatricula.pk %}" class="text-perfil">
-                                                   <i class="fas fa-search text-success"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                {% else %}
-                                <div class="text-center mb-3">
-                                    <img src="{% static 'img/triste.png'%}" alt="No tiene cursos">
-                                    <h4>No tiene cursos</h4>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                     
-                    </div>
-                {% endif %}
+                
                 </div>
                 <!-- /.tab-content -->
             </div><!-- /.card-body -->

@@ -10,7 +10,7 @@ from core.preMatricula.logica.tbentidad.entidadJcb.views import JcbView, buscarJ
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 from core.preMatricula.logica.instructor.instructor.views import InstructorView, InstructorDetailView, InstructorDetailCargarFormAddView, buscarInstructor
 # importaciones para gestores
-from core.preMatricula.logica.gestor.gestor.views import GestorView, GestorDetailView, GestorDetailCargarFormAddView, buscarGestor
+from core.preMatricula.logica.gestor.gestor.views import GestorView, deleteGestorTrabajador, GestorDetailView, GestorDetailCargarFormAddView, GestorCargarFormAddTrabajadorView, buscarGestor, buscarTrabajador
 # importaciones para estudiantes
 from core.preMatricula.logica.estudiante.estudianteocupacion.views import OcupacionEstudianteView
 from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import DiscapacidadEstudianteView
@@ -62,6 +62,8 @@ urlpatterns = [
     path("instructor-add-form/",
          InstructorDetailCargarFormAddView.as_view(), name="instructor-add-form"),
     path("instructor-datos/", buscarInstructor, name="instructor-datos"),
+    path("buscar-instructores/", buscarTrabajador, name="buscar-instructores"),
+
 
     # --Estudiante enlaces -----
     path("estudiante-ocupacion/", OcupacionEstudianteView.as_view(),
@@ -81,7 +83,11 @@ urlpatterns = [
          GestorDetailView.as_view(), name="gestor-detail"),
     path("gestor-add-form/",
          GestorDetailCargarFormAddView.as_view(), name="gestor-add-form"),
+    path("gestor-add-form-trabajador/",
+         GestorCargarFormAddTrabajadorView.as_view(), name="gestor-add-form-trabajador"),
     path("gestor-datos/", buscarGestor, name="gestor-datos"),
+    path("gestor-delete-trabajador/", deleteGestorTrabajador,
+         name="gestor-delete-trabajador"),
 
     # --- Todo relacionado con los cursos
     path("curso-tipo/", TipoCursoView.as_view(),
