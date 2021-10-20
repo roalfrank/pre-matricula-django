@@ -23,6 +23,9 @@ from core.preMatricula.logica.matricula.matriculaModalidad.views import Modalida
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
 
+# importaciones para admin
+from core.preMatricula.logica.admin.admin.views import AdminView, AdminDetailView, AdminDetailCargarFormAddView
+
 # importaciones de comentarios
 from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario, rowComentario, rowComentarioHijo
 
@@ -88,6 +91,13 @@ urlpatterns = [
     path("gestor-datos/", buscarGestor, name="gestor-datos"),
     path("gestor-delete-trabajador/", deleteGestorTrabajador,
          name="gestor-delete-trabajador"),
+
+    # -----todo relacionados con los admin
+    path("admin/", AdminView.as_view(), name="admin"),
+    path("admin-detail/<int:pk>/",
+         AdminDetailView.as_view(), name="admin-detail"),
+    path("admin-add-form/",
+         AdminDetailCargarFormAddView.as_view(), name="admin-add-form"),
 
     # --- Todo relacionado con los cursos
     path("curso-tipo/", TipoCursoView.as_view(),

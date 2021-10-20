@@ -1,0 +1,838 @@
+{% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}
+{% block head_list %}
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
+<style>
+  @media (max-width:674px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+  }
+  @media (max-width:464px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+  }
+  .info-instructor-tabla{
+    background-color: #343a401c;
+    border-radius: 10px;  
+  }
+   .info-instructor-tabla dl{
+    margin-bottom: 0px!important;
+  }
+  .select2-container {
+    background-color: #fff;
+  }
+
+  .modal-header {
+    padding: 0.5rem 1.2rem !important;
+  }
+
+  .modal-body {
+    padding: 0 1rem;
+  }
+
+  .select2-container--bootstrap4 .select2-selection--single {
+    height: calc(1.8125rem + 2px) !important;
+  }
+  .modal-body .card {
+    background-color: #fff;
+  }
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #26bdef;
+  } 
+  .nav-link.active:hover{
+    color: #dad6d6 !important;
+  } 
+  .modal a:hover{
+    color: #26bdef !important;
+  }
+  .list-group-item{
+    padding: 0;
+    
+  }
+  .modal-footer{
+    padding-top: 0 !important;
+  }
+  #badge_frecuencia_interes{
+    position: absolute;
+    margin-left: 0.2rem;
+  }
+#tb-interes_info,#tb-matriculado_info{
+  padding-top: 2rem;
+}
+#tb-interes_paginate,#tb-matriculado_paginate{
+  margin: -0.5rem;
+}
+
+
+.pagination{
+  font-size: smaller;
+}
+</style>
+{% endblock %}
+{% block columns %}
+<tr>
+  <th style="width:2%;" >Select</th>
+  <th>Id</th>
+  <th style="width:93%;">Nombre</th>
+  <th>Usuario</th>
+  <th >Carnet</th>
+  <th >Provincia</th>
+  <th >Correo</th>
+  <th >image</th>
+  <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
+  <th style="width:5%;">Acción</th>
+  <!-- {%endif%} -->
+</tr>
+{% endblock %}
+
+{% block busqueda %}
+    <div class="card collapsed-card mb-1" id='card_busqueda'>
+            <div class="card-header p-0 pl-2 py-1">
+                <div class="card-title">
+                    <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50 ' id='resumen_busqueda'>Todos</span></small>
+                </div>
+                <div class="card-tools pr-4">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-2">
+              <form action="" id='form_busqueda'>
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputCI" class='m-0'>Carnet Identidad:</label>
+                            <input name="ci" type="text"class="form-control form-control-sm" id="inputCI">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputUsername" class='m-0'>Usuario:</label>
+                            <input name='username' type="text"class="form-control form-control-sm" id="inputUsername">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputCorreo" class='m-0'>Correo:</label>
+                            <input name='correo' type="text"class="form-control form-control-sm" id="inputCorreo">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputNombre" class='m-0'>Nombre:</label>
+                            <input name='nombre' type="text"class="form-control form-control-sm" id="inputNombre">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputApellido1" class='m-0'>Apellido 1:</label>
+                            <input name='apellido1' type="text"class="form-control form-control-sm" id="inputApellido1">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputApellido1" class='m-0'>Apellido 2:</label>
+                            <input name='apellido2' type="text"class="form-control form-control-sm" id="inputApellido1">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputProvincia" class='m-0'>Provincia:</label>
+                            {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:inputProvincia'|attr:'name:provincia'}}
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group m-0">
+                            <label for="inputMunicipio" class='m-0'>Municipio:</label>
+                            <select  name='municipio' class="form-control form-control-sm select2" id="inputMunicipio">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer p-2">
+                <button id='buscar_btn' class="btn btn-primary btn-xs">
+                  Realizar Busqueda<i class="fa fa-search pl-2"></i>
+                </button>
+                <button  id='cancelar_buscar_btn' class="btn btn-danger btn-xs">
+                  Cancelar y Mostrar Todos<i class="fa fa-trash-alt ml-1"></i>
+                </button>
+              </div>
+            </form>
+        </div>
+{% endblock %}
+
+{% block boton_accion%}
+{% endblock%}
+
+{%block class_modal%}modal-lg{% endblock %}
+{%block form_modal%}
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.nombre.label_tag}}
+          {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.apellido1.label_tag}}
+          {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.apellido2.label_tag}}
+          {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.ci.label_tag}}
+          {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_user.username.label_tag}}
+          {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.correo.label_tag}}
+          {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.telefono.label_tag}}
+          {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_perfil.provincia.label_tag}}
+          {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+     <div class="col-12 col-md-4">
+        <div class="form-group ">
+            <label for="id_municipio">Municipio:</label>
+            <select  name='municipio' class="form-control form-control-sm select2" id="id_municipio">
+            </select>
+        </div>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-8">
+        <div class="form-group">
+          {{form_perfil.direccion.label_tag}}
+          {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_estudiante.usuario_sisce.label_tag}}
+          {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          {{form_estudiante.ocupacion.label_tag}}
+          {{form_estudiante.ocupacion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_estudiante.categoria_ocupacional.label_tag}}
+          {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          {{form_estudiante.discapacidad.label_tag}}
+          {{form_estudiante.discapacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+        </div>
+      </div>
+    </div>
+    {% if request.user.is_staff %}
+    <div class="row justify-content-end">
+        <div class="form-group mb-1 mr-1">
+          <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
+        </div>
+    </div>
+    {% endif %}
+
+{%endblock%}
+
+{%block js_listar%}
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %} "></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
+<script>
+  $(function () {
+    funcion_vincular_select= function(){
+      var select_municipio = $('#id_municipio');
+      $('.select2').select2({
+        theme: 'bootstrap4',
+        language: 'es',
+      });
+      $('#id_provincia').on('change', function () {
+        var id = $(this).val();
+        $.ajax({
+          url: "{% url 'prematricula:buscar-municipios'  %}",
+          type: 'POST',
+          data: {
+            'id_provincia': id,
+            csrfmiddlewaretoken: function () {
+              return $('input[name="csrfmiddlewaretoken"]').val();
+            },
+          },
+          dataType: 'json'
+        }).done(function (data) {
+          select_municipio.html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: data
+          });
+  
+        });
+      });
+    }
+    var vincular_busqueda_provincia_municipio= function(){
+      var select_municipio = $('#inputMunicipio');
+      $('.select2').select2({
+        theme: 'bootstrap4',
+        language: 'es',
+      });
+      $('#inputProvincia').on('change', function () {
+        var id = $(this).val();
+        if(id==''){
+          select_municipio.html('');
+        }
+        else{
+          $.ajax({
+            url: "{% url 'prematricula:buscar-municipios'  %}",
+            type: 'POST',
+            data: {
+              'id_provincia': id,
+              csrfmiddlewaretoken: function () {
+                return $('input[name="csrfmiddlewaretoken"]').val();
+              },
+            },
+            dataType: 'json'
+          }).done(function (data) {
+            select_municipio.html('').select2({
+              theme: 'bootstrap4',
+              language: 'es',
+              data: data
+            });
+    
+          });
+        }
+      });
+    }
+    vincular_busqueda_provincia_municipio();
+    funcion_vincular_select();
+    //creacion de la tabla con  serverside
+    var tblListar = $("#data").DataTable({
+      'serverSide':true,
+      'processing':true,
+      'buttons': [
+        'copy', 'excel', 'pdf'
+    ],
+      responsive: {
+        details: true,
+    },
+      'ajax':function(data,callback,settings){
+         $.post(window.location.pathname,{
+           'action': 'cargarDatos',
+           'csrfmiddlewaretoken': function () {
+             return $('input[name="csrfmiddlewaretoken"]').val();
+           },
+           limite:data.length,
+           inicio:data.start,
+           busqueda:data.search.value
+
+         },function(response){
+               callback({
+                 recordsTotal:response.total,
+                 recordsFiltered:response.total,
+                 data:response.lista
+
+               });
+         });
+      },
+        columns: [{
+          "data": 'usuario',
+         
+        },
+        {
+          "data": "usuario"
+        },
+        {
+          "data": "nombre_usuario"
+        },
+        {
+          "data": "username"
+        },
+        {
+          "data": "ci"
+        },
+        {
+          "data": "provincia"
+        },
+        {
+          "data": "correo"
+        },
+        {
+          "data": "image_user"
+        },
+        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+        {
+          "data": "nombre"
+        }
+        //{%endif%}
+      ],
+      columnDefs: [{
+          targets: 0,
+          
+          orderable: false,
+          class: 'text-center',
+          render: function (data, type, row) {
+            var buttons =
+              '<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div>';
+            return buttons
+          }
+        },
+        {
+          targets: [1,3,4,5,6,7],
+          visible: false,
+        },
+        {
+          targets: [2],
+          orderable: false,
+          render: function (data, type, row) {
+            var buttons =
+              `<div class="card p-1 m-1">
+                <div class='card-body p-1 m-1'>
+                  
+                  <div class='row'>
+                    <div class='col-md-2 col-lg-1 col-sm-2 d-flex flex-column '>
+                      <img src='${row.image_user}' class=' mx-auto img-circle elevation-2' alt='image usuario' width='40px' height='40px'>
+                      <small class='text-center'>${row.username}</small>
+                    </div>
+                    <div class='col-md-10 col-lg-11 col-sm-10 info-instructor-tabla p-0 px-2 pt-2 text-center'>
+                      <small>
+                        <div class='row'>
+                          <div class='col-md-5 col-lg-6 col-xl-4 col-sm-7'>
+                            <dl>
+                              <dt>Nombre</dt>
+                              <dd>${data}</dd>
+                            </dl>
+                          </div>
+                          <div class='col-md-3 col-lg-2 col-xl-3 col-sm-3'>
+                            <dl>
+                              <dt>Carnet Indentidad</dt>
+                              <dd>${row.ci}</dd>
+                            </dl>
+                          </div>
+                          <div class='col-md-4 col-lg-4 col-xl-3 d-none d-md-block'>
+                            <dl>
+                              <dt>Correo</dt>
+                              <dd>${row.correo}</dd>
+                            </dl>
+                          </div>
+                           <div class='col-xl-2 d-none d-xl-block '>
+                            <dl>
+                              <dt>JCCB</dt>
+                              <dd>${row.provincia}</dd>
+                            </dl>
+                          </div>
+                        </div>  
+                      </small>
+                    </div>
+                  </div>
+                </div>
+               </div>`;
+            return buttons
+          }
+        },
+        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
+        {
+          targets: [-1],
+          responsivePriority: 2,
+          class: "text-center",
+          orderable: false,
+          render: function (data, type, row) {
+            var buttons = ''
+            buttons =
+            //{% if perms.user.view_estudiante%}
+              '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver Estudiante"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+            //{%endif%}
+              //{% if perms.user.change_estudiante%}
+            buttons +=
+              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar Estudiante"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+            //{%endif%}
+            //{% if perms.user.delete_estudiante%} 
+            buttons +=
+              '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar Estudiante"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+            //{%endif%}
+            return buttons
+          }
+        },
+        //{%endif%}
+
+      ],
+      order: [
+        [4, 'asc']
+      ],
+      initComplete: function (settings, json) {
+            
+            //botones de accion 
+                $('#btnDeleteAll').on('click', function () {
+                  delete_select(tblListar);
+                });
+
+                $("#btnNuevo").on("click", function () {
+                  abrir_modal_nuevo("Nuevo Estudiante");
+                });
+                
+                $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+                  abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
+                });
+                $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
+                  delete_registro(tblListar, element.currentTarget);
+                });
+            //fin de botones de accion
+      }
+    });//fin de DataTable server
+    
+    //agregamos los botones a la tabla
+    $('#data_filter').html('<!-- {% if perms.user.add_estudiante%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_estudiante%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
+     
+    //tratamientos a los botones de las busquedas
+    //boton para cancelar la busqueda
+    let funcionCancelarBusqueda = function (e) {
+      e.preventDefault();
+      //obtener todos los elementos del formulario de busqueda
+      var elements = document.getElementById("form_busqueda").elements;
+      //iteramos todos para inicializarlos a todos
+      for (var i = 0, element; element = elements[i++];) {
+        //verifico si es un select, porque llevan un tratamiento diferente
+        if(element.nodeName=='SELECT'){
+          //si es un select y tambien es municipio, lo limpio.
+          if(element.name=='municipio'){
+             element.innerHTML='';
+          }
+          else{
+            //es un select pero es provincia los inicializo con jquery
+            $(element).val('');
+            $(element).trigger('change');
+          }
+
+        }
+        else{
+          //los otros elementos normal el inicio
+          element.value='';
+        }
+      }
+      //actualizo los datos en el titulo de la caja de busqueda
+      $('#resumen_busqueda').html('Todos');
+      //genero un diccionario con filtro vacio para criterio de busqueda sea todo
+      var dict_busqueda_json =JSON.stringify({
+                    filtro:{}
+                    }); 
+      //llamo al metodo buscar de datatable y pinto la busqueda
+      tblListar.search(dict_busqueda_json).draw();
+    }
+    $('#cancelar_buscar_btn').on('click',function(e){
+      funcionCancelarBusqueda(e);
+    });
+    $('#cancelar_buscar_btn_tabla').on('click',function(e){
+      funcionCancelarBusqueda(e);
+    });
+     //boton de busquar 
+     $('#buscar_btn').on('click',function(e){
+      e.preventDefault();
+      //listado de los datos a busquar
+      let dict_busqueda = new Object()
+      let dict_busqueda_text = ''
+      //todos los elementos del formulario
+      var elements = document.getElementById("form_busqueda").elements;
+      //recorro cada elemento y si tiene datos lo incorporo a la lista
+      for (var i = 0, element; element = elements[i++];) {
+        if(element.value!=''){
+          dict_busqueda[element.name]=element.value;
+          if(element.nodeName=='SELECT'){
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
+          }
+          else{
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
+          }
+        }
+      }
+      //si la lista no esta vacia procedo a realizar la busqueda
+      if(Object.keys(dict_busqueda).length>0){
+        console.log(dict_busqueda);
+        var dict_busqueda_json =JSON.stringify({
+                    filtro:dict_busqueda
+                    }); 
+        tblListar.search(dict_busqueda_json).draw();
+        $('#resumen_busqueda').html(dict_busqueda_text);
+        $('#card_busqueda').CardWidget('collapse');
+      }
+      
+    });
+
+    //fin de tratamiento de botones de las busquedas
+
+    //botones del nav de detalle
+    $('#data tbody').on('click', 'a[rel="view"]', function (element) {
+      var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
+      //paso a data una lista de los valores de la row a editar
+      var data = tblListar.row(tr.row).data();
+     
+      modal_title.find('span').html('Datos de Estudiante');
+      modal_title.find('i').removeClass().addClass('fa fa-edit');
+      $('.modal-footer').html('');
+      //cargo los datos del estudiante
+      $('#contenido-modal').load('/sistema/estudiante-detail/'+data.usuario+'/',function() {
+                 $('#modal-nuevo').modal('show');
+                 $('#tb-matriculado').DataTable({responsive: true,autoWidth: false,columnDefs:[{
+                    targets: [2],
+                    orderable: false,
+                 }]});
+                 $('#tb-interes').DataTable({responsive: true,autoWidth: false,columnDefs:[{
+                    targets: [2],
+                    orderable: false,
+                 }]});
+
+      });
+      //variable como semafaro para en la funcion del cerrar del modal cargar el formulario 
+      cargar_extra_on_hide_modal = true
+    });
+    
+    
+   
+    
+
+    $.validator.setDefaults({
+      submitHandler: function (form) {
+        var parametros = new FormData(form);
+        parametros.append('id_edit', id_edit);
+        parametros.append('tipo','ES');
+        submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
+          parametros,
+          function (data) {
+            $('span').remove('.invalid-feedback');
+            if (data.enviado) {
+              $("#modal-nuevo").modal("hide");
+              tblListar.ajax.reload();
+              mensaje("success", "Guardado el Registro - " + data.nombre);
+              id_edit = null;
+            } else {
+              var error = JSON.parse(data.error)
+              var listado_error = []
+              for (const key in error) {
+                listado_error.push(`${key}: ${error[key][0]['message']}`)
+                var element = $(`#formRegistro [name="${key}"]`)
+                element.addClass("is-invalid");
+                var html = `<span class='invalid-feedback'>${error[key][0]['message']}</span>`
+                element.closest(".form-group").append(html);
+              }
+              mensaje("error", "Error Guardando el Registro - " + listado_error);
+            }
+          })
+      }
+    });
+    
+    //validacion del formulario 
+    $("#formRegistro").validate({
+      rules: {
+        username: {
+          remote: {
+                      url: "{% url 'prematricula:unique-username' %}",
+                      type: "post",
+                      data: {
+                            'username': function() {
+                              return $("#id_username").val();
+                            },
+                            id_edit:function(){
+                              return id_edit;
+                            },
+                            csrfmiddlewaretoken:function(){
+                                  return $('input[name="csrfmiddlewaretoken"]').val();
+                                },
+                        }
+                  }
+        },
+        nombre: {
+          required: true,
+          maxlength: 100,
+        },
+        direccion: {
+          required: true,
+        },
+        ci: {
+          required: true,
+          minlength: 11,
+          maxlength: 11,
+          number: true,
+          digits: true,
+        },
+        correo: {
+          email: true,
+        },
+        telefono: {
+          digits: true
+        },
+      },
+      messages: {
+        telefono: {
+          digits: 'Solo dígitos'
+        },
+        nombre: {
+          required: "El  nombre del estudiante es necesario",
+          maxlength: "No esta permitido mas de 100 caracteres",
+        },
+        apellido1: {
+          required: "El apellido paterno es necesario",
+        },
+        apellido2: {
+          required: "El apellido materno es necesario",
+        },
+        correo: {
+          required: "El correo es necesario",
+          email: 'No es válido el correo',
+        },
+        ocupacion: {
+          required: "La ocupación es necesario",
+        },
+        categoria_ocupacional: {
+          required: "La categoria ocupacional es necesario",
+        },
+        discapacidad: {
+          required: "La discapacidad es necesaria",
+        },
+        ci: {
+          required: "El carnet es necesario",
+          minlength: '11 numeros son necesarios',
+          maxlength: 'Hay más de 11 números',
+          number: 'El carnet es solo números',
+          digits: 'Solo números',
+        },
+        username: {
+          required: "El usuario es necesario",
+          remote:'Ya existe este usuario.'
+        },
+        direccion: {
+          required: "La dirección es necesaria",
+        },
+        provincia: {
+          required: "La provincia es necesaria"
+        },
+        municipio: {
+          required: "El municipio es necesario"
+        }
+      },
+      errorElement: "span",
+      errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        element.closest(".form-group").append(error);
+      },
+      highlight: function (element, errorClass, validClass) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass("is-invalid");
+      },
+    });
+  });
+</script>
+{%endblock%}
+<!-- actualizacion de varios bloques -->
+
+<!-- actualizar el bloque de cuando se cierra el modal y hay que cargar el formulario despues de ver los detalles del registro -->
+{% block on_hide_modal %}
+    $('#contenido-modal').load('{% url "prematricula:estudiante-add-form"%}',function() {
+          select_municipio = $('#id_municipio');
+          funcion_vincular_select();
+    });
+{% endblock %}
+<!-- esto es por si la fila de la tabla a borrar select tiene un campo de id distinto, en este caso tiene el campo usuario -->
+{% block delete_registro_varios%}
+  select_item.push(data.usuario);
+{% endblock %}
+<!-- esto es por si la fila de la tabla a borrar solo un elemento tiene un campo de id distinto, en este caso tiene el campo usuario -->
+{% block delete_registro%}
+  id: data.usuario,
+{% endblock%}
+<!-- personalizar el modal de editar -->
+{% block abrir_modal_editar%}
+    //con esto obtengo el tr del boton edit de la tabla
+    var tr = tabla.cell($(element).closest('td,li')).index();
+    //paso a data una lista de los valores de la row a editar
+    var data = tabla.row(tr.row).data();
+
+    $.ajax({
+        url: "{% url 'prematricula:estudiante-datos'  %}",
+        type: 'POST',
+        data: {
+            'id_estudiante': data.usuario,
+            csrfmiddlewaretoken: function () {
+            return $('input[name="csrfmiddlewaretoken"]').val();
+        },
+        },
+        dataType: 'json'
+        }).done(function (respuesta) {
+        if(respuesta['enviado']){
+            var elements = document.getElementById("formRegistro").elements;
+            for (var i = 0, element; element = elements[i++];) {
+                if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
+                  if(element.name=='is_active'){
+                       element.checked = respuesta[element.name];
+                    }
+                  else{
+                       element.value= respuesta[element.name]
+                    }
+                }
+            }
+            $('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
+            setTimeout(() => {
+               $('#id_municipio').val(respuesta['municipio'].toString()).trigger("change");
+            }, 100);
+            $('input[name="action"]').val("edit");
+            id_edit = data.usuario;
+            modal_title.find('span').html(titulo);
+            modal_title.find('i').removeClass().addClass('fa fa-edit');
+            $('#modal-nuevo').modal('show');
+        }
+        else{
+           console.log('problema con el ajax en editar estudiante');
+        }
+    });
+
+{% endblock %}
+<!-- esto es bloque para agregar mas funciones para inicializar los datos cuando se esconde el modal del registro -->
+{% block on_hidden_modal_extra %}
+  $('#id_provincia').val('').trigger("change");
+  //$('#id_municipio').html('');
+  $('#id_cargo').val('').trigger("change");
+{% endblock %}
