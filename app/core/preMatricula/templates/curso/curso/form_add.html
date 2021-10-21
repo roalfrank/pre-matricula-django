@@ -67,8 +67,33 @@
       {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
     </div>
   </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.usuario_sisce.label_tag}}
+      {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
 </div>
-
+<div class="row">
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.ocupacion.label_tag}}
+      {{form_estudiante.ocupacion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.categoria_ocupacional.label_tag}}
+      {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="form-group">
+      {{form_estudiante.discapacidad.label_tag}}
+      {{form_estudiante.discapacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+    </div>
+  </div>
+</div>
 {% if request.user.is_staff %}
 <div class="row justify-content-end">
     <div class="form-group mb-1 mr-1">

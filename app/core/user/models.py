@@ -57,13 +57,22 @@ class Perfil(models.Model):
 
     def toJsonAdmin(self):
         perfil = {}
-        perfil['usuario'] = self.get_nombre()
+        perfil['usuario'] = self.user.pk
         perfil['nombre_usuario'] = self.get_nombre()
         perfil['username'] = self.user.username
         perfil['provincia'] = self.municipio.provincia.nombre
         perfil['ci'] = self.ci
         perfil['correo'] = self.correo
         perfil['image_user'] = self.get_image()
+        return perfil
+
+    def toJsonAdminAll(self):
+        perfil = model_to_dict(self, exclude=['avatar'])
+        perfil['usuario'] = self.user.pk
+        perfil['nombre_usuario'] = self.get_nombre()
+        perfil['username'] = self.user.username
+        perfil['provincia'] = self.municipio.provincia.pk
+
         return perfil
 
     def get_nombre(self):

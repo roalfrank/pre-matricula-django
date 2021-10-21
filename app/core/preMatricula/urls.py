@@ -17,6 +17,7 @@ from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import Dis
 from core.preMatricula.logica.estudiante.estudianteCatOcupacional.views import CategoriaOcupacionalEstudianteView
 from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView, EstudianteDetailView, EstudianteDetailCargarFormAddView
 # importaciones para cursos
+from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso
 from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
@@ -24,7 +25,7 @@ from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatri
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
 
 # importaciones para admin
-from core.preMatricula.logica.admin.admin.views import AdminView, AdminDetailView, AdminDetailCargarFormAddView
+from core.preMatricula.logica.admin.admin.views import AdminView, AdminDetailView, AdminDetailCargarFormAddView, buscarAdmin
 
 # importaciones de comentarios
 from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario, rowComentario, rowComentarioHijo
@@ -98,10 +99,17 @@ urlpatterns = [
          AdminDetailView.as_view(), name="admin-detail"),
     path("admin-add-form/",
          AdminDetailCargarFormAddView.as_view(), name="admin-add-form"),
+    path("admin-datos/", buscarAdmin, name="admin-datos"),
 
     # --- Todo relacionado con los cursos
     path("curso-tipo/", TipoCursoView.as_view(),
          name="curso-tipo"),
+    path("curso/", CursoView.as_view(), name="curso"),
+    path("curso-detail/<int:pk>/",
+         CursoDetailView.as_view(), name="curso-detail"),
+    path("curso-add-form/",
+         CursoDetailCargarFormAddView.as_view(), name="curso-add-form"),
+    path("curso-datos/", buscarCurso, name="curso-datos"),
 
 
     # --- Todo relacionado con los matricula

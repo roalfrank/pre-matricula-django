@@ -382,6 +382,16 @@ class Curso(models.Model):
             return '{}{}'.format(MEDIA_URL, self.foto)
         return '{}{}'.format(STATIC_URL, 'img/curso_default.png')
 
+    def toJson(self):
+        curso = model_to_dict(self, exclude=['foto'])
+        curso['foto_url'] = self.get_foto()
+        if self.nextCurso:
+            curso['nextCurso_nombre'] = self.nextCurso.nombre
+        else:
+            curso['nextCurso_nombre'] = 'No tiene'
+
+        return curso
+
 
 # Modalidad de la preMatricula
 class Modalidad(models.Model):

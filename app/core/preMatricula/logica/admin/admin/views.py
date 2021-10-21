@@ -1,4 +1,5 @@
 import json
+from django.contrib.auth.decorators import permission_required, login_required
 from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -10,7 +11,6 @@ from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import UserCrearAutomaticoFormAdmin
 from core.login.form import UserPerfilRegistrationForm
-from core.preMatricula.utils.general import listado_matricula_estudiante
 
 
 class AdminDetailCargarFormAddView(TemplateView):
@@ -34,7 +34,7 @@ class AdminDetailView(DetailView):
 
 
 class AdminView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
-    #model = Estudiante
+    #model = admin
     template_name = "admin/admin/admin_list.html"
     permiso_vista = 'view_logentry'
     permiso_crud = {
@@ -54,9 +54,10 @@ class AdminView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
                 if all([form_user.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
                         user = form_user.save(commit=False)
+                        user.is_staff = True
                         user.save()
                         grupo_admin = Group.objects.filter(
-                            name='Admin')[0]
+                            name='Admin').first()
                         user.groups.add(grupo_admin)
                         perfil = form_perfil.save(commit=False)
                         perfil.user = user
@@ -115,7 +116,9 @@ class AdminView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
 
                 if all([form_user.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
-                        form_user.save(edit=True)
+                        user = form_user.save(commit=False, edit=True)
+                        user.is_staff = True
+                        user.save()
                         perfil = form_perfil.save()
                         data['enviado'] = True
                         data['nombre'] = perfil.nombre
@@ -178,3 +181,17 @@ class AdminView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
         context['form_perfil'] = UserPerfilRegistrationForm()
         context['form_user'] = UserCrearAutomaticoFormAdmin()
         return context
+
+
+@ login_required
+@ permission_required('admin.view_logentry', raise_exception=True)
+def buscarAdmin(request):
+    if request.method == 'POST':
+        print(request.POST)
+        id_admin = int(request.POST['id_admin'])
+        admin = User.objects.filter(pk=id_admin).first()
+        datos = admin.perfil.toJsonAdminAll()
+        datos['enviado'] = True
+        datos['is_active'] = admin.is_active
+        return JsonResponse(datos, safe=False)
+    return JsonResponse([], safe=False)
