@@ -1,0 +1,597 @@
+[
+{
+  "model": "sitio.sitio_web",
+  "pk": 1,
+  "fields": {
+    "nombre": "Matrícula Online",
+    "color_activo_menu": "#007bff",
+    "color_no_activo_menu": "#11101070",
+    "color_sider": "#0087c3",
+    "color_footer": "#e8e8ea",
+    "color_header": "#26bdef",
+    "color_text_body": "rgb(9, 79, 102)",
+    "color_contenido": "#fffff",
+    "color_fondo_inicio": "#26bdef",
+    "icono": null
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 1,
+  "fields": {
+    "nombre": "Admin Usuarios",
+    "icono": "fa-cogs",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 2,
+  "fields": {
+    "nombre": "TBL-Simples",
+    "icono": "fa-tachometer-alt",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 3,
+  "fields": {
+    "nombre": "Admin Cursos",
+    "icono": "fa-comments",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 4,
+  "fields": {
+    "nombre": "Admin Entidad",
+    "icono": "fa-bell",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 5,
+  "fields": {
+    "nombre": "Reportes",
+    "icono": "fa-chart-pie",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 6,
+  "fields": {
+    "nombre": "Admin Matrícula",
+    "icono": "fa-bolt",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 7,
+  "fields": {
+    "nombre": "Estudiante",
+    "icono": "fa-battery-full",
+    "padre_tipo": 1,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 8,
+  "fields": {
+    "nombre": "Gestor",
+    "icono": "fa-plus",
+    "padre_tipo": 1,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 9,
+  "fields": {
+    "nombre": "Instructor",
+    "icono": "fa-commentsa",
+    "padre_tipo": 1,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 10,
+  "fields": {
+    "nombre": "Maestro",
+    "icono": "fa-bolta",
+    "padre_tipo": 1,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 11,
+  "fields": {
+    "nombre": "Cursos",
+    "icono": "fa-bell",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 12,
+  "fields": {
+    "nombre": "Mis Datos",
+    "icono": "fa-tachometer-alt",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.tipomodulo",
+  "pk": 13,
+  "fields": {
+    "nombre": "Sistema",
+    "icono": "fa-chart-pie",
+    "padre_tipo": null,
+    "estado": true
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 5,
+  "fields": {
+    "nombre": "Provincias",
+    "icono": "far fa-circle",
+    "tipo": 4,
+    "url_path": "prematricula:listar-provincia",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 6,
+  "fields": {
+    "nombre": "Cargo-Instructor",
+    "icono": "far fa-circle",
+    "tipo": 9,
+    "url_path": "prematricula:cargo-instructor",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 7,
+  "fields": {
+    "nombre": "Ocupación",
+    "icono": "fa-bell",
+    "tipo": 7,
+    "url_path": "prematricula:estudiante-ocupacion",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 10,
+  "fields": {
+    "nombre": "Gestionar Estudiante",
+    "icono": "far fa-circle",
+    "tipo": 1,
+    "url_path": "prematricula:estudiante",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 11,
+  "fields": {
+    "nombre": "Discapacidad",
+    "icono": "fa-bolta",
+    "tipo": 7,
+    "url_path": "prematricula:estudiante-discapacidad",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 12,
+  "fields": {
+    "nombre": "Cat-Ocupacional",
+    "icono": "fa-bolt",
+    "tipo": 7,
+    "url_path": "prematricula:estudiante-cat-ocupacional",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 13,
+  "fields": {
+    "nombre": "Gestionar Trabajador",
+    "icono": "fa-circle",
+    "tipo": 1,
+    "url_path": "prematricula:instructor",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 14,
+  "fields": {
+    "nombre": "Gestión Maestro",
+    "icono": "fa-bolt",
+    "tipo": 10,
+    "url_path": "sitio:listarddsdfsdf",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 15,
+  "fields": {
+    "nombre": "JCP",
+    "icono": "fa-cogs",
+    "tipo": 4,
+    "url_path": "prematricula:entidad-jcp",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 16,
+  "fields": {
+    "nombre": "JCM",
+    "icono": "fa-chart-pie",
+    "tipo": 4,
+    "url_path": "prematricula:entidad-jcm",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 17,
+  "fields": {
+    "nombre": "JCB",
+    "icono": "fa-bell",
+    "tipo": 4,
+    "url_path": "prematricula:entidad-jcb",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 18,
+  "fields": {
+    "nombre": "Región",
+    "icono": "fa-chart-pie",
+    "tipo": 4,
+    "url_path": "prematricula:entidad-region",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 19,
+  "fields": {
+    "nombre": "Municipio",
+    "icono": "fa-bolt",
+    "tipo": 4,
+    "url_path": "prematricula:entidad-municipio",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 20,
+  "fields": {
+    "nombre": "Cursos",
+    "icono": "fa-bolt",
+    "tipo": 3,
+    "url_path": "prematricula:curso",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 21,
+  "fields": {
+    "nombre": "Tipos-Cursos",
+    "icono": "fa-bell",
+    "tipo": 3,
+    "url_path": "prematricula:curso-tipo",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 22,
+  "fields": {
+    "nombre": "Curso-Interés",
+    "icono": "fa-bolt",
+    "tipo": 3,
+    "url_path": "sitio:listarzxczxxcx",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 23,
+  "fields": {
+    "nombre": "Matrículas",
+    "icono": "fa-bell",
+    "tipo": 6,
+    "url_path": "sitio:listarwdewed",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 24,
+  "fields": {
+    "nombre": "Modalidad-Matrícula",
+    "icono": "fa-battery-full",
+    "tipo": 6,
+    "url_path": "prematricula:matricula-modalidad",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 25,
+  "fields": {
+    "nombre": "Estado-Matrícula",
+    "icono": "fa-cogs",
+    "tipo": 6,
+    "url_path": "prematricula:matricula-estado",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 26,
+  "fields": {
+    "nombre": "Profesor-Matrícula",
+    "icono": "fa-chart-pie",
+    "tipo": 6,
+    "url_path": "sitio:listarsssads",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 28,
+  "fields": {
+    "nombre": "Listado de Cursos",
+    "icono": "fa-comments",
+    "tipo": 11,
+    "url_path": "estudiante:listar-curso",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 29,
+  "fields": {
+    "nombre": "Matricular",
+    "icono": "fa-chart-pie",
+    "tipo": 11,
+    "url_path": "sitio:listarsdgfd",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 30,
+  "fields": {
+    "nombre": "Mis Cursos",
+    "icono": "fa-battery-full",
+    "tipo": 11,
+    "url_path": "sitio:listarertrewt",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 31,
+  "fields": {
+    "nombre": "Ver perfil",
+    "icono": "fa-plus",
+    "tipo": 12,
+    "url_path": "sitio:listarweqweqwe",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 32,
+  "fields": {
+    "nombre": "Editar perfil",
+    "icono": "fa-bell",
+    "tipo": 12,
+    "url_path": "sitio:listarerewtwe",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 33,
+  "fields": {
+    "nombre": "Chat",
+    "icono": "fa-comments",
+    "tipo": 13,
+    "url_path": "sitio:listarsds",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 34,
+  "fields": {
+    "nombre": "Mensajes",
+    "icono": "fa-cogs",
+    "tipo": 13,
+    "url_path": "sitio:listarsddsd",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 35,
+  "fields": {
+    "nombre": "Contáctenos",
+    "icono": "fa-bell",
+    "tipo": 13,
+    "url_path": "sitio:listardsaas",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 36,
+  "fields": {
+    "nombre": "Directorio JCC",
+    "icono": "far fa-circle",
+    "tipo": 13,
+    "url_path": "sitio:listareffewfew",
+    "estado": true,
+    "grupos": [
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 37,
+  "fields": {
+    "nombre": "Detalle Matrícula",
+    "icono": "fa-bolt",
+    "tipo": 6,
+    "url_path": "prematricula:matricula-page",
+    "estado": true,
+    "grupos": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 38,
+  "fields": {
+    "nombre": "Gestionar Gestor",
+    "icono": "far fa-circle",
+    "tipo": 1,
+    "url_path": "prematricula:gestor",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+},
+{
+  "model": "sitio.modulo",
+  "pk": 39,
+  "fields": {
+    "nombre": "Gestionar Admin",
+    "icono": "far fa-circle",
+    "tipo": 1,
+    "url_path": "prematricula:admin",
+    "estado": true,
+    "grupos": [
+      1
+    ]
+  }
+}
+]

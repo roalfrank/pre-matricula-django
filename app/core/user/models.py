@@ -39,6 +39,7 @@ class Perfil(models.Model):
         choices=CHOICE_TIPO,
         default=ESTUDIANTE,
     )
+    gestor = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nombre}{self.user.username}"
@@ -52,6 +53,26 @@ class Perfil(models.Model):
     def toJson(self):
         perfil = model_to_dict(self, exclude=['avatar'])
         perfil['provincia'] = self.municipio.provincia.pk
+        return perfil
+
+    def toJsonAdmin(self):
+        perfil = {}
+        perfil['usuario'] = self.user.pk
+        perfil['nombre_usuario'] = self.get_nombre()
+        perfil['username'] = self.user.username
+        perfil['provincia'] = self.municipio.provincia.nombre
+        perfil['ci'] = self.ci
+        perfil['correo'] = self.correo
+        perfil['image_user'] = self.get_image()
+        return perfil
+
+    def toJsonAdminAll(self):
+        perfil = model_to_dict(self, exclude=['avatar'])
+        perfil['usuario'] = self.user.pk
+        perfil['nombre_usuario'] = self.get_nombre()
+        perfil['username'] = self.user.username
+        perfil['provincia'] = self.municipio.provincia.pk
+
         return perfil
 
     def get_nombre(self):

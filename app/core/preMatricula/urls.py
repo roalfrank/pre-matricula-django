@@ -9,17 +9,23 @@ from core.preMatricula.logica.tbentidad.entidadJcb.views import JcbView, buscarJ
 # importaciones para instructores
 from core.preMatricula.logica.instructor.cargoinstructor.views import CargoInstructorView
 from core.preMatricula.logica.instructor.instructor.views import InstructorView, InstructorDetailView, InstructorDetailCargarFormAddView, buscarInstructor
+# importaciones para gestores
+from core.preMatricula.logica.gestor.gestor.views import GestorView, deleteGestorTrabajador, GestorDetailView, GestorDetailCargarFormAddView, GestorCargarFormAddTrabajadorView, buscarGestor, buscarTrabajador
 # importaciones para estudiantes
 from core.preMatricula.logica.estudiante.estudianteocupacion.views import OcupacionEstudianteView
 from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import DiscapacidadEstudianteView
 from core.preMatricula.logica.estudiante.estudianteCatOcupacional.views import CategoriaOcupacionalEstudianteView
 from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView, EstudianteDetailView, EstudianteDetailCargarFormAddView
 # importaciones para cursos
+from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso
 from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
+
+# importaciones para admin
+from core.preMatricula.logica.admin.admin.views import AdminView, AdminDetailView, AdminDetailCargarFormAddView, buscarAdmin
 
 # importaciones de comentarios
 from core.preMatricula.logica.comentario.views import ListarComentariosPorMatricula, AddComentario, rowComentario, rowComentarioHijo
@@ -60,6 +66,8 @@ urlpatterns = [
     path("instructor-add-form/",
          InstructorDetailCargarFormAddView.as_view(), name="instructor-add-form"),
     path("instructor-datos/", buscarInstructor, name="instructor-datos"),
+    path("buscar-instructores/", buscarTrabajador, name="buscar-instructores"),
+
 
     # --Estudiante enlaces -----
     path("estudiante-ocupacion/", OcupacionEstudianteView.as_view(),
@@ -73,11 +81,35 @@ urlpatterns = [
          EstudianteDetailView.as_view(), name="estudiante-detail"),
     path("estudiante-add-form/",
          EstudianteDetailCargarFormAddView.as_view(), name="estudiante-add-form"),
+    # ----Gestor enlaces---------
+    path("gestor/", GestorView.as_view(), name="gestor"),
+    path("gestor-detail/<int:pk>/",
+         GestorDetailView.as_view(), name="gestor-detail"),
+    path("gestor-add-form/",
+         GestorDetailCargarFormAddView.as_view(), name="gestor-add-form"),
+    path("gestor-add-form-trabajador/",
+         GestorCargarFormAddTrabajadorView.as_view(), name="gestor-add-form-trabajador"),
+    path("gestor-datos/", buscarGestor, name="gestor-datos"),
+    path("gestor-delete-trabajador/", deleteGestorTrabajador,
+         name="gestor-delete-trabajador"),
 
+    # -----todo relacionados con los admin
+    path("admin/", AdminView.as_view(), name="admin"),
+    path("admin-detail/<int:pk>/",
+         AdminDetailView.as_view(), name="admin-detail"),
+    path("admin-add-form/",
+         AdminDetailCargarFormAddView.as_view(), name="admin-add-form"),
+    path("admin-datos/", buscarAdmin, name="admin-datos"),
 
     # --- Todo relacionado con los cursos
     path("curso-tipo/", TipoCursoView.as_view(),
          name="curso-tipo"),
+    path("curso/", CursoView.as_view(), name="curso"),
+    path("curso-detail/<int:pk>/",
+         CursoDetailView.as_view(), name="curso-detail"),
+    path("curso-add-form/",
+         CursoDetailCargarFormAddView.as_view(), name="curso-add-form"),
+    path("curso-datos/", buscarCurso, name="curso-datos"),
 
 
     # --- Todo relacionado con los matricula
