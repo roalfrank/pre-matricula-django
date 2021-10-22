@@ -168,6 +168,7 @@ class Instructor(models.Model):
         instrutor['correo'] = self.usuario.perfil.correo
         instrutor['jcb'] = self.jcb.entidad.nombre
         instrutor['image_user'] = self.usuario.perfil.get_image()
+        instrutor['tipo'] = self.usuario.perfil.tipo
         if self.usuario.perfil.tipo == 'PR':
             instrutor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
         else:
@@ -295,12 +296,40 @@ class EstudianteCursoSiscae(models.Model):
 
 class Gestor(models.Model):
     usuario = models.OneToOneField(
-        User, on_delete=models.RESTRICT, primary_key=True)
-    jcm = models.ForeignKey(JCM, on_delete=models.RESTRICT,
+        User, on_delete=models.CASCADE, primary_key=True)
+    jcm = models.ForeignKey(JCM, on_delete=models.CASCADE,
                             verbose_name='Joven Club Municipal')
 
     def __str__(self):
-        return self.usuario.perfil
+        return self.usuario.perfil.get_nombre()
+
+    def toJson(self):
+        gestor = model_to_dict(self, fields=['usuario'])
+        gestor['id_gestor'] = self.pk
+        gestor['nombre_usuario'] = self.usuario.perfil.get_nombre()
+        gestor['username'] = self.usuario.username
+        gestor['provincia'] = self.usuario.perfil.municipio.provincia.nombre
+        gestor['ci'] = self.usuario.perfil.ci
+        gestor['correo'] = self.usuario.perfil.correo
+        gestor['jcm'] = self.jcm.entidad.nombre
+        print('jcm', self.jcm.entidad.nombre)
+        gestor['image_user'] = self.usuario.perfil.get_image()
+        gestor['tipo'] = self.usuario.perfil.tipo
+        if self.usuario.perfil.tipo == 'PR':
+            gestor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
+        else:
+            gestor['icono'] = ''
+        return gestor
+
+    def datosAllJson(self):
+        gestor = model_to_dict(self)
+        gestor.update(self.usuario.perfil.toJson())
+        gestor['nombre_usuario'] = self.usuario.perfil.nombre
+        gestor['username'] = self.usuario.username
+        gestor['id_jcp'] = self.jcm.region.jcp.id
+        gestor['id_region'] = self.jcm.region.id
+        gestor['id_jcm'] = self.jcm.id
+        return gestor
 # fin del gestor
 
 # relacion Mucho a Mucho de Gesto y estudiante , un gestor puede crear muchas estudiantes
@@ -352,6 +381,16 @@ class Curso(models.Model):
         if self.foto:
             return '{}{}'.format(MEDIA_URL, self.foto)
         return '{}{}'.format(STATIC_URL, 'img/curso_default.png')
+
+    def toJson(self):
+        curso = model_to_dict(self, exclude=['foto'])
+        curso['foto_url'] = self.get_foto()
+        if self.nextCurso:
+            curso['nextCurso_nombre'] = self.nextCurso.nombre
+        else:
+            curso['nextCurso_nombre'] = 'No tiene'
+
+        return curso
 
 
 # Modalidad de la preMatricula

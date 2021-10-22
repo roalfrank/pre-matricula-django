@@ -45,7 +45,7 @@
 </div>
 {%block modal_listar%}
 <div class="modal fade" id="modal-nuevo">
-  <form action="post" id='formRegistro'>
+  <form action="post" id='formRegistro' enctype="multipart/form-data">
     <div class="modal-dialog {%block class_modal%}{% endblock %} ">
       <div class="modal-content bg-white">
         <div class="modal-header">
@@ -69,7 +69,7 @@
           </div>
         </div>
         <div class="modal-footer justify-content-between">
-          <button type="submit" class="btn btn-primary vw-100">Guardar</button>
+          <button type="submit" class="btn btn-success vw-100">Guardar</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -91,6 +91,7 @@
 <script src="{% static 'js/list.js'%}"></script>
 <script>
   var delete_select = function (tabla,url_deletes=window.location.pathname) {
+     //{% block delet_select%}
         var select_item = new Array();
         $('#data input[type="checkbox"]:checked').each(function(){
             var tr = tabla.cell($(this).closest('td,li')).index();
@@ -117,6 +118,7 @@
             tabla.ajax.reload();
         });
         }
+        //{% endblock %}
 }
   var delete_registro = function (tabla, element, url_delete = window.location.pathname) {
     var tr = tabla.cell($(element).closest('td,li')).index();
@@ -167,7 +169,7 @@
   $('#modal-nuevo').on('hidden.bs.modal', function (e) {
     //compruebo si se ha utilizado la vista de detalles para asi cuando se cierra este modal poder cargar el formulario 
     if (cargar_extra_on_hide_modal) {
-           $('.modal-footer').html('<button type="submit" class="btn btn-primary vw-100">Guardar</button>');
+           $('.modal-footer').html('<button type="submit" class="btn btn-success vw-100">Guardar</button>');
            //{% block on_hide_modal %}
           
            //{% endblock %}

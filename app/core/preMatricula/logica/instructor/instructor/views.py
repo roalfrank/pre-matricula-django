@@ -224,8 +224,7 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
-        context['title'] = "Lista de instructors"
+        context['title'] = "Lista de Trabajadores"
         context['icono_titulo'] = "fas fa-tachometer-alt"
         context['form_perfil'] = UserPerfilRegistrationForm()
         context['form_instructor'] = InstructorForm()
@@ -241,5 +240,6 @@ def buscarInstructor(request):
         instructor = Instructor.objects.filter(pk=id_instructor)[0]
         datos = instructor.datosAllJson()
         datos['enviado'] = True
+        datos['is_active'] = instructor.usuario.is_active
         return JsonResponse(datos, safe=False)
     return JsonResponse([], safe=False)

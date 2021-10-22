@@ -1,0 +1,46 @@
+<div id='card_busqueda' class="card mb-1">
+            <div class="card-header p-0 pl-2 py-1">
+                <div class="card-title">
+                    <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50' id='resumen_busqueda_trabajador'>Todos</span></small>
+                </div>
+                <div class="card-tools pr-4">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-2">
+              <form action="" id='form_busqueda_trabajador'>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group m-0">
+                            <label for="inputCI_trabajador" class='m-0'>Carnet Identidad:</label>
+                            <input  type="text"class="form-control form-control-sm" id="inputCI_trabajador">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group m-0">
+                            <label for="inputUsername_trabajador" class='m-0'>Usuario:</label>
+                            <input type="text"class="form-control form-control-sm" id="inputUsername_trabajador">
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer p-2">
+                <button id='buscar_btn_trabajador' class="btn btn-primary btn-xs btn-block">
+                  Realizar Busqueda<i class="fa fa-search pl-2"></i>
+                </button>
+                <button  id='cancelar_buscar_btn_trabajador' class="btn btn-danger btn-xs  btn-block">
+                  Cancelar<i class="fa fa-trash-alt ml-1"></i>
+                </button>
+              </div>
+            </form>
+  </div>
+  <div id='resultado_busqueda_trabajador'>
+    <ul class="list-unstyled" id='ul-buscar_trabajador' >
+      <li>No hay resultado</li>
+    </ul>
+    
+
+  </div>

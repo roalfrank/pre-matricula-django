@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+  .agregar-trabajador-a:hover{
+    color: red !important;
+  }
   #conocimiento .info-box{
     min-height: 0px !important;
   }
@@ -22,11 +25,11 @@
         grid-template-columns: repeat(2, 1fr);
       }
   }
-  .info-instructor-tabla{
+  .info-gestor-tabla{
     background-color: #343a401c;
     border-radius: 10px;  
   }
-   .info-instructor-tabla dl{
+   .info-gestor-tabla dl{
     margin-bottom: 0px!important;
   }
   .badge-tabla{
@@ -97,10 +100,12 @@
   <th style="width:93%;">Nombre</th>
   <th>Usuario</th>
   <th >Carnet</th>
-  <th >JCB</th>
+  <th >JCM</th>
   <th >Correo</th>
   <th >Correo</th>
-  <!-- {% if perms.user.change_instructor or perms.user.delete_instructor %} -->
+  <th >tipo</th>
+  <th >id_gestor</th>
+  <!-- {% if perms.user.change_gestor or perms.user.delete_gestor %} -->
   <th style="width:5%;">Acción</th>
   <!-- {%endif%} -->
 </tr>
@@ -173,7 +178,7 @@
                     <div class="col-12 col-sm-6 col-lg-4">
                       <div class="form-group m-0">
                         <label for="id_jcp_busqueda" class='m-0'>JCC Provincial</label>
-                        {{form_instructor.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:id_jcp_busqueda'}}
+                        {{form_gestor.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:id_jcp_busqueda'}}
                       </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4">
@@ -190,18 +195,13 @@
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4">
                       <div class="form-group m-0">
-                        <label for="id_jcb_busqueda" class='m-0' >JCC Base</label>
-                        <select class='select2 form-control form-control-sm' name="jcb" id="id_jcb_busqueda" required></select>
-                      </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                      <div class="form-group m-0">
-                         <label for="id_maestro_busqueda" class='m-0' >Tipo</label>
-                          <select class='select2 form-control form-control-sm' name="tipo" autocomplete="off" class="form-check-input" id="id_maestro_busqueda" >
-                            <option value=''>Todos</option>
-                            <option value='PR'>Maestro</option>
-                            <option value='IN'>Instructor</option>
-                          </select></span>
+                        <label for="id_tipo_gestor" class='m-0'>Tipo de Gestor</label>
+                        <select class='select2 form-control form-control-sm' name="tipo_gestor" id="id_tipo_gestor" >
+                          <option value="">Todos</option>
+                          <option value="IN">Instructor</option>
+                          <option value="PR">Maestro</option>
+                          <option value="GE">Gestor</option>
+                        </select>
                       </div>
                     </div>
                 </div>
@@ -216,7 +216,7 @@
                 </button>
               </div>
             </form>
-        </div>
+    </div>
 {% endblock %}
 
 {% block boton_accion%}
@@ -279,22 +279,17 @@
           <select  class='select2 form-control form-control-sm' name="municipio" id="id_municipio" required></select>
         </div>
       </div>
-      <div class="col-8">
+      
+      <div class="col-12">
         <div class="form-group">
           {{form_perfil.direccion.label_tag}}
           {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_instructor.usuario_siscae.label_tag}}
-          {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
        <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
           <label for="id_jcp">JCC Provincial</label>
-          {{form_instructor.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          {{form_gestor.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
@@ -309,23 +304,10 @@
           <select class='select2 form-control form-control-sm' name="jcm" id="id_jcm" ></select>
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          <label for="id_jcb">JCC Base</label>
-          <select class='select2 form-control form-control-sm' name="jcb" id="id_jcb" required></select>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_instructor.cargo.label_tag}}
-          {{form_instructor.cargo|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
-        </div>
-      </div>
       {% if request.user.is_staff %}
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group pt-4">
           <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
-          <span><strong class="mr-4">Maestro:</strong><input type="checkbox" name="maestro" autocomplete="off" class="form-check-input" id="id_maestro" ></span>
         </div>
       </div>
        {% endif %}
@@ -337,7 +319,6 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
-
     $('#id_jcp').trigger('change');
     funcion_vincular_select= function(){
        $('.select2').select2({
@@ -380,27 +361,6 @@
           dataType: 'json'
         }).done(function (data) {
           $('#id_jcm').html('').select2({
-            theme: 'bootstrap4',
-            language: 'es',
-            data: data
-          }).trigger("change");
-  
-        });
-      });
-      $('#id_jcm').on('change', function () {
-        var id = $(this).val();
-        $.ajax({
-          url: "{% url 'prematricula:entidad-jcb-buscar'  %}",
-          type: 'POST',
-          data: {
-            'id_jcm': id,
-            csrfmiddlewaretoken: function () {
-              return $('input[name="csrfmiddlewaretoken"]').val();
-            },
-          },
-          dataType: 'json'
-        }).done(function (data) {
-          $('#id_jcb').html('').select2({
             theme: 'bootstrap4',
             language: 'es',
             data: data
@@ -480,28 +440,6 @@
         }).done(function (data) {
            var newOption = new Option('--------', '', false, true);
           $('#id_jcm_busqueda').html('').select2({
-            theme: 'bootstrap4',
-            language: 'es',
-            data: data
-          }).append(newOption).trigger("change");
-  
-        });
-      });
-      $('#id_jcm_busqueda').on('change', function () {
-        var id = $(this).val();
-        $.ajax({
-          url: "{% url 'prematricula:entidad-jcb-buscar'  %}",
-          type: 'POST',
-          data: {
-            'id_jcm': id,
-            csrfmiddlewaretoken: function () {
-              return $('input[name="csrfmiddlewaretoken"]').val();
-            },
-          },
-          dataType: 'json'
-        }).done(function (data) {
-           var newOption = new Option('--------', '', false, true);
-          $('#id_jcb_busqueda').html('').select2({
             theme: 'bootstrap4',
             language: 'es',
             data: data
@@ -591,7 +529,7 @@
           "data": "ci"
         },
         {
-          "data": "jcb"
+          "data": "jcm"
         },
         {
           "data": "correo"
@@ -599,8 +537,13 @@
         {
           "data": "image_user"
         },
-
-        //{% if perms.user.change_instructor or perms.user.delete_instructor %}
+        {
+          "data": "tipo"
+        },
+        {
+          "data": "id_gestor"
+        },
+        //{% if perms.user.change_gestor or perms.user.delete_gestor %}
         {
           "data": "nombre"
         }
@@ -618,13 +561,17 @@
           }
         },
         {
-          targets: [1,2, 4, 5, 6,7,8],
+          targets: [1,2, 4, 5, 6,7,8,9,10],
           visible: false,
         },
         {
           targets: [3],
           orderable: false,
           render: function (data, type, row) {
+            let trabajador = ''
+            if(row.tipo!='GE'){
+               trabajador='Trabajador';
+            }
             var buttons =
               `<div class="card p-1 m-1">
                 <div class='card-body p-1 m-1'>
@@ -633,12 +580,12 @@
                     <div class='col-md-2 col-lg-1 col-sm-2 d-flex flex-column '>
                       <img src='${row.image_user}' class=' mx-auto img-circle elevation-2' alt='image usuario' width='40px' height='40px'>
                       <span class='badge badge-info badge-tabla' style=''>${row.icono}</span>  
-                      <small class='text-center'>${row.username}</small>
+                      <small class='text-center' style='font-size:0.6rem;'>${row.username}</small>
                     </div>
-                    <div class='col-md-10 col-lg-11 col-sm-10 info-instructor-tabla p-0 px-2 pt-2 text-center'>
+                    <div class='col-md-10 col-lg-11 col-sm-10 info-gestor-tabla p-0 px-2 pt-2 text-center'>
                       <small>
                         <div class='row'>
-                          <div class='col-md-5 col-lg-6 col-xl-4 col-sm-7'>
+                          <div class='col-md-5 col-lg-6 col-xl-3 col-sm-7'>
                             <dl>
                               <dt>Nombre</dt>
                               <dd>${data}</dd>
@@ -656,12 +603,14 @@
                               <dd>${row.correo}</dd>
                             </dl>
                           </div>
-                           <div class='col-xl-2 d-none d-xl-block '>
+                           <div class='col-xl-3 d-none d-xl-block '>
                             <dl>
-                              <dt>JCCB</dt>
-                              <dd>${row.jcb}</dd>
+                              <dt>JCCM</dt>
+                              <dd>${row.jcm}</dd>
                             </dl>
                           </div>
+                          <span class='badge badge-info navbar-badge' style=''>${trabajador}</span>  
+                         </div> 
                         </div>  
                       </small>
                     </div>
@@ -672,7 +621,7 @@
           }
         },
        
-        //{% if perms.user.change_instructor or perms.user.delete_instructor %}
+        //{% if perms.user.change_gestor or perms.user.delete_gestor %}
         {
           targets: [-1],
           responsivePriority: 2,
@@ -680,18 +629,31 @@
           orderable: false,
           render: function (data, type, row) {
             var buttons = ''
-            buttons =
-            //{% if perms.user.view_instructor%}
-              '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver instructor"><i class="fa fa-search" aria-hidden="true"></i></a> ';
-            //{%endif%}
-              //{% if perms.user.change_instructor%}
-            buttons +=
-              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar instructor"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
-            //{%endif%}
-            //{% if perms.user.delete_instructor%} 
-            buttons +=
-              '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar instructor"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
-            //{%endif%}
+            if(row.tipo!='GE'){
+              buttons =
+              //{% if perms.user.view_gestor%}
+                '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver gestor"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+              //{%endif%}
+              //{% if perms.user.delete_gestor%} 
+              buttons +=
+                '<a href="#" rel="delete-gestor-trabajador" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar gestor"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+              //{%endif%}
+
+            }
+            else{
+              buttons =
+              //{% if perms.user.view_gestor%}
+                '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver gestor"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+              //{%endif%}
+                //{% if perms.user.change_gestor%}
+              buttons +=
+                '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar gestor"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+              //{%endif%}
+              //{% if perms.user.delete_gestor%} 
+              buttons +=
+                '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar gestor"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+              //{%endif%}
+            }
             return buttons
           }
         },
@@ -709,11 +671,108 @@
                 });
 
                 $("#btnNuevo").on("click", function () {
-                  abrir_modal_nuevo("Nuevo instructor");
+                  abrir_modal_nuevo("Nuevo Gestor");
+                });
+                $("#btnNuevoTrabajador").on("click", function () {
+                  modal_title.find('span').html('Nuevo gestor desde un Trabajador');
+                  modal_title.find('i').removeClass().addClass('fa fa-edit');
+                  $('.modal-footer').html('');
+                  //cargo el formulario de busqueda de trabajador
+                  $('#contenido-modal').load('{% url "prematricula:gestor-add-form-trabajador"%}',function() {
+                            $('#modal-nuevo').modal('show');
+                            //agrego un evento al ul para captar el click del a
+                            $('#resultado_busqueda_trabajador ul').on('click','a[rel=add]',function(element){
+                              element.preventDefault();
+                              let conetxt = {
+                                id_usuario_agregar_trabajador : element.currentTarget.getAttribute('data-id-usuario'),
+                                action:"add",
+                                csrfmiddlewaretoken:"{{ csrf_token }}",
+                              }
+                              with_ajax(window.location.pathname,'Confirmación de nuevo gestor','Estas seguro de agregar este gestor?',conetxt,function(){
+                                 tblListar.ajax.reload();
+                                  
+                              });
+
+                            });
+                            //evento a buscar en trabajador
+                            $('#buscar_btn_trabajador').on('click',function(e){
+                              e.preventDefault();
+                              //recopilar datos a buscar
+                              //listado de los datos a busquar
+                                let ci=$('#inputCI_trabajador');
+                                let username=$('#inputUsername_trabajador');
+                                
+                                //si la lista no esta vacia procedo a realizar la busqueda
+                                  var dict_busqueda_json =JSON.stringify({
+                                              ci:ci.val(),
+                                              username:username.val()
+                                              }); 
+                                  
+                                  $.ajax({
+                                        url: "{% url 'prematricula:buscar-instructores'  %}",
+                                        type: 'POST',
+                                        data: {
+                                          filtro:dict_busqueda_json,
+                                          csrfmiddlewaretoken:'{{csrf_token}}'
+                                        },
+                                        dataType: 'json'
+                                      }).done(function (data) {
+                                        $('#ul-buscar_trabajador').html('');
+                                        data.forEach(element => {
+                                          $('#ul-buscar_trabajador').append(
+                                            ` <li>
+                                              <div class="card">
+                                                <div class="card-body">
+                                                  <div class='row'>
+                                                      <div class='col-12 col-lg-2 col-md-2  d-flex justify-content-center align-items-center flex-column'>
+                                                        <img src='${element.image_user}' class=' mx-auto img-circle elevation-2 mb-2' alt='image usuario' width='40px' height='40px'>
+                                                        <small>${element.username}</small>
+                                                      </div>
+                                                      <div class='col-12 col-lg-10 col-md-10'>
+                                                        <small style="font-size: 0.8rem;">
+                                                          <div class='row p-2' style="border-radius: 10px; background-color:#e8e9ea ;">
+                                                            <div class='col-12 col-md-4'>
+                                                              <dl>
+                                                                <dt>Nombre</dt>
+                                                                <dd>${element.nombre_usuario}</dd>
+                                                              </dl>
+                                                            </div>
+                                                            <div class='col-12 col-md-4'>
+                                                              <dl>
+                                                                <dt>Carnet Indentidad</dt>
+                                                                <dd>${element.ci}</dd>
+                                                              </dl>
+                                                            </div>
+                                                              <div class='col-12 col-md-4 '>
+                                                              <dl>
+                                                                <dt>JCCB</dt>
+                                                                <dd>${element.jcb}</dd>
+                                                              </dl>
+                                                            </div>
+                                                          </div>  
+                                                        </small>
+                                                        <span class='badge navbar-badge badge-success'><a href="" data-id-usuario='${element.usuario}' rel="add" class='text-white agregar-trabajador-a'>Agregar<i class='fa fa-plus ml-2'></i></a></span>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                            </li>
+                                             
+                                            `
+                                          );
+                                        });
+                                
+                                      });
+                              //fin de recopilar datos 
+                            });
+
+                  });
+                  //variable como semafaro para en la funcion del cerrar del modal cargar el formulario 
+                  cargar_extra_on_hide_modal = true
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
-                  abrir_modal_editar("Editar instructor", tblListar, element.currentTarget);
+                  abrir_modal_editar("Editar Gestor", tblListar, element.currentTarget);
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
                   delete_registro(tblListar, element.currentTarget);
@@ -723,7 +782,7 @@
     });//fin de DataTable server
     
     //agregamos los botones a la tabla
-    $('#data_filter').html('<!-- {% if perms.user.add_instructor%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_instructor%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
+    $('#data_filter').html('<!-- {% if perms.user.add_gestor%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Gestor</span><i class="fa fa-plus ml-2"></i></button><button type="button" class="btn btn-default btn-xs ml-1" id="btnNuevoTrabajador"><span>Trabajador a Gestor </span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_gestor%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
      
     //tratamientos a los botones de las busquedas
     //boton para cancelar la busqueda
@@ -789,7 +848,6 @@
       }
       //si la lista no esta vacia procedo a realizar la busqueda
       if(Object.keys(dict_busqueda).length>0){
-        console.log(dict_busqueda);
         var dict_busqueda_json =JSON.stringify({
                     filtro:dict_busqueda
                     }); 
@@ -808,24 +866,27 @@
       //paso a data una lista de los valores de la row a editar
       var data = tblListar.row(tr.row).data();
      
-      modal_title.find('span').html('Datos de instructor');
+      modal_title.find('span').html('Datos de gestor');
       modal_title.find('i').removeClass().addClass('fa fa-edit');
       $('.modal-footer').html('');
-      //cargo los datos del instructor
-      $('#contenido-modal').load('/sistema/instructor-detail/'+data.usuario+'/',function() {
+      //cargo los datos del gestor
+      $('#contenido-modal').load('/sistema/gestor-detail/'+data.usuario+'/',function() {
                  $('#modal-nuevo').modal('show');
-                 $('#tb-matriculado').DataTable({responsive: true,autoWidth: false,columnDefs:[{
-                    targets: [2],
-                    orderable: false,
-                 }]});
-                 $('#tb-interes').DataTable({responsive: true,autoWidth: false,columnDefs:[{
-                    targets: [2],
-                    orderable: false,
-                 }]});
-
       });
       //variable como semafaro para en la funcion del cerrar del modal cargar el formulario 
       cargar_extra_on_hide_modal = true
+    });
+    //botones delete gestor que es un trabajador
+    $('#data tbody').on('click', 'a[rel="delete-gestor-trabajador"]', function (element) {
+      var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
+      //paso a data una lista de los valores de la row a editar
+      var data = tblListar.row(tr.row).data();
+      with_ajax('{% url "prematricula:gestor-delete-trabajador"%}','Eliminar Gestor','Esta seguro de eliminar el gestor',{
+        id_gestor:data.id_gestor,
+        csrfmiddlewaretoken:'{{csrf_token}}'
+      },function(data){
+          tblListar.ajax.reload();
+      });
     });
     
     
@@ -836,14 +897,7 @@
       submitHandler: function (form) {
         var parametros = new FormData(form);
         parametros.append('id_edit', id_edit);
-        var maestro = document.getElementById('id_maestro');
-        console.log('valor de maestro',maestro.checked);
-        if (maestro.checked){
-          parametros.append('tipo','PR');
-        }
-        else{
-          parametros.append('tipo','IN');
-        }
+        parametros.append('tipo','GE');
         submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
           parametros,
           function (data) {
@@ -911,9 +965,6 @@
         },
       },
       messages: {
-        usuario_siscae:{
-          required: "El usuario siscae es necesario",
-        },
         jcp:{
           required: "El joven club provincial es necesario",
         },
@@ -923,14 +974,11 @@
         jcm:{
           required: "El joven club municipal es necesario",
         },
-        jcb:{
-          required: "El joven club base es necesario",
-        },
         telefono: {
           digits: 'Solo dígitos'
         },
         nombre: {
-          required: "El  nombre del instructor es necesario",
+          required: "El  nombre del gestor es necesario",
           maxlength: "No esta permitido mas de 100 caracteres",
         },
         apellido1: {
@@ -992,14 +1040,47 @@
 
 <!-- actualizar el bloque de cuando se cierra el modal y hay que cargar el formulario despues de ver los detalles del registro -->
 {% block on_hide_modal %}
-    $('#contenido-modal').load('{% url "prematricula:instructor-add-form"%}',function() {
+    $('#contenido-modal').load('{% url "prematricula:gestor-add-form"%}',function() {
           select_municipio = $('#id_municipio');
           funcion_vincular_select();
     });
 {% endblock %}
-<!-- esto es por si la fila de la tabla a borrar select tiene un campo de id distinto, en este caso tiene el campo usuario -->
-{% block delete_registro_varios%}
-  select_item.push(data.usuario);
+<!-- sobrescribir el metodo de borrar varios -->
+{% block delet_select%}
+      var select_item = new Array();
+      var select_item_trabajadores = new Array();
+      var select_item_user = new Array();
+      $('#data input[type="checkbox"]:checked').each(function(){
+          var tr = tabla.cell($(this).closest('td,li')).index();
+          var data = tabla.row(tr.row).data();
+          if(data.tipo!='GE'){
+            select_item_trabajadores.push(data.id_gestor);
+          }
+          else{
+            select_item_user.push(data.usuario);
+          }
+          });
+      if(select_item_user.length == 0 && select_item_trabajadores.length==0){ mensaje("info",'No hay registros seleccionados.');}
+      else{
+      var contexto = {
+          id:JSON.stringify({
+            select_item_trabajadores:select_item_trabajadores,
+            select_item_user:select_item_user
+          }),
+          action:"delete",
+          csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()
+          }
+      with_ajax(url_deletes,"Eliminando","Estas seguro de eliminar los registro seleccionados",contexto,function(data){
+          if (data.hasOwnProperty('error')){
+              mensaje("error","Estos registros están Restringido:  - "+data.error );
+          }
+          else{
+          mensaje("success","Registro eliminado correctamente");
+          }
+          id_edit=null;
+          tabla.ajax.reload();
+      });
+      }
 {% endblock %}
 <!-- esto es por si la fila de la tabla a borrar solo un elemento tiene un campo de id distinto, en este caso tiene el campo usuario -->
 {% block delete_registro%}
@@ -1013,37 +1094,27 @@
     var data = tabla.row(tr.row).data();
 
     $.ajax({
-        url: "{% url 'prematricula:instructor-datos'  %}",
+        url: "{% url 'prematricula:gestor-datos'  %}",
         type: 'POST',
         data: {
-            'id_instructor': data.usuario,
+            'id_gestor': data.usuario,
             csrfmiddlewaretoken: function () {
             return $('input[name="csrfmiddlewaretoken"]').val();
         },
         },
         dataType: 'json'
         }).done(function (respuesta) {
-          console.log(respuesta);
         if(respuesta['enviado']){
             var elements = document.getElementById("formRegistro").elements;
             for (var i = 0, element; element = elements[i++];) {
                 if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
-                  if(element.name=='maestro'){
-                    var tipo = respuesta['tipo'];
-                    if(tipo=='PR'){
-                      element.checked = true;
-                    }
-                    else{
-                      element.checked = false;
-                    }
-                  }
-                  else if(element.name=='is_active'){
+                    if(element.name=='is_active'){
                        element.checked = respuesta[element.name];
                     }
-                  else{
-                    element.value= respuesta[element.name]
-                  }
-            }
+                    else{
+                      element.value= respuesta[element.name]
+                    }
+                 }
             }
             //aqui inicializo a todos los select
             $('#id_jcp').val(respuesta['id_jcp'].toString()).trigger("change");
@@ -1053,23 +1124,19 @@
             setTimeout(() => {
                $('#id_jcm').val(respuesta['id_jcm'].toString()).trigger("change");
             }, 100);
-            setTimeout(() => {
-               $('#id_jcb').val(respuesta['jcb'].toString()).trigger("change");
-            }, 100);
+            
             $('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
             setTimeout(() => {
                $('#id_municipio').val(respuesta['municipio'].toString()).trigger("change");
             }, 100);
             $('input[name="action"]').val("edit");
             id_edit = data.usuario;
-            $('#id_jcb').val(respuesta['jcb'].toString()).trigger("change");
-            $('#id_cargo').val(respuesta['cargo'].toString()).trigger("change");
             modal_title.find('span').html(titulo);
             modal_title.find('i').removeClass().addClass('fa fa-edit');
             $('#modal-nuevo').modal('show');
         }
         else{
-           console.log('problema con el ajax en editar instructor');
+           console.log('problema con el ajax en editar gestor');
         }
     });
 
@@ -1078,7 +1145,5 @@
 {% block on_hidden_modal_extra %}
   $('#id_provincia').val('').trigger("change");
   //$('#id_municipio').html('');
-  $('#id_jcb').val('').trigger("change");
-  $('#id_cargo').val('').trigger("change");
   $('#id_jcp').val('').trigger("change");
 {% endblock %}
