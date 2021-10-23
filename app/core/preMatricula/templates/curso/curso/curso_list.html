@@ -3,6 +3,29 @@
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+  .duracion-curso-lista{
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%,-50%);
+  }
+  .img-curso-lista{
+    position: absolute;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .badge-curso-listar{
+   top:-6px !important;
+   box-shadow: 1px 3px 5px -2px #3f474e; 
+  }
+  /* esto es para que no se salga el texto largo de la tabla */
+  .table.dataTable.nowrap th, table.dataTable.nowrap td{
+    white-space: inherit !important;
+  }
+
   @media (max-width:674px){
       #resumen_busqueda{
         margin: 0 auto;
@@ -10,6 +33,15 @@
         grid-gap: 1rem;
         grid-template-columns: repeat(4, 1fr);
       }
+      .duracion-curso-lista{
+        position: initial;
+        transform: inherit;
+      }
+      .img-curso-lista{
+        position: initial;
+        transform: inherit;
+      }
+      
   }
   @media (max-width:464px){
       #resumen_busqueda{
@@ -18,6 +50,10 @@
         grid-gap: 1rem;
         grid-template-columns: repeat(2, 1fr);
       }
+       .badge-curso-listar{
+         opacity: 0;
+          }
+      
   }
   .info-instructor-tabla{
     background-color: #343a401c;
@@ -81,10 +117,10 @@
 <tr>
   <th style="width:2%;" >Select</th>
   <th>Id</th>
-  <th style="width:93%;">Nombre</th>
+  <th style="width:100%;">Nombre</th>
   <th>Duracion</th>
   <th >descripcion</th>
-  <th >corto</th>
+  <th >descripcion_corta</th>
   <th >nextCurso</th>
   <th >foto_url</th>
   <th >nextCurso_nombre</th>
@@ -95,45 +131,55 @@
 {% endblock %}
 
 {% block busqueda %}
-    <div class="card collapsed-card mb-1" id='card_busqueda'>
-            <div class="card-header p-0 pl-2 py-1">
-                <div class="card-title">
-                    <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50 ' id='resumen_busqueda'>Todos</span></small>
-                </div>
-                <div class="card-tools pr-4">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
+<div class="container">
+  <div class="card collapsed-card mb-1" id='card_busqueda'>
+          <div class="card-header p-0 pl-2 py-1">
+              <div class="card-title">
+                  <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50 ' id='resumen_busqueda'>Todos</span></small>
+              </div>
+              <div class="card-tools pr-4">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-plus"></i>
+                  </button>
+              </div>
+          </div>
+          <div class="card-body p-2">
+            <form action="" id='form_busqueda'>
+              <div class="row">
+                  <div class="col-12 col-md-4">
+                      <div class="form-group m-0">
+                          <label for="inputNombre" class='m-0'>Nombre:</label>
+                          <input name="nombre" type="text"class="form-control form-control-sm" id="inputNombre">
+                      </div>
+                  </div>
+                  <div class="col-12 col-md-4">
+                      <div class="form-group m-0">
+                          <label for="inputDuracion" class='m-0'>Duración:</label>
+                            <select name="duracion" autocomplete="off" class="form-control form-control-sm" id="inputDuracion">
+                              <option value="">---------</option>
+                              <option value="24" >24 horas</option>
+
+                              <option value="36">36 horas</option>
+
+                              <option value="64">64 horas</option>
+
+                            </select>
+                      </div>
+                  </div>
+              </div>
             </div>
-            <div class="card-body p-2">
-              <form action="" id='form_busqueda'>
-                <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputNombre" class='m-0'>Nombre:</label>
-                            <input name="nombre" type="text"class="form-control form-control-sm" id="inputNombre">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputDuracion" class='m-0'>Duración:</label>
-                            <input name='duracion' type="text"class="form-control form-control-sm" id="inputDuracion">
-                        </div>
-                    </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer p-2">
-                <button id='buscar_btn' class="btn btn-primary btn-xs">
-                  Realizar Busqueda<i class="fa fa-search pl-2"></i>
-                </button>
-                <button  id='cancelar_buscar_btn' class="btn btn-danger btn-xs">
-                  Cancelar y Mostrar Todos<i class="fa fa-trash-alt ml-1"></i>
-                </button>
-              </div>
-            </form>
-        </div>
+            <!-- /.card-body -->
+            <div class="card-footer p-2">
+              <button id='buscar_btn' class="btn btn-primary btn-xs">
+                Realizar Busqueda<i class="fa fa-search pl-2"></i>
+              </button>
+              <button  id='cancelar_buscar_btn' class="btn btn-danger btn-xs">
+                Cancelar y Mostrar Todos<i class="fa fa-trash-alt ml-1"></i>
+              </button>
+            </div>
+          </form>
+      </div>
+</div>
 {% endblock %}
 
 {% block boton_accion%}
@@ -142,22 +188,16 @@
 {%block class_modal%}modal-lg{% endblock %}
 {%block form_modal%}
     <div class="row">
-      <div class="col-6">
+      <div class="col-8">
         <div class="form-group">
           {{form_curso.nombre.label_tag}}
           {{form_curso.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-      <div class="col-3">
+      <div class="col-4">
         <div class="form-group">
           {{form_curso.duracion.label_tag}}
           {{form_curso.duracion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-3">
-        <div class="form-group">
-          {{form_curso.corto.label_tag}}
-          {{form_curso.corto|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
       <div class="col-12">
@@ -174,7 +214,7 @@
       </div>
       <div class="col-6">
         <div class="form-group">
-          {{form_curso.foto.label_tag}}
+          {{form_curso.foto.label_tag}}<img id='image-previews' class="ml-2" width="40px" height="40px">
           {{form_curso.foto|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
@@ -186,7 +226,14 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
-    
+    $('.select2').select2({
+        theme: 'bootstrap4',
+        language: 'es',
+      });
+    document.getElementById('id_foto').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        document.getElementById('image-previews').src = src ;
+    }
     //creacion de la tabla con  serverside
     var tblListar = $("#data").DataTable({
       'serverSide':true,
@@ -232,7 +279,7 @@
           "data": "descripcion"
         },
         {
-          "data": "corto"
+          "data": "descripcion_corta"
         },
         {
           "data": "nextCurso"
@@ -251,12 +298,12 @@
       ],
       columnDefs: [{
           targets: 0,
-          
+           responsivePriority: 1,
           orderable: false,
           class: 'text-center',
           render: function (data, type, row) {
             var buttons =
-              '<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div>';
+              `<div class="form-check"><input type="checkbox" class="form-check-input" value="1"></div><div class="mt-4" style="font-size:0.6rem;">${row.nombre}</div>`;
             return buttons
           }
         },
@@ -266,50 +313,35 @@
         },
         {
           targets: [2],
+           responsivePriority: 1,
           orderable: false,
           render: function (data, type, row) {
             var buttons =
-              `<div class="card p-1 m-1">
-                <div class='card-body p-1 m-1'>
-                  
+              `
+              <div class='wrapper'>
+             <div class="card p-0 py-2 m-1" style="overflow:hidden;">
+                <div class='card-body p-0 m-1'>
                   <div class='row'>
-                    <div class='col-md-2 col-lg-1 col-sm-2 d-flex flex-column '>
-                      <img src='${row.foto_url}' class=' mx-auto img-circle elevation-2' alt='image usuario' width='40px' height='40px'>
-                      <small class='text-center'>${row.corto}</small>
+                    <div class='col-12  col-lg-2 col-md-2 col-sm-2 d-flex flex-column '>
+                      <img src='${row.foto_url}' class=' mx-auto img-circle elevation-2 img-curso-lista' alt='image usuario' width='40px' height='40px'>
+                      <small class='text-center duracion-curso-lista'><span class="badge badge-success ">${row.duracion} h</span></small>
                     </div>
-                    <div class='col-md-10 col-lg-11 col-sm-10 info-instructor-tabla p-0 px-2 pt-2 text-center'>
+                    <div class='col-12 col-lg-10 col-md-10 col-sm-10  p-1 pb-0 text-center bg-info' style="box-shadow: 0.5px 5px 5px 1px rgba(0,0,0,0.25);border-radius: 10px 1px 1px 10px;">
                       <small>
                         <div class='row'>
-                          <div class='col-md-5 col-lg-6 col-xl-4 col-sm-7'>
-                            <dl>
-                              <dt>Nombre</dt>
-                              <dd>${data}</dd>
-                            </dl>
-                          </div>
-                          <div class='col-md-3 col-lg-2 col-xl-3 col-sm-3'>
-                            <dl>
-                              <dt>Duración</dt>
-                              <dd>${row.duracion}</dd>
-                            </dl>
-                          </div>
-                          <div class='col-md-4 col-lg-4 col-xl-3 d-none d-md-block'>
-                            <dl>
-                              <dt>Descripcion</dt>
-                              <dd>${row.descripcion}</dd>
-                            </dl>
-                          </div>
-                           <div class='col-xl-2 d-none d-xl-block '>
-                            <dl>
-                              <dt>Curso Relacionado</dt>
-                              <dd>${row.nextCurso_nombre}</dd>
-                            </dl>
+                          <div class='col-12'>  
+                            <h5 class='mb-0' style="font-size: 0.9rem;font-weight: bold;">${data}</h5>
+                            <p class="texto-curso-lista mb-0" style="color: #ffffffdb;">${row.descripcion_corta}</p>
                           </div>
                         </div>  
                       </small>
                     </div>
                   </div>
                 </div>
-               </div>`;
+                </div>
+                <span class="badge badge-secondary navbar-badge badge-curso-listar">R: <strong>${row.nextCurso_nombre}</strong></span>
+               </div>
+              `;
             return buttons
           }
         },
@@ -320,19 +352,21 @@
           class: "text-center",
           orderable: false,
           render: function (data, type, row) {
-            var buttons = ''
-            buttons =
+            var buttons = '<span style="white-space:nowrap !important;">'
+            buttons +=
             //{% if perms.user.view_curso%}
-              '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver curso"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+              '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver curso"><i class="fa fa-search fa-fw" aria-hidden="true"></i></a>';
             //{%endif%}
               //{% if perms.user.change_curso%}
             buttons +=
-              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar curso"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar curso"><i class="fa fa-edit" aria-hidden="true"></i></a>';
             //{%endif%}
             //{% if perms.user.delete_curso%} 
             buttons +=
               '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar curso"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
             //{%endif%}
+          buttons +='</span>'
+          console.log(buttons);
             return buttons
           }
         },
@@ -345,18 +379,22 @@
       initComplete: function (settings, json) {
             
             //botones de accion 
-                $('#btnDeleteAll').on('click', function () {
+                $('#btnDeleteAll').on('click', function (element) {
+                  element.preventDefault();
                   delete_select(tblListar);
                 });
 
-                $("#btnNuevo").on("click", function () {
+                $("#btnNuevo").on("click", function (element) {
+                  element.preventDefault();
                   abrir_modal_nuevo("Nuevo Curso");
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+                  element.preventDefault();
                   abrir_modal_editar("Editar Curso", tblListar, element.currentTarget);
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
+                  element.preventDefault();
                   delete_registro(tblListar, element.currentTarget);
                 });
             //fin de botones de accion
@@ -444,6 +482,7 @@
 
     //botones del nav de detalle
     $('#data tbody').on('click', 'a[rel="view"]', function (element) {
+      element.preventDefault();
       var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
       //paso a data una lista de los valores de la row a editar
       var data = tblListar.row(tr.row).data();
@@ -523,7 +562,10 @@
 <!-- actualizar el bloque de cuando se cierra el modal y hay que cargar el formulario despues de ver los detalles del registro -->
 {% block on_hide_modal %}
     $('#contenido-modal').load('{% url "prematricula:curso-add-form"%}',function() {
-         
+       document.getElementById('id_foto').onchange = function () {
+        var src = URL.createObjectURL(this.files[0]);
+        document.getElementById('image-previews').src = src ;
+    }  
     });
 {% endblock %}
 
@@ -547,16 +589,25 @@
         }).done(function (respuesta) {
         if(respuesta['enviado']){
             var elements = document.getElementById("formRegistro").elements;
+            console.log(respuesta);
             for (var i = 0, element; element = elements[i++];) {
                 if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
-                  if(element.name=='corto'){
-                       element.checked = respuesta[element.name];
-                    }
+                  console.log(element);
+                  if(element.name=='duracion'){
+                    $(element).val(respuesta[element.name]).trigger("change");
+                  }
+                  else if(element.name=='foto'){
+                        document.getElementById('image-previews').src = respuesta['foto_url'] ;
+                  }
+                  else if(element.name=='nextCurso'){
+                    $(element).val(respuesta[element.name]).trigger("change");
+                  }
                   else{
-                       element.value= respuesta[element.name]
-                    }
+                    element.value= respuesta[element.name];
+                  }
                 }
             }
+            $('input[name="action"]').val("edit");
             id_edit = data.id;
             modal_title.find('span').html(titulo);
             modal_title.find('i').removeClass().addClass('fa fa-edit');
@@ -567,4 +618,8 @@
         }
     });
 
+{% endblock %}
+<!-- esto es bloque para agregar mas funciones para inicializar los datos cuando se esconde el modal del registro -->
+{% block on_hidden_modal_extra %}
+  document.getElementById('image-previews').src = '' ;
 {% endblock %}

@@ -362,20 +362,22 @@ class InstructorEstudiante(models.Model):
 
 
 class Curso(models.Model):
+    HORAS24 = '24'
+    HORAS36 = '36'
+    HORAS64 = '64'
+    CHOICE_TIPO = [(HORAS24, '24 horas'), (HORAS36, '36 horas'),
+                   (HORAS64, "64 horas")]
     nombre = models.CharField(max_length=100, verbose_name='Nombre Curso')
-    duracion = models.IntegerField(verbose_name='Duración en Horas')
+    duracion = models.CharField(
+        verbose_name='Duración en Horas', choices=CHOICE_TIPO, default=HORAS24, max_length=2)
     descripcion = models.TextField(verbose_name='Descripción del Curso')
-    corto = models.BooleanField(verbose_name='corto')
     nextCurso = models.ForeignKey(
         'preMatricula.Curso', on_delete=models.SET_NULL, null=True, blank=True)
     foto = models.ImageField(
         upload_to='curso/foto', default='curso_default.png', verbose_name="Foto", null=True, blank=True)
 
     def __str__(self):
-        tipo_curso = "Largo"
-        if self.corto:
-            tipo_curso = "Corto"
-        return f"{self.nombre}-{self.duracion} - {tipo_curso}"
+        return f"{self.nombre}-{self.duracion}"
 
     def get_foto(self):
         if self.foto:
@@ -385,8 +387,14 @@ class Curso(models.Model):
     def toJson(self):
         curso = model_to_dict(self, exclude=['foto'])
         curso['foto_url'] = self.get_foto()
+        if len(self.descripcion) > 100:
+            curso['descripcion_corta'] = self.descripcion[0:100]
+            curso['descripcion_corta'] += ' (....)'
+        else:
+            curso['descripcion_corta'] = self.descripcion
         if self.nextCurso:
-            curso['nextCurso_nombre'] = self.nextCurso.nombre
+            curso['nextCurso_nombre'] = self.nextCurso.nombre + \
+                "(" + self.nextCurso.duracion + "h)"
         else:
             curso['nextCurso_nombre'] = 'No tiene'
 
@@ -418,16 +426,6 @@ class EstadoMatricula(models.Model):
         return item
 
 
-class TipoGrupo(models.Model):
-    nombre = models.CharField(
-        max_length=50, verbose_name='Tipo de Grupo')
-
-    def __str__(self):
-        return self.nombre
-
-    def toJson(self):
-        item = model_to_dict(self)
-        return item
 # clase Pre matricula Principal
 
 
@@ -445,8 +443,6 @@ class PreMatricula(models.Model):
         EstadoMatricula, on_delete=models.RESTRICT, verbose_name='Estado de la PreMatricula')
     modalidad = models.ForeignKey(
         Modalidad, on_delete=models.RESTRICT, verbose_name='Modalidad')
-    tipo_grupo = models.ForeignKey(
-        TipoGrupo, on_delete=models.RESTRICT, verbose_name='Tipo Grupo')
     likes = models.ManyToManyField(
         User, related_name='likes', blank=True, default=None)
     fecha_creado = models.DateTimeField(auto_now=True)

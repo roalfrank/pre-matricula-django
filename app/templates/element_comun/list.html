@@ -23,24 +23,27 @@
   {% endblock%}
   {%block boton_accion_extra%}{%endblock%}
 </div>
-<div class="card ">
-
-  <div class="card-body">
-    <table class="table table-bordered display nowrap" id="data"  style="width:100%">
-      <thead>
-        {% block columns %}
-        {% endblock %}
-      </thead>
-      <tbody>
-        {% block rows %}
-        {% endblock %}
-      </tbody>
-    </table>
-  </div>
-  <div class="card-footer">
-    {% block footer_list %}
-
-    {% endblock %}
+<div class="container mb-0">
+  <div class="card ">
+  
+    <div class="card-body">
+      
+      <table class="{% block class_tabla %}table table-bordered display nowrap{% endblock %}" id="data"  style="width:100%">
+        <thead>
+          {% block columns %}
+          {% endblock %}
+        </thead>
+        <tbody>
+          {% block rows %}
+          {% endblock %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer">
+      {% block footer_list %}
+  
+      {% endblock %}
+    </div>
   </div>
 </div>
 {%block modal_listar%}

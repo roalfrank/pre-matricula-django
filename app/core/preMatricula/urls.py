@@ -18,7 +18,6 @@ from core.preMatricula.logica.estudiante.estudianteCatOcupacional.views import C
 from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView, EstudianteDetailView, EstudianteDetailCargarFormAddView
 # importaciones para cursos
 from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso
-from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
@@ -102,8 +101,6 @@ urlpatterns = [
     path("admin-datos/", buscarAdmin, name="admin-datos"),
 
     # --- Todo relacionado con los cursos
-    path("curso-tipo/", TipoCursoView.as_view(),
-         name="curso-tipo"),
     path("curso/", CursoView.as_view(), name="curso"),
     path("curso-detail/<int:pk>/",
          CursoDetailView.as_view(), name="curso-detail"),

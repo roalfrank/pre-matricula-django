@@ -48,6 +48,7 @@ class CursoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
             action = request.POST['action']
             # action addd para adicionar registro
             if action == 'add':
+                print('entreen add')
                 form_curso = CursoForm(request.POST, request.FILES)
                 if all([form_curso.is_valid()]):
                     with transaction.atomic():
@@ -59,7 +60,6 @@ class CursoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
                     data['error'] = form_curso.errors.as_json()
 
             elif action == "cargarDatos":
-                print(request.POST)
                 limite = int(request.POST['limite'])
                 inicio = int(request.POST['inicio'])
                 busqueda = request.POST['busqueda']
@@ -78,8 +78,6 @@ class CursoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
                     cursos = Curso.objects.filter(condicion)
                 else:
                     cursos = Curso.objects.all()
-                    print('cursos', cursos)
-
                 lista = [i.toJson()
                          for i in cursos[inicio:inicio+limite]]
                 data = {
@@ -90,10 +88,11 @@ class CursoView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, T
                 return respuesta
             # action edit - editando una curso.
             elif action == 'edit':
+                print(request.POST)
                 curso = Curso.objects.get(
                     pk=int(request.POST['id_edit']))
                 form_curso = CursoForm(
-                    request.POST, instance=curso)
+                    request.POST, request.FILES, instance=curso)
                 if all([form_curso.is_valid()]):
                     with transaction.atomic():
                         curso = form_curso.save()
@@ -157,5 +156,7 @@ def buscarCurso(request):
     if request.method == 'POST':
         id_curso = int(request.POST['id_curso'])
         curso = Curso.objects.filter(pk=id_curso).first()
-        return JsonResponse(curso.toJson(), safe=False)
+        contexto = curso.toJson()
+        contexto['enviado'] = True
+        return JsonResponse(contexto, safe=False)
     return JsonResponse([], safe=False)

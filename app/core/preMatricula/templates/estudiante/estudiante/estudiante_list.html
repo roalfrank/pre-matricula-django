@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+ 
   @media (max-width:674px){
       #resumen_busqueda{
         margin: 0 auto;
@@ -412,7 +413,7 @@
       ],
       columnDefs: [{
           targets: 0,
-          
+          responsivePriority: 1 ,
           orderable: false,
           class: 'text-center',
           render: function (data, type, row) {
@@ -428,6 +429,7 @@
         {
           targets: [2],
           orderable: false,
+          responsivePriority: 1,
           render: function (data, type, row) {
             var buttons =
               `<div class="card p-1 m-1">
@@ -477,7 +479,7 @@
         //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
           targets: [-1],
-          responsivePriority: 2,
+          responsivePriority: 3,
           class: "text-center",
           orderable: false,
           render: function (data, type, row) {
