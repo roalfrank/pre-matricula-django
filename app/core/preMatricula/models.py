@@ -406,35 +406,17 @@ class Curso(models.Model):
         return curso
 
 
-# Modalidad de la preMatricula
-class Modalidad(models.Model):
-    nombre = models.CharField(
-        max_length=50, verbose_name='Nombre de la Modalidad')
-
-    def __str__(self):
-        return self.nombre
-
-    def toJson(self):
-        item = model_to_dict(self)
-        return item
-
-
-class EstadoMatricula(models.Model):
-    nombre = models.CharField(
-        max_length=50, verbose_name='Nombre del Estado Matricula')
-
-    def __str__(self):
-        return self.nombre
-
-    def toJson(self):
-        item = model_to_dict(self)
-        return item
-
-
 # clase Pre matricula Principal
-
-
 class PreMatricula(models.Model):
+    ABIERTO = 'AB'
+    CERRADO = 'CE'
+    PROCESO = 'PR'
+    CHOICE_ESTADO = [(ABIERTO, 'abierto'), (CERRADO, 'cerrado'),
+                     (PROCESO, "proceso")]
+    PRESENCIAL = 'PR'
+    SEMIPRESENCIA = 'SE'
+    CHOICE_MODALIDAD = [(PRESENCIAL, 'presencial'),
+                        (SEMIPRESENCIA, 'semi-presencial')]
     curso = models.ForeignKey(
         Curso, on_delete=models.RESTRICT, verbose_name='Curso')
     jcb = models.ForeignKey(
@@ -444,10 +426,10 @@ class PreMatricula(models.Model):
     frecuencia = models.IntegerField(verbose_name='Frecuencia semanal')
     fecha_inicio = models.DateField(verbose_name='Fecha Inicio')
     fecha_fin = models.DateField(verbose_name='Fecha Fin')
-    estado = models.ForeignKey(
-        EstadoMatricula, on_delete=models.RESTRICT, verbose_name='Estado de la PreMatricula')
-    modalidad = models.ForeignKey(
-        Modalidad, on_delete=models.RESTRICT, verbose_name='Modalidad')
+    estado = models.CharField(
+        verbose_name='Estado', choices=CHOICE_ESTADO, default=ABIERTO, max_length=2)
+    modalidad = models.CharField(
+        verbose_name='Modalidad', choices=CHOICE_MODALIDAD, default=PRESENCIAL, max_length=2)
     likes = models.ManyToManyField(
         User, related_name='likes', blank=True, default=None)
     fecha_creado = models.DateTimeField(auto_now=True)
@@ -455,18 +437,18 @@ class PreMatricula(models.Model):
     def toJson(self):
         jsonMatricula = model_to_dict(
             self, exclude=['curso', 'jcb', 'tipo_grupo', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
-        jsonMatricula['estado'] = self.estado.nombre
+        jsonMatricula['estado'] = self.get_estado_display()
         jsonMatricula['fecha_inicio'] = self.fecha_inicio.strftime(
             '%d/%m/%Y')
         jsonMatricula['fecha_fin'] = self.fecha_fin.strftime('%d/%m/%Y')
         jsonMatricula['nombre_curso'] = self.curso.nombre
         jsonMatricula['descripcion_curso'] = self.curso.descripcion
         jsonMatricula['horas'] = self.tipo_grupo.nombre
-        jsonMatricula['modalidad'] = self.modalidad.nombre
+        jsonMatricula['modalidad'] = self.get_modalidad_display()
         return jsonMatricula
 
     def __str__(self):
-        return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.estado})"
+        return f"{self.curso}-(fecha={self.fecha_inicio}-{self.fecha_fin})-(estado={self.get_estado_display()})"
 
     def numero_comentario(self):
         return Comentario.objects.filter(preMatricula=self).count()
@@ -492,18 +474,11 @@ class PreMatricula(models.Model):
     def actualizad_estado(self):
         cantidad_estudiante = self.cantidadEstudiante()
         if self.cantidadEstudiante() < self.capacidad:
-            estado = EstadoMatricula.objects.filter(nombre='abierto').first()
-            if estado:
-                self.estado = estado
+            self.estado = self.ABIERTO
         elif cantidad_estudiante == self.capacidad:
-            estado = EstadoMatricula.objects.filter(nombre='cerrado').first()
-            if estado:
-                self.estado = estado
+            self.estado = self.CERRADO
         else:
-            estado = EstadoMatricula.objects.filter(
-                nombre='en proceso').first()
-            if estado:
-                self.estado = estado
+            self.estado = self.PROCESO
         self.save()
 
     def listadoEstudiante(self):
@@ -529,9 +504,8 @@ class PreMatricula(models.Model):
 #             'type': 'send_message',
 #             'matricula': jsonMatricula
 #         })
+
 # signal para cuando se cambia el like de la matricula y asi lanzar un mensaje al websocket de like
-
-
 @receiver(m2m_changed, sender=PreMatricula.likes.through)
 def like_change(sender, instance, action, **kwargs):
     contador_like = instance.likes.all().count()
@@ -578,17 +552,15 @@ class PreMatriculaEstudiante(models.Model):
         nombre_grupo = 'update_matricula_' + str(self.preMatricula.pk)
         cant_mas_uno = cantidad_estudiante + 1
         if cant_mas_uno == self.preMatricula.capacidad:
-            cerrado = EstadoMatricula.objects.filter(nombre='cerrado').first()
-            if cerrado:
-                self.preMatricula.estado = cerrado
-                self.preMatricula.save()
+            self.preMatricula.estado = 'CE'
+            self.preMatricula.save()
             # lanzamiento de mensaje a websocket de update matricula
             async_to_sync(channel_layer.group_send)(nombre_grupo, {
                 'type': 'send_message',
                 'evento': 'cerrado',
                 'datos': {
                     'cant_estudiante': cant_mas_uno,
-                    'estado': cerrado.nombre
+                    'estado': self.preMatricula.get_estado_display()
                 }
             })
         else:
@@ -598,7 +570,7 @@ class PreMatriculaEstudiante(models.Model):
                 'evento': 'no cerrado',
                 'datos': {
                         'cant_estudiante': cant_mas_uno,
-                        'estado': self.preMatricula.estado.nombre
+                        'estado': self.preMatricula.get_estado_display()
                 }
             })
         return super().save(self, *args, **kwargs)
@@ -624,7 +596,7 @@ def actualizarMatricula(sender, instance, **kwargs):
         'evento': 'no cerrado',
         'datos': {
             'cant_estudiante': cant_estudiante,
-            'estado': instance.preMatricula.estado.nombre
+            'estado': instance.preMatricula.get_estado_display()
         }
     })
 
@@ -685,7 +657,6 @@ def comentarioADD(sender, instance, created, **kwargs):
             context['datos'] = datos
         else:
             context['evento'] = 'update_no_aprobado'
-    print('contecto que se envia', context)
     async_to_sync(channel_layer.group_send)(nombre_grupo, context)
 
 # cursos de interes para los estudiantes

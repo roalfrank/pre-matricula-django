@@ -19,8 +19,6 @@ from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView,
 # importaciones para cursos
 from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso, buscarCursos
 # importaciones para matricula
-from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
-from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
 
 # importaciones para admin
@@ -111,10 +109,6 @@ urlpatterns = [
 
 
     # --- Todo relacionado con los matricula
-    path("matricula-modalidad/", ModalidadMatriculaView.as_view(),
-         name="matricula-modalidad"),
-    path("matricula-estado/", EstadoMatriculaView.as_view(),
-         name="matricula-estado"),
     path("matricula-detalle/<int:pk>/", MatriculaDetailView.as_view(),
          name="matricula-detalle"),
     path("matricula-pagina/<int:id>/",
