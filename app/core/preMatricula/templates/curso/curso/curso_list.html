@@ -230,6 +230,19 @@
         theme: 'bootstrap4',
         language: 'es',
       });
+    let actualizar_cursos_select = function (parametros) {
+      $.ajax({
+        url:'{% url "prematricula:curso-obtener"%}',
+        type:'POST',
+        data:parametros,
+      }).done(function(respuesta){
+        $('#id_nextCurso').html('').select2({
+            theme: 'bootstrap4',
+            language: 'es',
+            data: respuesta
+          }).trigger("change");
+      });
+    }
     document.getElementById('id_foto').onchange = function () {
         var src = URL.createObjectURL(this.files[0]);
         document.getElementById('image-previews').src = src ;
@@ -386,10 +399,25 @@
 
                 $("#btnNuevo").on("click", function (element) {
                   element.preventDefault();
+                  actualizar_cursos_select({
+                    accion:"todos",
+                    select:'select2',
+                    csrfmiddlewaretoken:'{{csrf_token}}'
+                  });
                   abrir_modal_nuevo("Nuevo Curso");
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+                  //con esto obtengo el tr del boton edit de la tabla
+                  var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
+                  //paso a data una lista de los valores de la row a editar
+                  var data = tblListar.row(tr.row).data();
+                  actualizar_cursos_select({
+                    accion:"exclude",
+                    id_curso_exclude:data.id,
+                    select:'select2',
+                    csrfmiddlewaretoken:'{{csrf_token}}'
+                  });
                   element.preventDefault();
                   abrir_modal_editar("Editar Curso", tblListar, element.currentTarget);
                 });
@@ -530,16 +558,21 @@
     //validacion del formulario 
     $("#formRegistro").validate({
       rules: {
-        
         nombre: {
           required: true,
           maxlength: 100,
+        },
+        descripcion: {
+          required: true
         },
       },
       messages: {
         nombre: {
           required: "El  nombre del curso es necesario",
           maxlength: "No esta permitido mas de 100 caracteres",
+        },
+        descripcion: {
+          required: 'La descripcion es necesaria'
         },
       },
       errorElement: "span",

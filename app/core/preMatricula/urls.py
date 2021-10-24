@@ -17,7 +17,7 @@ from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import Dis
 from core.preMatricula.logica.estudiante.estudianteCatOcupacional.views import CategoriaOcupacionalEstudianteView
 from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView, EstudianteDetailView, EstudianteDetailCargarFormAddView
 # importaciones para cursos
-from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso
+from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso, buscarCursos
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
 from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
@@ -107,6 +107,7 @@ urlpatterns = [
     path("curso-add-form/",
          CursoDetailCargarFormAddView.as_view(), name="curso-add-form"),
     path("curso-datos/", buscarCurso, name="curso-datos"),
+    path("curso-obtener/", buscarCursos, name="curso-obtener"),
 
 
     # --- Todo relacionado con los matricula

@@ -384,6 +384,15 @@ class Curso(models.Model):
             return '{}{}'.format(MEDIA_URL, self.foto)
         return '{}{}'.format(STATIC_URL, 'img/curso_default.png')
 
+    def getNext(self):
+        if self.nextCurso:
+            curso = self.nextCurso.nombre + \
+                "(" + self.nextCurso.duracion + "h)"
+            return curso
+        else:
+            curso = 'No tiene'
+            return curso
+
     def toJson(self):
         curso = model_to_dict(self, exclude=['foto'])
         curso['foto_url'] = self.get_foto()
@@ -392,11 +401,7 @@ class Curso(models.Model):
             curso['descripcion_corta'] += ' (....)'
         else:
             curso['descripcion_corta'] = self.descripcion
-        if self.nextCurso:
-            curso['nextCurso_nombre'] = self.nextCurso.nombre + \
-                "(" + self.nextCurso.duracion + "h)"
-        else:
-            curso['nextCurso_nombre'] = 'No tiene'
+        curso['nextCurso_nombre'] = self.getNext()
 
         return curso
 

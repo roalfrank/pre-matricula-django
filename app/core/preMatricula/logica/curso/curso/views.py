@@ -160,3 +160,24 @@ def buscarCurso(request):
         contexto['enviado'] = True
         return JsonResponse(contexto, safe=False)
     return JsonResponse([], safe=False)
+
+
+@ login_required
+@ permission_required('preMatricula.view_curso', raise_exception=True)
+def buscarCursos(request):
+    if request.method == 'POST':
+        accion = request.POST['accion']
+        if accion == 'todos':
+            cursos = Curso.objects.all()
+        elif accion == 'exclude':
+            id_curso_exclude = int(request.POST['id_curso_exclude'])
+            cursos = Curso.objects.filter(~Q(pk=id_curso_exclude))
+        try:
+            select = request.POST['select']
+        except:
+            return JsonResponse(cursos, safe=False)
+        select_cursos = [{'id': '', 'text': '---------'}]
+        select_cursos.extend([{'id': i.id, 'text': i.__str__()}
+                              for i in cursos])
+        return JsonResponse(select_cursos, safe=False)
+    return JsonResponse([], safe=False)
