@@ -1,103 +1,33 @@
 {% load widget_tweaks %}
-<div class="row">
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.nombre.label_tag}}
-      {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.apellido1.label_tag}}
-      {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.apellido2.label_tag}}
-      {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.ci.label_tag}}
-      {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_user.username.label_tag}}
-      {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.correo.label_tag}}
-      {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.telefono.label_tag}}
-      {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_perfil.provincia.label_tag}}
-      {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-12 col-md-4">
-      <div class="form-group">
-          <label for="id_municipio">Municipio:</label>
-          <select  name='municipio' class="form-control form-control-sm select2" id="id_municipio">
-          </select>
+ <div class="row">
+      <div class="col-8">
+        <div class="form-group">
+          {{form_curso.nombre.label_tag}}
+          {{form_curso.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
       </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-8">
-    <div class="form-group">
-      {{form_perfil.direccion.label_tag}}
-      {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+      <div class="col-4">
+        <div class="form-group">
+          {{form_curso.duracion.label_tag}}
+          {{form_curso.duracion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          {{form_curso.descripcion.label_tag}}
+          {{form_curso.descripcion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          {{form_curso.nextCurso.label_tag}}
+          {{form_curso.nextCurso|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          {{form_curso.foto.label_tag}}<img id='image-previews' class="ml-2" width="40px" height="40px">
+          {{form_curso.foto|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_estudiante.usuario_sisce.label_tag}}
-      {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="col-4">
-    <div class="form-group">
-      {{form_estudiante.ocupacion.label_tag}}
-      {{form_estudiante.ocupacion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_estudiante.categoria_ocupacional.label_tag}}
-      {{form_estudiante.categoria_ocupacional|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="form-group">
-      {{form_estudiante.discapacidad.label_tag}}
-      {{form_estudiante.discapacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
-    </div>
-  </div>
-</div>
-{% if request.user.is_staff %}
-<div class="row justify-content-end">
-    <div class="form-group mb-1 mr-1">
-      <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
-    </div>
-</div>
-{% endif %}

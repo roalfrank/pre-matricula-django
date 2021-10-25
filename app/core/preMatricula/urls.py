@@ -17,13 +17,10 @@ from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import Dis
 from core.preMatricula.logica.estudiante.estudianteCatOcupacional.views import CategoriaOcupacionalEstudianteView
 from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView, EstudianteDetailView, EstudianteDetailCargarFormAddView
 # importaciones para cursos
-from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso
-from core.preMatricula.logica.curso.cursoTipo.views import TipoCursoView
+from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso, buscarCursos
 # importaciones para matricula
-from core.preMatricula.logica.matricula.matriculaModalidad.views import ModalidadMatriculaView
-from core.preMatricula.logica.matricula.matriculaEstado.views import EstadoMatriculaView
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
-
+from core.preMatricula.logica.matricula.matricula_list.views import MatriculaDetailCargarFormAddView, MatriculaView, buscarMatricula
 # importaciones para admin
 from core.preMatricula.logica.admin.admin.views import AdminView, AdminDetailView, AdminDetailCargarFormAddView, buscarAdmin
 
@@ -102,21 +99,16 @@ urlpatterns = [
     path("admin-datos/", buscarAdmin, name="admin-datos"),
 
     # --- Todo relacionado con los cursos
-    path("curso-tipo/", TipoCursoView.as_view(),
-         name="curso-tipo"),
     path("curso/", CursoView.as_view(), name="curso"),
     path("curso-detail/<int:pk>/",
          CursoDetailView.as_view(), name="curso-detail"),
     path("curso-add-form/",
          CursoDetailCargarFormAddView.as_view(), name="curso-add-form"),
     path("curso-datos/", buscarCurso, name="curso-datos"),
+    path("curso-obtener/", buscarCursos, name="curso-obtener"),
 
 
     # --- Todo relacionado con los matricula
-    path("matricula-modalidad/", ModalidadMatriculaView.as_view(),
-         name="matricula-modalidad"),
-    path("matricula-estado/", EstadoMatriculaView.as_view(),
-         name="matricula-estado"),
     path("matricula-detalle/<int:pk>/", MatriculaDetailView.as_view(),
          name="matricula-detalle"),
     path("matricula-pagina/<int:id>/",
@@ -129,6 +121,10 @@ urlpatterns = [
          listar_estudiante_matriculado_carrucel, name="matricula-estudiante-listar-carrucel"),
     path("matricula-estudiante-esta/",
          estudianteEstaMatriculado, name="matricula-estudiante-esta"),
+    path("matricula/", MatriculaView.as_view(), name="matricula"),
+    path("matricula-add-form/",
+         MatriculaDetailCargarFormAddView.as_view(), name="matricula-add-form"),
+    path("matricula-datos/", buscarMatricula, name="matricula-datos"),
 
     # todo sobre comentarios
     path("listado-comentario/",
