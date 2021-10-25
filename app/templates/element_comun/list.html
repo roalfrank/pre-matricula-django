@@ -23,10 +23,9 @@
   {% endblock%}
   {%block boton_accion_extra%}{%endblock%}
 </div>
-<div class="container mb-0">
   <div class="card ">
   
-    <div class="card-body">
+    <div class="card-body pt-1" id='card-body-tabla'>
       
       <table class="{% block class_tabla %}table table-bordered display nowrap{% endblock %}" id="data"  style="width:100%">
         <thead>
@@ -45,7 +44,6 @@
       {% endblock %}
     </div>
   </div>
-</div>
 {%block modal_listar%}
 <div class="modal fade" id="modal-nuevo">
   <form action="post" id='formRegistro' enctype="multipart/form-data">

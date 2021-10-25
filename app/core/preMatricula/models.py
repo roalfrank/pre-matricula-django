@@ -436,6 +436,43 @@ class PreMatricula(models.Model):
 
     def toJson(self):
         jsonMatricula = model_to_dict(
+            self, exclude=['curso', 'jcb', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
+        jsonMatricula['estado'] = self.get_estado_display()
+        if self.estado == 'CE':
+            jsonMatricula['estado_color'] = 'danger'
+        elif self.estado == 'AB':
+            jsonMatricula['estado_color'] = 'success'
+        else:
+            jsonMatricula['estado_color'] = 'warning'
+        jsonMatricula['fecha_inicio'] = self.fecha_inicio.strftime(
+            '%d/%m/%Y')
+        jsonMatricula['fecha_fin'] = self.fecha_fin.strftime('%d/%m/%Y')
+        jsonMatricula['nombre_curso'] = self.curso.nombre
+        jsonMatricula['horas'] = self.curso.get_duracion_display()
+        jsonMatricula['modalidad'] = self.get_modalidad_display()
+        nextCurso_instancia = self.curso.nextCurso
+        try:
+            matricula_nexCurso = PreMatricula.objects.get(
+                curso=nextCurso_instancia)
+            jsonMatricula['nextCurso'] = matricula_nexCurso.curso.__str__()
+            jsonMatricula['nextCurso_id'] = matricula_nexCurso.pk
+        except:
+            jsonMatricula['nextCurso'] = 'No tiene'
+            jsonMatricula['nextCurso_id'] = 'no'
+        jsonMatricula['foto_url'] = self.curso.get_foto()
+        jsonMatricula['jcb'] = self.jcb.entidad.nombre
+        jsonMatricula['jcm'] = self.jcb.jcm.entidad.nombre
+        jsonMatricula['jcp'] = self.jcb.jcm.region.jcp.entidad.nombre
+        jsonMatricula['cantidad_estudiante'] = self.cantidadEstudiante()
+        if len(self.curso.descripcion) > 100:
+            jsonMatricula['descripcion_curso'] = self.curso.descripcion[0:100]
+            jsonMatricula['descripcion_curso'] += ' (....)'
+        else:
+            jsonMatricula['descripcion_curso'] = self.curso.descripcion
+        return jsonMatricula
+
+    def toJsonForm(self):
+        jsonMatricula = model_to_dict(
             self, exclude=['curso', 'jcb', 'tipo_grupo', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
         jsonMatricula['estado'] = self.get_estado_display()
         jsonMatricula['fecha_inicio'] = self.fecha_inicio.strftime(
@@ -444,7 +481,7 @@ class PreMatricula(models.Model):
         jsonMatricula['nombre_curso'] = self.curso.nombre
         jsonMatricula['descripcion_curso'] = self.curso.descripcion
         jsonMatricula['horas'] = self.tipo_grupo.nombre
-        jsonMatricula['modalidad'] = self.get_modalidad_display()
+        jsonMatricula['nextCurso'] = self.nextCurso.__str__()
         return jsonMatricula
 
     def __str__(self):

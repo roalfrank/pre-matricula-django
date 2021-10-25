@@ -93,9 +93,38 @@ a:hover {
 }
 
 /*fin fondo del contenido */
+/* todo sobre las tablas */
 .table tbody tr:hover {
-  background-color: #26bdef;
+  background-color: #26bdef !important;
   color: #ffffff;
+}
+
+#card-body-tabla label {
+  margin-bottom: 0rem !important;
+}
+
+#data {
+  margin-top: 3px !important;
+}
+
+#data th {
+  padding: 0.5rem !important;
+}
+
+.card-footer {
+  background-color: rgba(0, 0, 0, 0.11) !important;
+}
+
+tbody>.even {
+  background-color: #84727280 !important;
+}
+
+tbody tr.even td>.wrapper>div>div>div .bg-info {
+  background-color: #866464 !important;
+}
+
+tbody tr.even td>.card>div>div .info-instructor-tabla {
+  background-color: #8664644f !important;
 }
 
 .table tbody tr a {
