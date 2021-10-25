@@ -11,6 +11,8 @@ from channels.layers import get_channel_layer
 from core.preMatricula.models import PreMatricula, Curso
 from core.preMatricula.views import esta_matriculado
 
+# metodo para saber si un estudiante esta matriculado
+
 
 def estudianteEstaMatriculado(request):
     if request.method == 'POST':
@@ -19,27 +21,40 @@ def estudianteEstaMatriculado(request):
         print('esta Matriculado?', esta)
         return JsonResponse(esta, safe=False)
 
+# metodo que devuelve los cursos relacionados a una matricula
+
 
 def lista_curso_relacionado(id_matricula, cantidad):
     matricula = PreMatricula.objects.filter(pk=id_matricula).first()
     nexCurso = matricula.curso
     lista_relacionado = []
+    # itero hasta la cantidad para ir agregando los nextcursos
     for m in range(0, cantidad):
         proximo = nexCurso.nextCurso
         if proximo:
             lista_relacionado.append(proximo)
             nexCurso = proximo
+        # si no tiene proximo salgo
+        else:
+            break
+    # cantidad de elementos en la lista de relacionados
     cantidad_buscado = len(lista_relacionado)
     lista_faltante = []
+    # compruebo si estan la canrtidad que se necesitan
     if cantidad_buscado < cantidad:
+        # faltan cursos para completar lo  que se pide
         faltan = cantidad-cantidad_buscado
+        # rellenamos con cursos de la tabla general
         lista_faltante = [m for m in Curso.objects.filter(
             ~Q(pk__in=[encontrado.pk for encontrado in lista_relacionado]))[0:faltan]]
     if len(lista_faltante) != 0:
         lista_relacionado.extend(lista_faltante)
+    # con el listado de los cursos ya completados, procedemos a listar las matriculas de esos cursos
     lista_matricula_relacionado = [
         matricula for matricula in PreMatricula.objects.filter(~Q(pk=id_matricula), curso__in=lista_relacionado)]
     return lista_matricula_relacionado
+
+# analizar este metodo mas tarde para comprobar si esta vigente
 
 
 @login_required
@@ -53,6 +68,8 @@ def listar_estudiante_matriculado_carrucel(request, id_matricula):
              for i in range(0, len(lista_estudiante), n)]
     respuesta['listaAlumnos'] = lista
     return render(request, template_name, respuesta)
+
+# analizar este metodo mas tarde para comprobar si esta vigente
 
 
 @login_required
@@ -137,32 +154,38 @@ class MatriculaDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # next es la direccion  a donde tenemos que direccionar una vez terminado
         context['next'] = self.request.GET.get('next')
+        # cantidad y listado de alumnos de esta matricula
         lista_estudiante = self.object.prematriculaestudiante_set.all()
-        print(lista_estudiante)
         context['cantAlumnos'] = lista_estudiante.count()
-        # n = 4
-        # lista = [lista_estudiante[i:i + n]
-        #          for i in range(0, len(lista_estudiante), n)]
         context['listaAlumnos'] = lista_estudiante
+        # base_url empleado en le generador de qr
         context['base_url'] = "{0}://{1}{2}".format(
             self.request.scheme, self.request.get_host(), '/sistema/matricula-pagina/')
+        # promedio en pociento de los estudiantes contra capacidad
         context['promedioCantidad'] = round(
             (context['cantAlumnos']*100)/self.object.capacidad, 2)
+        # esto activa el boton de like si el usuario ha dado like
         is_liked = False
         if self.get_object().likes.filter(id=self.request.user.id).exists():
             is_liked = True
         context['is_liked'] = is_liked
+        # listado de los cursos relacionados a esta matricula
         context['listaRelacionado'] = lista_curso_relacionado(
             self.object.pk, 3)
+        # comprobar si la se esta mirando aurenticado para mandar la variable matriculado
         if self.request.user.is_authenticated:
             context['matriculado'] = esta_matriculado(
                 self.request.user, self.object.pk)
-        if self.object.estado.nombre == 'cerrado':
+        # mandar el estado  de la matricula
+        if self.object.estado == 'CE':
             context['cerrado'] = True
         else:
             context['cerrado'] = False
+        # total de likes
         context['total_likes'] = self.get_object().likes.all().count()
+        # listado de los comentarios
         context['lista_comentarios'] = self.get_object(
         ).comentario_set.filter(respuestaA=None, aprobado=True).order_by('fecha_comentario',)
 
