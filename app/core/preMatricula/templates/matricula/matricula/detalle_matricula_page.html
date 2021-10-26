@@ -97,7 +97,8 @@
 
     
         $('.cargar_matricula').html('<div class="text-center"><span class="mr-4">Cargando..</span><div class="spinner-grow" role="status"></div></div>').load('{% url "prematricula:matricula-detalle" id_matricula %}', function () {
-           var owl = $('.owl-carousel');
+            $("[data-toggle=tooltip]").tooltip(); 
+            var owl = $('.owl-carousel');
               owl.owlCarousel({
                 margin: 2,
                 nav: false,

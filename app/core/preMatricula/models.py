@@ -422,8 +422,8 @@ class PreMatricula(models.Model):
     jcb = models.ForeignKey(
         JCB, on_delete=models.CASCADE, verbose_name='Joven Club', blank=True, null=True, default=None)
     capacidad = models.IntegerField(
-        verbose_name='Capacidad Total a Matricular')
-    frecuencia = models.IntegerField(verbose_name='Frecuencia semanal')
+        verbose_name='Capacidad')
+    frecuencia = models.IntegerField(verbose_name='Frecuencia')
     fecha_inicio = models.DateField(verbose_name='Fecha Inicio')
     fecha_fin = models.DateField(verbose_name='Fecha Fin')
     estado = models.CharField(
@@ -464,11 +464,8 @@ class PreMatricula(models.Model):
         jsonMatricula['jcm'] = self.jcb.jcm.entidad.nombre
         jsonMatricula['jcp'] = self.jcb.jcm.region.jcp.entidad.nombre
         jsonMatricula['cantidad_estudiante'] = self.cantidadEstudiante()
-        if len(self.curso.descripcion) > 100:
-            jsonMatricula['descripcion_curso'] = self.curso.descripcion[0:100]
-            jsonMatricula['descripcion_curso'] += ' (....)'
-        else:
-            jsonMatricula['descripcion_curso'] = self.curso.descripcion
+        jsonMatricula['descripcion_curso'] = self.descripcionCorta()
+
         return jsonMatricula
 
     def toJsonForm(self):
@@ -522,6 +519,14 @@ class PreMatricula(models.Model):
         estudiantes = PreMatriculaEstudiante.objects.filter(
             preMatricula=self)
         return estudiantes
+
+    def descripcionCorta(self):
+        if len(self.curso.descripcion) > 100:
+            descripcion_corta = self.curso.descripcion[0:100]
+            descripcion_corta += ' (....)'
+        else:
+            descripcion_corta = self.curso.descripcion
+        return descripcion_corta
 
 # singal para cuando se edita una matricula
 

@@ -293,10 +293,10 @@
                 <img loading='lazy' src="{{curso.curso.get_foto}}" alt="" class="img-fluid  rounded-circle" style='max-width: 60px; height: 60px;box-shadow: 1px 5px 3px rgba(0,0,0,0.25);'>
               </div>
               <h4 class="title text-center mb-1" style="height: 20%;">{{curso.curso.nombre}}</h4>
-              <p class="description text-center p-1" style="height: 38%; background-color: #e9d8a6; border-radius: 10px; color:rgb(19, 17, 17)"><strong>{{curso.curso.descripcion}}</strong>
+              <p class="description text-center p-1" style="height: 42%; background-color: #e9d8a6; border-radius: 10px; color:rgb(19, 17, 17)"><strong>{{curso.descripcionCorta}}</strong>
               </p>
               <div class="icon mb-2">
-                  <a style='width: 75%;'  class="btn mt-3 btn-sm botones-accion" href="{% url 'prematricula:matricula-page' curso.pk %}">Detalle<img src="{% static 'img/iconos/buscar.png' %}" alt="Ver matricula" width="20px" height="20px" class="ml-2"></a>
+                  <a style='width: 75%;'  class="btn mt-2 btn-sm botones-accion" href="{% url 'prematricula:matricula-page' curso.pk %}">Detalle<img src="{% static 'img/iconos/buscar.png' %}" alt="Ver matricula" width="20px" height="20px" class="ml-2"></a>
                 
                   {% qr_crear base_url curso.pk as urlQR_matricula %}
                   <span class='qr_cursos'>

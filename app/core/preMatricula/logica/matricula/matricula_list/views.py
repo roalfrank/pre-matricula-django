@@ -1,13 +1,12 @@
 from django.contrib.auth.decorators import permission_required, login_required
 import json
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
-from django.contrib.auth.models import User, Group
 from django.db.models import Q
-from core.preMatricula.models import PreMatricula
+from core.preMatricula.models import PreMatricula, Maestro
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import PreMatriculaForm
 
@@ -51,28 +50,46 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
                 limite = int(request.POST['limite'])
                 inicio = int(request.POST['inicio'])
                 busqueda = request.POST['busqueda']
+                print(busqueda)
                 if busqueda != '':
                     lista_filtro = {
-                        'nombre': 'usuario__perfil__nombre__icontains',
-                        'ci': 'usuario__perfil__ci__icontains',
-                        'username': 'usuario__username__icontains',
-                        'correo': 'usuario__perfil__correo__icontains',
-                        'apellido1': 'usuario__perfil__apellido1__icontains',
-                        'apellido2': 'usuario__perfil__apellido2__icontains',
-                        'municipio': 'usuario__perfil__municipio__pk',
-                        'provincia': 'usuario__perfil__municipio__provincia__pk',
+                        'nombre': 'curso__nombre__icontains',
                         'jcp': 'jcb__jcm__region__jcp__pk',
                         'region': 'jcb__jcm__region__pk',
                         'jcm': 'jcb__jcm__pk',
                         'jcb': 'jcb__pk',
+                        'horas': 'curso__duracion',
+                        'rango': 'fecha_inicio__range',
+                        'estado': 'estado'
                     }
                     busqueda_json = json.loads(busqueda)
                     filtros = busqueda_json['filtro']
                     condicion = Q()
+                    # contador para limitar el for, solo se ejecute una ves si encuentra desde o hasta.
+                    contador_solo_desde = 0
                     for key, value in filtros.items():
+                        if (key == 'desde' or key == 'hasta'):
+                            if contador_solo_desde == 0:
+                                rango_fecha = [
+                                    filtros['desde'], filtros['hasta']]
+                                condicion.add(
+                                    Q(**{lista_filtro['rango']: rango_fecha}), Q.AND)
+                                contador_solo_desde = 1
+                        else:
+                            if key == 'estado':
+                                if value != 'TD':
+                                    condicion.add(
+                                        Q(**{lista_filtro[key]: value}), Q.AND)
+                            else:
+                                print('si estoy entrando')
+                                condicion.add(
+                                    Q(**{lista_filtro[key]: value}), Q.AND)
+                    # si no esta estado como parametro de busqueda , entonces filtro por abierto
+                    try:
+                        filtros['estado']
+                    except:
                         condicion.add(
-                            Q(**{lista_filtro[key]: value}), Q.AND)
-
+                            Q(**{lista_filtro['estado']: 'AB'}), Q.AND)
                     matriculas = PreMatricula.objects.filter(condicion)
                 else:
                     matriculas = PreMatricula.objects.filter(estado='AB')
@@ -157,4 +174,29 @@ def buscarMatricula(request):
         datos = matricula.datosAllJson()
         datos['enviado'] = True
         return JsonResponse(datos, safe=False)
+    return JsonResponse([], safe=False)
+
+
+@ login_required
+@ permission_required('preMatricula.add_prematricula', raise_exception=True)
+def buscarMaestro(request):
+    if request.method == 'POST':
+        busqueda = request.POST['busqueda']
+        cantidad = int(request.POST['cantidad'])
+        print(request.POST)
+        maestros = Maestro.objects.filter(
+            Q(instructor__usuario__perfil__nombre__icontains=busqueda) | Q(instructor__usuario__perfil__ci__icontains=busqueda), Q(instructor__usuario__username__icontains=busqueda))[0:cantidad]
+        print(maestros)
+        resultado = [{
+            'id': maestro.pk,
+            'nombre': maestro.instructor.usuario.perfil.get_nombre(),
+            'ci': maestro.instructor.usuario.perfil.ci,
+            'foto': maestro.instructor.usuario.perfil.get_image(),
+            'jcp': maestro.instructor.jcb.jcm.region.jcp.entidad.nombre,
+            'jcm': maestro.instructor.jcb.jcm.entidad.nombre,
+            'username': maestro.instructor.usuario.username,
+            'jcb': maestro.instructor.jcb.entidad.nombre, } for maestro in maestros]
+        print(resultado)
+
+        return JsonResponse(resultado, safe=False)
     return JsonResponse([], safe=False)

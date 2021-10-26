@@ -116,15 +116,15 @@ a:hover {
 }
 
 tbody>.even {
-  background-color: #84727280 !important;
+  background-color: #eaeaea !important;
 }
 
 tbody tr.even td>.wrapper>div>div>div .bg-info {
-  background-color: #866464 !important;
+  background-color: #8a8787 !important;
 }
 
 tbody tr.even td>.card>div>div .info-instructor-tabla {
-  background-color: #8664644f !important;
+  background-color: #eaeaea !important;
 }
 
 .table tbody tr a {

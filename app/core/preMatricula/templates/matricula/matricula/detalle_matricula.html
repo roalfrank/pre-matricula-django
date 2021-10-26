@@ -19,29 +19,29 @@
         <div class="float-right" data-html2canvas-ignore="true">
           {% if request.user.is_authenticated %}
           {% if request.user.groups.all.0.name == 'Estudiante'%}
-           <a class="btn btn-sm btn-success {% if matriculado or cerrado %}disabled {% endif %}" href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
+           <a class="btn btn-sm btn-success  {% if matriculado or cerrado %}disabled {% endif %}" data-toggle="tooltip" data-placement="top" title="Realizar matricula en este curso." href="#" id='btn-matricular' activo='{% if matriculado %}si{% else %}no{% endif %}' >
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
-            matricular
+            Matricular
           </a>
-           <a class="btn btn-sm btn-danger {% if not matriculado  %} disabled{% endif %}" href="#" id='btn-matricular-cancel' activo='{% if matriculado %}si{% else %}no{% endif %}' >
+           <a data-toggle="tooltip" data-placement="top" title="Cancelar la matricula si se ha matriculado." class="btn btn-sm btn-danger {% if not matriculado  %} disabled{% endif %}" href="#" id='btn-matricular-cancel' activo='{% if matriculado %}si{% else %}no{% endif %}' >
            <i class="fa fa-trash-alt p-1"></i>Cancelar matrícula 
           </a>
           {% else %}
-           <a class="btn btn-sm btn-success {% if cerrado %} disabled {% endif %}" href="#" id='btn-matricular-estudiante' >
+           <a data-toggle="tooltip" data-placement="top" title="Matricular manualmente a estudiantes." class="btn btn-sm btn-success {% if cerrado %} disabled {% endif %}" href="#" id='btn-matricular-estudiante' >
             <i class="fas fa-graduation-cap p-1 btn-" aria-hidden="true"></i>
             matricular a estudiante
           </a>
              {% endif %}
            {% else %}
-           <a class="btn btn-sm btn-default " href="/"  >
+           <a data-toggle="tooltip" data-placement="top" title="Regresar al inicio del sitio principal." class="btn btn-sm btn-default " href="/"  >
             <i class="fa fa-reply" aria-hidden="true"></i>
          Volver al sitio web
           </a>  
-           <a class="btn btn-sm btn-success " href="{% url 'login:registrar' %}"  >
+           <a data-toggle="tooltip" data-placement="top" title="!No tienes cuenta!. Pues animate y crea una." class="btn btn-sm btn-success " href="{% url 'login:registrar' %}"  >
             <i class="fa fa-user-plus" aria-hidden="true"></i>
          Crear cuenta
           </a>  
-           <a class="btn btn-sm btn-success " href="{% url 'login:login-user' %}"  >
+           <a  data-toggle="tooltip" data-placement="top" title="Ya tienes una cuenta pues entra descubre nuevos cursos." class="btn btn-sm btn-success " href="{% url 'login:login-user' %}"  >
            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
           Entrar en el sistema
           </a>  
@@ -134,42 +134,13 @@
                       <small>{{profe.maestro.get_nombre}}</small>
                       <p class="card-text">{{profe.maestro.instructor.cargo.nombre}}</p>
                       <a href="#" class="badge badge-info navbar-badge mr-2 " style="font-size: 0.8rem;"
-                        data-html="true" data-placement="top" data-popover-content="#unique-{{profe.pk}}"
-                        data-toggle="popover" data-trigger="focus"><strong>info</strong></a>
+                        data-html="true" data-toggle="tooltip" data-placement="top" 
+                        title="<div class='card'><div class='card-body'><ul class='list-group list-group-unbordered mb-3 p-2'><li class='list-group-item'><b>JCB:</b><span class='badge badge-info float-right'>{{profe.maestro.instructor.jcb.entidad.nombre}}</span></li><li class='list-group-item'><b>Correo:</b><span class='badge badge-info float-right mt-4'>{{profe.maestro.instructor.usuario.perfil.correo}}</span></li><li class='list-group-item'><b>Cursos:</b><span class='badge badge-info float-right'>{{profe.maestro.prematriculamaestro_set.all.count }}</span></li></ul></div></div>"><strong>info</strong></a>
                       <!-- Content for Popover #1 -->
                       <div id="unique-{{profe.pk}}" style="display:none;">
                         <div class="popover-heading">{{profe.maestro.get_nombre}}</div>
                         <div class="popover-body ">
-                          <ul class="list-group list-group-unbordered mb-3 p-2">
-                            <li class="list-group-item">
-                              <b>
-                                JCB:
-                              </b>
-                              <span
-                                class='badge badge-info float-right'>{{profe.maestro.instructor.jcb.entidad.nombre}}</span>
-                            </li>
-                            <li class="list-group-item">
-                              <b>
-                                Correo:
-                              </b>
-                              <span
-                                class='badge badge-info float-right mt-4'>{{profe.maestro.instructor.usuario.perfil.correo}}</span>
-                            </li>
-                            <li class="list-group-item">
-                              <b>
-                                Cursos impartidos:
-                              </b>
-                              <span
-                                class='badge badge-info float-right'>{{profe.maestro.prematriculamaestro_set.all.count }}
-                              </span>
-                            </li>
-                            <li class="list-group-item">
-                              <b>
-                                Conocimiento:
-                              </b>
-                              <span class='badge badge-info float-right mt-4 '>python,django,html</span>
-                            </li>
-                          </ul>
+                          <ul class='list-group list-group-unbordered mb-3 p-2'><li class='list-group-item'><b>JCB:</b><span class='badge badge-info float-right'>{{profe.maestro.instructor.jcb.entidad.nombre}}</span></li><li class='list-group-item'><b>Correo:</b><span class='badge badge-info float-right mt-4'>{{profe.maestro.instructor.usuario.perfil.correo}}</span></li><li class='list-group-item'><b>Cursos impartidos:</b><span class='badge badge-info float-right'>{{profe.maestro.prematriculamaestro_set.all.count }}</span></li><li class='list-group-item'><b>Conocimiento:</b><span class='badge badge-info float-right mt-4 '>python,django,html</span></li></ul>
                         </div>
                       </div>
                     </div>

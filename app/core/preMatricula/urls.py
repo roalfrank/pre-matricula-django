@@ -20,7 +20,7 @@ from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView,
 from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso, buscarCursos
 # importaciones para matricula
 from core.preMatricula.logica.matricula.matricula.views import MatriculaDetailView, likeMatricula, addEstudianteMatricula, listar_estudiante_matriculado_carrucel, getDetallePageMatricula, estudianteEstaMatriculado
-from core.preMatricula.logica.matricula.matricula_list.views import MatriculaDetailCargarFormAddView, MatriculaView, buscarMatricula
+from core.preMatricula.logica.matricula.matricula_list.views import MatriculaDetailCargarFormAddView, MatriculaView, buscarMatricula, buscarMaestro
 # importaciones para admin
 from core.preMatricula.logica.admin.admin.views import AdminView, AdminDetailView, AdminDetailCargarFormAddView, buscarAdmin
 
@@ -125,6 +125,7 @@ urlpatterns = [
     path("matricula-add-form/",
          MatriculaDetailCargarFormAddView.as_view(), name="matricula-add-form"),
     path("matricula-datos/", buscarMatricula, name="matricula-datos"),
+    path("buscar-maestro/", buscarMaestro, name="buscar-maestro"),
 
     # todo sobre comentarios
     path("listado-comentario/",

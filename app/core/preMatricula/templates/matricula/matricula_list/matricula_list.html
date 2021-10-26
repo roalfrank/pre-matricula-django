@@ -1,8 +1,12 @@
 {% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}
+{% load filterCustom %}
 {% block head_list %}
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+  #campos_formulario label{
+    margin-bottom: 0px;
+  }
    /* esto es para que no se salga el texto largo de la tabla */
   .table.dataTable.nowrap th, table.dataTable.nowrap td{
     white-space: inherit !important;
@@ -163,57 +167,14 @@
                 <div class="row">
                     <div class="col-12 col-md-4">
                         <div class="form-group m-0">
-                            <label for="inputCI" class='m-0'>Carnet Identidad:</label>
-                            <input name="ci" type="text"class="form-control form-control-sm" id="inputCI">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputUsername" class='m-0'>Usuario:</label>
-                            <input name='username' type="text"class="form-control form-control-sm" id="inputUsername">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputCorreo" class='m-0'>Correo:</label>
-                            <input name='correo' type="text"class="form-control form-control-sm" id="inputCorreo">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
                             <label for="inputNombre" class='m-0'>Nombre:</label>
-                            <input name='nombre' type="text"class="form-control form-control-sm" id="inputNombre">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputApellido1" class='m-0'>Apellido 1:</label>
-                            <input name='apellido1' type="text"class="form-control form-control-sm" id="inputApellido1">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputApellido1" class='m-0'>Apellido 2:</label>
-                            <input name='apellido2' type="text"class="form-control form-control-sm" id="inputApellido1">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputProvincia" class='m-0'>Provincia:</label>
-                            {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:inputProvincia'|attr:'name:provincia'}}
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputMunicipio" class='m-0'>Municipio:</label>
-                            <select  name='municipio' class="form-control form-control-sm select2" id="inputMunicipio">
-                            </select>
+                            <input name="nombre" type="text"class="form-control form-control-sm" id="inputNombre">
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4">
                       <div class="form-group m-0">
                         <label for="id_jcp_busqueda" class='m-0'>JCC Provincial</label>
-                        {{form_prematricula.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:id_jcp_busqueda'}}
+                        {{form_matricula.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'id:id_jcp_busqueda'}}
                       </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4">
@@ -236,14 +197,40 @@
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4">
                       <div class="form-group m-0">
-                         <label for="id_maestro_busqueda" class='m-0' >Tipo</label>
-                          <select class='select2 form-control form-control-sm' name="tipo" autocomplete="off" class="form-check-input" id="id_maestro_busqueda" >
-                            <option value=''>Todos</option>
-                            <option value='PR'>Maestro</option>
-                            <option value='IN'>prematricula</option>
+                         <label for="id_horas_busqueda" class='m-0' >Horas Clases</label>
+                          <select class='select2 form-control form-control-sm' name="horas" autocomplete="off" class="form-check-input" id="id_horas_busqueda" >
+                            <option value=''>------</option>
+                            <option value='24'>24 Horas</option>
+                            <option value='36'>36 horas</option>
+                            <option value='64'>64 horas</option>
                           </select></span>
                       </div>
                     </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_desde_busqueda" class='m-0' >Fecha Inicio - Desde</label>
+                        <input type="date" class='form-control form-control-sm' name="desde" id="id_desde_busqueda" ></input>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_hasta_busqueda" class='m-0' >Hasta</label>
+                        <input type="date" class='form-control form-control-sm' name="hasta" id="id_hasta_busqueda" ></input>
+                      </div>
+                    </div>
+                     {% if not request.user|has_group:"Estudiante" %} 
+                      <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="form-group m-0">
+                          <label for="id_estado_busqueda" class='m-0' >Estado</label>
+                            <select class='select2 form-control form-control-sm' name="estado" autocomplete="off" class="form-check-input" id="id_estado_busqueda" >
+                              <option value='TD'>todos</option>
+                              <option value='AB'>abierto</option>
+                              <option value='CE'>cerrado</option>
+                              <option value='PR'>en proceso</option>
+                            </select></span>
+                        </div>
+                      </div>
+                     {% endif %}
                 </div>
               </div>
               <!-- /.card-body -->
@@ -264,111 +251,80 @@
 
 {%block class_modal%}modal-lg{% endblock %}
 {%block form_modal%}
- <div class="row">
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.nombre.label_tag}}
-          {{form_perfil.nombre|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+ <div class="row" id='campos_formulario'>
+      <div class="col-12 col-sm-6 col-lg-6">
+        <div class="form-group mb-0">
+          {{form_matricula.curso.label_tag}}
+          {{form_matricula.curso|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-12 col-sm-3 col-lg-3">
+        <div class="form-group mb-0">
+          {{form_matricula.capacidad.label_tag }}
+          {{form_matricula.capacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-12 col-sm-3 col-lg-3">
+        <div class="form-group mb-0">
+          {{form_matricula.frecuencia.label_tag}}
+          {{form_matricula.frecuencia|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.apellido1.label_tag}}
-          {{form_perfil.apellido1|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        <div class="form-group mb-0">
+          <label for="id_jcp" class='mb-0'>JCC Provincial</label>
+          {{form_matricula.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.apellido2.label_tag}}
-          {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.ci.label_tag}}
-          {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_user.username.label_tag}}
-          {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.correo.label_tag}}
-          {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.telefono.label_tag}}
-          {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.provincia.label_tag}}
-          {{form_perfil.provincia|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          <label for="id_municipio">Municipio</label>
-          <select  class='select2 form-control form-control-sm' name="municipio" id="id_municipio" required></select>
-        </div>
-      </div>
-      <div class="col-8">
-        <div class="form-group">
-          {{form_perfil.direccion.label_tag}}
-          {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_prematricula.usuario_siscae.label_tag}}
-          {{form_prematricula.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          <label for="id_jcp">JCC Provincial</label>
-          {{form_prematricula.jcp|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          <label for="id_region">Región</label>
+        <div class="form-group mb-0">
+          <label for="id_region" class='mb-0'>Región</label>
           <select  class='select2 form-control form-control-sm' name="region" id="id_region" ></select>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          <label for="id_jcm">JCC Municipal</label>
+        <div class="form-group mb-0">
+          <label for="id_jcm" class='mb-0'>JCC Municipal</label>
           <select class='select2 form-control form-control-sm' name="jcm" id="id_jcm" ></select>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          <label for="id_jcb">JCC Base</label>
+        <div class="form-group mb-0">
+          <label for="id_jcb" class='mb-0'>JCC Base</label>
           <select class='select2 form-control form-control-sm' name="jcb" id="id_jcb" required></select>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_prematricula.cargo.label_tag}}
-          {{form_prematricula.cargo|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
+        <div class="form-group mb-0">
+          <label for="id_desde" class='mb-0' >Desde</label>
+          <input type="date" class='form-control form-control-sm' name="desde" id="id_desde" ></input>
         </div>
       </div>
-      {% if request.user.is_staff %}
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group pt-4">
-          <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
-          <span><strong class="mr-4">Maestro:</strong><input type="checkbox" name="maestro" autocomplete="off" class="form-check-input" id="id_maestro" ></span>
+        <div class="form-group mb-0">
+          <label for="id_hasta" class='mb-0' >Hasta</label>
+          <input type="date" class='form-control form-control-sm' name="hasta" id="id_hasta" ></input>
         </div>
       </div>
-       {% endif %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group mb-0">
+          <label for="id_estado" class='mb-0'>Estado</label>
+          {{form_matricula.estado|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group mb-0">
+          <label for="id_modalidad" class='mb-0'>Modalidad</label>
+          {{form_matricula.modalidad|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group mb-0">
+          <label for="id_profesor" class='mb-0'>Profesores</label>
+         <select class='select2 form-control form-control-sm' name="profesor" id="id_profesor" multiple='multiple'></select>
+        </div>
+      </div>
+
 </div>
 {%endblock%}
 
@@ -377,12 +333,80 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
-
+    $('#id_desde_busqueda').val('');
+    $('#id_hasta_busqueda').val('');
+    $('#id_desde').val('');
+    $('#id_hasta').val('');
+    $('#id_profesor').val('');
     $('#id_jcp').trigger('change');
+    let templateSelctProfesor = function(state){
+          if (!state.id) {
+            return state.text;
+          }
+          let templateSelect = `
+          <img src=${state.foto} width='20px' height='20px'>
+          `
+          var $state = $(
+          `
+          <div class='card m-0 '><div class='card-body m-0 p-1 d-flex justify-content-start align-items-center'>
+              <img src=${state.foto} width='40px' height='40px' class='elevation-2 img-circle mr-2'>
+              <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold; position:absolute;top:70%;left:1%;'>${state.username}</small>
+              <div class='row'>
+                <div class='col-12'>
+                  <div><strong>${state.text}</strong></div>
+                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>CI :${state.ci}</small>
+                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>JCP :${state.jcp}</small>
+                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>JCM :${state.jcm}</small>
+                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>JCB :${state.jcb}</small>
+                  </div>
+                </div>
+              </div>
+          </div>
+          `
+          );
+          return $state;
+    }
     funcion_vincular_select= function(){
        $('.select2').select2({
         theme: 'bootstrap4',
         language: 'es',
+      });
+
+      $('#id_profesor').select2({
+        ajax:{
+           type:'POST',
+           url:'{% url "prematricula:buscar-maestro" %}',
+           dataType:'json',
+           data: function (params){
+               return {
+                 busqueda: params.term,
+                 cantidad: 5,
+                 csrfmiddlewaretoken:'{{csrf_token}}'
+             }
+           },
+           processResults: function (data){
+             var results = [];
+             $.each(data, function(index,item){
+                results.push({
+                  id: item.id,
+                  text: item.nombre,
+                  foto:item.foto,
+                  ci:item.ci,
+                  jcp:item.jcp,
+                  jcm:item.jcm,
+                  jcb:item.jcb,
+                  username:item.username,
+                });
+             });
+             return {results}
+           },
+           cache:true,
+        },
+        placeholder:'Ingresa un nombre o carnet identidad....',
+        minimumInputLength:2,
+        theme: 'bootstrap4',
+        language: 'es',
+        templateResult: templateSelctProfesor
       });
       //vinculaciones de las entidades
       $('#id_jcp').on('change', function () {
@@ -449,39 +473,27 @@
         });
       });
       //fin vinculaciones de las entidades
-      //vinculadciones de las provincias y municipios
-
-      //fin de las vinculaciones de provincias y municipios
-      var select_municipio = $('#id_municipio');
-      $('#id_provincia').on('change', function () {
-        var id = $(this).val();
-        $.ajax({
-          url: "{% url 'prematricula:buscar-municipios'  %}",
-          type: 'POST',
-          data: {
-            'id_provincia': id,
-            csrfmiddlewaretoken: function () {
-              return $('input[name="csrfmiddlewaretoken"]').val();
-            },
-          },
-          dataType: 'json'
-        }).done(function (data) {
-          select_municipio.html('').select2({
-            theme: 'bootstrap4',
-            language: 'es',
-            data: data
+       $('#id_desde').on('change',function(e){
+         $('#id_hasta').attr('min',$(this).val());
           });
-  
+        $('#id_hasta').on('change',function(e){
+          $('#id_desde').attr('max',$(this).val());
         });
-      });
+     
     }
      $('#id_jcp_busqueda').trigger('change');
+
     var vincular_busqueda_provincia_municipio= function(){
       $('.select2').select2({
         theme: 'bootstrap4',
         language: 'es',
       });
-     
+     $('#id_desde_busqueda').on('change',function(e){
+       $('#id_hasta_busqueda').attr('min',$(this).val());
+     });
+     $('#id_hasta_busqueda').on('change',function(e){
+       $('#id_desde_busqueda').attr('max',$(this).val());
+     });
       //vinculaciones de las entidades
       $('#id_jcp_busqueda').on('change', function () {
         var id = $(this).val();
@@ -550,35 +562,6 @@
         });
       });
       //fin vinculaciones de las entidades
-
-      var select_municipio = $('#inputMunicipio');
-      
-      $('#inputProvincia').on('change', function () {
-        var id = $(this).val();
-        if(id==''){
-          select_municipio.html('');
-        }
-        else{
-          $.ajax({
-            url: "{% url 'prematricula:buscar-municipios'  %}",
-            type: 'POST',
-            data: {
-              'id_provincia': id,
-              csrfmiddlewaretoken: function () {
-                return $('input[name="csrfmiddlewaretoken"]').val();
-              },
-            },
-            dataType: 'json'
-          }).done(function (data) {
-            select_municipio.html('').select2({
-              theme: 'bootstrap4',
-              language: 'es',
-              data: data
-            });
-    
-          });
-        }
-      });
     }
     vincular_busqueda_provincia_municipio();
     funcion_vincular_select();
@@ -703,7 +686,7 @@
                   <div class='row text-center'>
                     <div class='col-12 col-lg-3 col-md-4 col-sm-4'>
                       <div class='badge badge-secondary'>
-                        <span>JCP:</span>
+                        <span data-toggle="tooltip" data-placement="top" title="Tooltip on top">JCP:</span>
                         <span >${row.jcp}</span>
                        </div>
                     </div>
@@ -843,32 +826,49 @@
      //boton de busquar 
      $('#buscar_btn').on('click',function(e){
       e.preventDefault();
-      //listado de los datos a busquar
-      let dict_busqueda = new Object()
-      //todos los elementos del formulario
-      var elements = document.getElementById("form_busqueda").elements;
-      let dict_busqueda_text = ''
-      //recorro cada elemento y si tiene datos lo incorporo a la lista
-      for (var i = 0, element; element = elements[i++];) {
-        if(element.value!=''){
-          dict_busqueda[element.name]=element.value;
-          if(element.nodeName=='SELECT'){
-            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
-          }
-          else{
-            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
+      console.log($('#id_desde_busqueda').val());
+      var valido_fecha = true;
+      if($('#id_desde_busqueda').val()!='' && $('#id_hasta_busqueda').val()!=''){
+          valido_fecha=true;
+      }
+      else if ($('#id_desde_busqueda').val()=='' && $('#id_hasta_busqueda').val()==''){
+          valido_fecha=true;
+      }
+      else{
+          valido_fecha=false;
+      }
+      //valido si paso o no 
+      if(valido_fecha!= true){
+          mensaje("error", "El rango de fecha no es valido en la busqueda.");
+      }
+      else{
+        //listado de los datos a busquar
+        let dict_busqueda = new Object()
+        //todos los elementos del formulario
+        var elements = document.getElementById("form_busqueda").elements;
+        let dict_busqueda_text = ''
+        //recorro cada elemento y si tiene datos lo incorporo a la lista
+        for (var i = 0, element; element = elements[i++];) {
+          if(element.value!=''){
+            dict_busqueda[element.name]=element.value;
+            if(element.nodeName=='SELECT'){
+              dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
+            }
+            else{
+              dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
+            }
           }
         }
-      }
-      //si la lista no esta vacia procedo a realizar la busqueda
-      if(Object.keys(dict_busqueda).length>0){
-        console.log(dict_busqueda);
-        var dict_busqueda_json =JSON.stringify({
-                    filtro:dict_busqueda
-                    }); 
-        tblListar.search(dict_busqueda_json).draw();
-        $('#resumen_busqueda').html(dict_busqueda_text);
-        $('#card_busqueda').CardWidget('collapse');
+        //si la lista no esta vacia procedo a realizar la busqueda
+        if(Object.keys(dict_busqueda).length>0){
+          console.log(dict_busqueda);
+          var dict_busqueda_json =JSON.stringify({
+                      filtro:dict_busqueda
+                      }); 
+          tblListar.search(dict_busqueda_json).draw();
+          $('#resumen_busqueda').html(dict_busqueda_text);
+          $('#card_busqueda').CardWidget('collapse');
+        }
       }
       
     });
