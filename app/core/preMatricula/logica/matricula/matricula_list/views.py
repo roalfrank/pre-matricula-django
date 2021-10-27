@@ -1,3 +1,4 @@
+from typing import List
 from django.contrib.auth.decorators import permission_required, login_required
 import json
 from django.views.generic import TemplateView
@@ -6,7 +7,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.db.models import Q
-from core.preMatricula.models import PreMatricula, Maestro
+from core.preMatricula.models import PreMatricula, Maestro, PreMatriculaMaestro
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import PreMatriculaForm
 
@@ -30,18 +31,33 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
     }
 
     def post(self, request, *args, **kwargs):
+
         data = {}
         try:
             action = request.POST['action']
             # action addd para adicionar registro
             if action == 'add':
+                print(request.POST)
                 form_matricula = PreMatriculaForm(request.POST)
-                tipo = request.POST['tipo']
+                profesores = request.POST.getlist('profesor')
+                print('primer profesor', profesores[0])
                 if all([form_matricula.is_valid()]):
                     with transaction.atomic():
                         matricula = form_matricula.save()
-                        data['enviado'] = True
-                        data['nombre'] = matricula.curso.__str__()
+                        error_creando_relacion = False
+                        for profesor in profesores:
+                            profe = Maestro.objects.filter(pk=profesor).first()
+                            if profe:
+                                PreMatriculaMaestro.objects.create(
+                                    maestro=profe, preMatricula=matricula)
+                            else:
+                                error_creando_relacion = True
+                        if error_creando_relacion:
+                            data['enviado'] = False
+                            data['error'] = 'Error creando relacion con matricula, buscando a profesor no encontrado.'
+                        else:
+                            data['enviado'] = True
+                            data['nombre'] = matricula.curso.__str__()
                 else:
                     data['enviado'] = False
                     data['error'] = form_matricula.errors.as_json()
@@ -108,11 +124,40 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
                     pk=int(request.POST['id_edit']))
                 form_matricula = PreMatriculaForm(
                     request.POST, instance=matricula)
+                profesores = request.POST.getlist('profesor')
                 if all([form_matricula.is_valid()]):
                     with transaction.atomic():
                         matricula = form_matricula.save()
-                        data['enviado'] = True
-                        data['nombre'] = matricula.curso.__str__()
+                        relacion_anterior = PreMatriculaMaestro.objects.filter(
+                            preMatricula=matricula)
+                        lista_no_editar = []
+                        # recorrido por la relacion anterior para chequear quien se edito
+                        for relacion in relacion_anterior:
+                            # si la relacion esta en la lista nueva no borrarla
+                            if relacion.pk in profesores:
+                                # agrego a la lista que posteriormente utilizo para comparar
+                                lista_no_editar.append(relacion.pk)
+                            else:
+                                # elimino la relacion porque no esta en la lista nueva
+                                relacion.delete()
+                        error_creando_relacion = False
+                        if not len(lista_no_editar) == len(profesores):
+                            lista_add_relacion = [
+                                n for n in profesores if n not in lista_no_editar]
+                            for maestro in lista_add_relacion:
+                                profe = Maestro.objects.filter(
+                                    pk=maestro).first()
+                                if profe:
+                                    PreMatriculaMaestro.objects.create(
+                                        maestro=profe, preMatricula=matricula)
+                                else:
+                                    error_creando_relacion = True
+                        if error_creando_relacion:
+                            data['enviado'] = False
+                            data['error'] = 'Error creando relacion con matricula, buscando a profesor no encontrado.'
+                        else:
+                            data['enviado'] = True
+                            data['nombre'] = matricula.curso.__str__()
                 else:
                     data['enviado'] = False
                     error = {}
@@ -123,6 +168,7 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
 
             # action delete, eliminar una registro
             elif action == "delete":
+                print(request.POST)
                 try:
                     id_deletes = []
                     error = []
@@ -171,7 +217,7 @@ def buscarMatricula(request):
     if request.method == 'POST':
         id_matricula = int(request.POST['id_matricula'])
         matricula = PreMatricula.objects.filter(pk=id_matricula).first()
-        datos = matricula.datosAllJson()
+        datos = matricula.toJsonForm()
         datos['enviado'] = True
         return JsonResponse(datos, safe=False)
     return JsonResponse([], safe=False)
@@ -185,7 +231,7 @@ def buscarMaestro(request):
         cantidad = int(request.POST['cantidad'])
         print(request.POST)
         maestros = Maestro.objects.filter(
-            Q(instructor__usuario__perfil__nombre__icontains=busqueda) | Q(instructor__usuario__perfil__ci__icontains=busqueda), Q(instructor__usuario__username__icontains=busqueda))[0:cantidad]
+            Q(instructor__usuario__perfil__nombre__icontains=busqueda) | Q(instructor__usuario__perfil__ci__icontains=busqueda) | Q(instructor__usuario__username__icontains=busqueda))[0:cantidad]
         print(maestros)
         resultado = [{
             'id': maestro.pk,

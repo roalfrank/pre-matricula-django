@@ -470,15 +470,23 @@ class PreMatricula(models.Model):
 
     def toJsonForm(self):
         jsonMatricula = model_to_dict(
-            self, exclude=['curso', 'jcb', 'tipo_grupo', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
-        jsonMatricula['estado'] = self.get_estado_display()
-        jsonMatricula['fecha_inicio'] = self.fecha_inicio.strftime(
-            '%d/%m/%Y')
-        jsonMatricula['fecha_fin'] = self.fecha_fin.strftime('%d/%m/%Y')
-        jsonMatricula['nombre_curso'] = self.curso.nombre
-        jsonMatricula['descripcion_curso'] = self.curso.descripcion
-        jsonMatricula['horas'] = self.tipo_grupo.nombre
-        jsonMatricula['nextCurso'] = self.nextCurso.__str__()
+            self, exclude=['likes'])
+        jsonMatricula['jcp'] = self.jcb.jcm.region.jcp.pk
+        jsonMatricula['region'] = self.jcb.jcm.region.pk
+        jsonMatricula['jcm'] = self.jcb.jcm.pk
+        relacionProfesores = PreMatriculaMaestro.objects.filter(
+            preMatricula=self)
+
+        profesores = [{
+            'id': relacion.maestro.pk,
+            'nombre': relacion.maestro.instructor.usuario.perfil.get_nombre(),
+            'ci': relacion.maestro.instructor.usuario.perfil.ci,
+            'foto': relacion.maestro.instructor.usuario.perfil.get_image(),
+            'jcp': relacion.maestro.instructor.jcb.jcm.region.jcp.entidad.nombre,
+            'jcm': relacion.maestro.instructor.jcb.jcm.entidad.nombre,
+            'username': relacion.maestro.instructor.usuario.username,
+            'jcb': relacion.maestro.instructor.jcb.entidad.nombre, } for relacion in relacionProfesores]
+        jsonMatricula['profesores'] = json.dumps(profesores)
         return jsonMatricula
 
     def __str__(self):

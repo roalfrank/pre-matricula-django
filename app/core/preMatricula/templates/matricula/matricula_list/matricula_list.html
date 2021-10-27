@@ -297,13 +297,13 @@
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group mb-0">
           <label for="id_desde" class='mb-0' >Desde</label>
-          <input type="date" class='form-control form-control-sm' name="desde" id="id_desde" ></input>
+          <input type="date" class='form-control form-control-sm' name="fecha_inicio" id="id_desde" ></input>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group mb-0">
           <label for="id_hasta" class='mb-0' >Hasta</label>
-          <input type="date" class='form-control form-control-sm' name="hasta" id="id_hasta" ></input>
+          <input type="date" class='form-control form-control-sm' name="fecha_fin" id="id_hasta" ></input>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
@@ -321,7 +321,7 @@
       <div class="col-12">
         <div class="form-group mb-0">
           <label for="id_profesor" class='mb-0'>Profesores</label>
-         <select class='select2 form-control form-control-sm' name="profesor" id="id_profesor" multiple='multiple'></select>
+         <select class='select2 form-control form-control-sm' name="profesor" id="id_profesor" multiple='multiple' required></select>
         </div>
       </div>
 
@@ -338,26 +338,53 @@
     $('#id_desde').val('');
     $('#id_hasta').val('');
     $('#id_profesor').val('');
+    
+    
     $('#id_jcp').trigger('change');
     let templateSelctProfesor = function(state){
           if (!state.id) {
             return state.text;
           }
-          let templateSelect = `
-          <img src=${state.foto} width='20px' height='20px'>
-          `
           var $state = $(
           `
-          <div class='card m-0 '><div class='card-body m-0 p-1 d-flex justify-content-start align-items-center'>
+          <div class='card m-1 '><div class='card-body m-0 p-2 d-flex justify-content-start align-items-center'>
               <img src=${state.foto} width='40px' height='40px' class='elevation-2 img-circle mr-2'>
-              <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold; position:absolute;top:70%;left:1%;'>${state.username}</small>
+              <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold; position:absolute;top:77%;left:2%;'>${state.username}</small>
               <div class='row'>
                 <div class='col-12'>
                   <div><strong>${state.text}</strong></div>
-                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>CI :${state.ci}</small>
-                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>JCP :${state.jcp}</small>
-                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>JCM :${state.jcm}</small>
-                  <small class='badge badge-info' style='font-size:0.7rem;font-style: italic;font-weight:bold ;'>JCB :${state.jcb}</small>
+                  <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold ;'>CI :${state.ci}</small>
+                  <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold ;'>JCP :${state.jcp}</small>
+                  <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold ;'>JCM :${state.jcm}</small>
+                  <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold ;'>JCB :${state.jcb}</small>
+                  </div>
+                </div>
+              </div>
+          </div>
+          `
+          );
+          return $state;
+    }
+    let templateSelctProfesorYa = function(state){
+          if (!state.id) {
+            return state.text;
+          }
+          var ci = state.ci || state.element.dataset.ci
+          var foto = state.foto || state.element.dataset.foto
+          var jcp = state.jcp || state.element.dataset.jcp
+          var jcm = state.jcm || state.element.dataset.jcm
+          var username = state.username || state.element.dataset.username
+          var $state = $(
+          `
+          <div class='card m-1 '><div class='card-body m-0 p-2 d-flex justify-content-start align-items-center'>
+              <img src=${foto} width='40px' height='40px' class='elevation-2 img-circle mr-2'>
+              <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:bold; position:absolute;top:77%;left:4%;'>${username}</small>
+              <div class='row'>
+                <div class='col-12'>
+                  <div><strong>${state.text}</strong></div>
+                  <small class='badge badge-info ' style='font-size:0.5rem;font-style: italic;font-weight:900 ;letter-spacing: 1px;'>CI :${ci}</small>
+                  <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:900 ;letter-spacing: 1px;'>JCP :${jcp}</small>
+                  <small class='badge badge-info' style='font-size:0.5rem;font-style: italic;font-weight:900 ;letter-spacing: 1px;'>JCM :${jcm}</small>
                   </div>
                 </div>
               </div>
@@ -402,11 +429,12 @@
            },
            cache:true,
         },
-        placeholder:'Ingresa un nombre o carnet identidad....',
+        placeholder:'Ingresa un nombre ó carnet identidad ó usuario ....',
         minimumInputLength:2,
         theme: 'bootstrap4',
         language: 'es',
-        templateResult: templateSelctProfesor
+        templateResult: templateSelctProfesor,
+        templateSelection: templateSelctProfesorYa
       });
       //vinculaciones de las entidades
       $('#id_jcp').on('change', function () {
@@ -765,11 +793,11 @@
                 });
 
                 $("#btnNuevo").on("click", function () {
-                  abrir_modal_nuevo("Nuevo prematricula");
+                  abrir_modal_nuevo("Nueva Matricula");
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
-                  abrir_modal_editar("Editar prematricula", tblListar, element.currentTarget);
+                  abrir_modal_editar("Editar Matricula", tblListar, element.currentTarget);
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
                   delete_registro(tblListar, element.currentTarget);
@@ -893,14 +921,7 @@
       submitHandler: function (form) {
         var parametros = new FormData(form);
         parametros.append('id_edit', id_edit);
-        var maestro = document.getElementById('id_maestro');
-        console.log('valor de maestro',maestro.checked);
-        if (maestro.checked){
-          parametros.append('tipo','PR');
-        }
-        else{
-          parametros.append('tipo','IN');
-        }
+        console.log('estoy en submit');
         submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
           parametros,
           function (data) {
@@ -929,106 +950,57 @@
     //validacion del formulario 
     $("#formRegistro").validate({
       rules: {
-        username: {
-          remote: {
-                      url: "{% url 'prematricula:unique-username' %}",
-                      type: "post",
-                      data: {
-                            'username': function() {
-                              return $("#id_username").val();
-                            },
-                            id_edit:function(){
-                              return id_edit;
-                            },
-                            csrfmiddlewaretoken:function(){
-                                  return $('input[name="csrfmiddlewaretoken"]').val();
-                                },
-                        }
-                  }
-        },
-        nombre: {
-          required: true,
-          maxlength: 100,
-        },
-        direccion: {
+        curso: {
           required: true,
         },
-        ci: {
+        fecha_inicio: {
           required: true,
-          minlength: 11,
-          maxlength: 11,
+        },
+        fecha_fin: {
+          required: true,
+        },
+        capacidad: {
+          required: true,
           number: true,
           digits: true,
         },
-        correo: {
-          email: true,
+        frecuencia: {
+          required: true,
+          number: true,
+          digits: true,
         },
-        telefono: {
-          digits: true
-        },
+        
       },
       messages: {
-        usuario_siscae:{
-          required: "El usuario siscae es necesario",
+        fecha_inicio: {
+          required: 'La fecha es necesaria',
+        },
+        fecha_fin: {
+          required:  'La fecha es necesaria',
+        },
+        curso:{
+          required: "El curso es necesario",
         },
         jcp:{
           required: "El joven club provincial es necesario",
         },
-        region:{
-          required: "La region es necesario",
-        },
-        jcm:{
-          required: "El joven club municipal es necesario",
-        },
         jcb:{
           required: "El joven club base es necesario",
         },
-        telefono: {
-          digits: 'Solo dígitos'
-        },
-        nombre: {
-          required: "El  nombre del prematricula es necesario",
-          maxlength: "No esta permitido mas de 100 caracteres",
-        },
-        apellido1: {
-          required: "El apellido paterno es necesario",
-        },
-        apellido2: {
-          required: "El apellido materno es necesario",
-        },
-        correo: {
-          required: "El correo es necesario",
-          email: 'No es válido el correo',
-        },
-        ocupacion: {
-          required: "La ocupación es necesario",
-        },
-        categoria_ocupacional: {
-          required: "La categoria ocupacional es necesario",
-        },
-        discapacidad: {
-          required: "La discapacidad es necesaria",
-        },
-        ci: {
-          required: "El carnet es necesario",
-          minlength: '11 numeros son necesarios',
-          maxlength: 'Hay más de 11 números',
-          number: 'El carnet es solo números',
+        capacidad: {
+          required: "La capacidad es necesario",
+          number: 'La capacidad es solo números',
           digits: 'Solo números',
         },
-        username: {
-          required: "El usuario es necesario",
-          remote:'Ya existe este usuario.'
+        frecuencia: {
+          required: "La frecuencia es necesario",
+          number: 'La frecuencia es solo números',
+          digits: 'Solo números',
         },
-        direccion: {
-          required: "La dirección es necesaria",
-        },
-        provincia: {
-          required: "La provincia es necesaria"
-        },
-        municipio: {
-          required: "El municipio es necesario"
+        profesor:{
+          required:'Profesores son necesarios'
         }
+        
       },
       errorElement: "span",
       errorPlacement: function (error, element) {
@@ -1054,14 +1026,7 @@
           funcion_vincular_select();
     });
 {% endblock %}
-<!-- esto es por si la fila de la tabla a borrar select tiene un campo de id distinto, en este caso tiene el campo usuario -->
-{% block delete_registro_varios%}
-  select_item.push(data.usuario);
-{% endblock %}
-<!-- esto es por si la fila de la tabla a borrar solo un elemento tiene un campo de id distinto, en este caso tiene el campo usuario -->
-{% block delete_registro%}
-  id: data.usuario,
-{% endblock%}
+
 <!-- personalizar el modal de editar -->
 {% block abrir_modal_editar%}
     //con esto obtengo el tr del boton edit de la tabla
@@ -1073,54 +1038,55 @@
         url: "{% url 'prematricula:matricula-datos'  %}",
         type: 'POST',
         data: {
-            'id_prematricula': data.usuario,
+            'id_matricula': data.id,
             csrfmiddlewaretoken: function () {
             return $('input[name="csrfmiddlewaretoken"]').val();
         },
         },
         dataType: 'json'
         }).done(function (respuesta) {
-          console.log(respuesta);
         if(respuesta['enviado']){
             var elements = document.getElementById("formRegistro").elements;
             for (var i = 0, element; element = elements[i++];) {
                 if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
-                  if(element.name=='maestro'){
-                    var tipo = respuesta['tipo'];
-                    if(tipo=='PR'){
-                      element.checked = true;
-                    }
-                    else{
-                      element.checked = false;
-                    }
+                   if(element.name=='profesor' || element.name =='curso' || element.name =='jcp' || element.name =='region'|| element.name =='jcm'|| element.name =='jcb'){
+                        console.log(element);
                   }
-                  else if(element.name=='is_active'){
-                       element.checked = respuesta[element.name];
-                    }
                   else{
-                    element.value= respuesta[element.name]
-                  }
+                     element.value= respuesta[element.name]
+                   }
             }
             }
+            //manejos de los maestros
+            $('#id_profesor').html('');
+            var searchfield = $('#id_profesor').parent().find('.select2-search__field');
+            searchfield.val("");
+            JSON.parse(respuesta['profesores']).forEach(function(profesor){
+                var option = new Option(profesor.nombre, profesor.id, true, true);
+                option.dataset.ci = profesor.ci;
+                option.dataset.foto = profesor.foto;
+                option.dataset.jcp = profesor.jcp;
+                option.dataset.jcm = profesor.jcm;
+                option.dataset.username = profesor.username;
+                option.dataset.jcb = profesor.jcb;
+                $('#id_profesor').append(option).trigger('change');
+            });
             //aqui inicializo a todos los select
-            $('#id_jcp').val(respuesta['id_jcp'].toString()).trigger("change");
+            $('#id_curso').val(respuesta['curso'].toString()).trigger("change");
+            $('#id_jcp').val(respuesta['jcp'].toString()).trigger("change");
             setTimeout(() => {
-               $('#id_region').val(respuesta['id_region'].toString()).trigger("change");
+               $('#id_region').val(respuesta['region'].toString()).trigger("change");
             }, 100);
             setTimeout(() => {
-               $('#id_jcm').val(respuesta['id_jcm'].toString()).trigger("change");
+               $('#id_jcm').val(respuesta['jcm'].toString()).trigger("change");
             }, 100);
             setTimeout(() => {
                $('#id_jcb').val(respuesta['jcb'].toString()).trigger("change");
             }, 100);
-            $('#id_provincia').val(respuesta['provincia'].toString()).trigger("change");
-            setTimeout(() => {
-               $('#id_municipio').val(respuesta['municipio'].toString()).trigger("change");
-            }, 100);
+            
             $('input[name="action"]').val("edit");
-            id_edit = data.usuario;
-            $('#id_jcb').val(respuesta['jcb'].toString()).trigger("change");
-            $('#id_cargo').val(respuesta['cargo'].toString()).trigger("change");
+            id_edit = data.id;
+            //$('#id_jcb').val(respuesta['jcb'].toString()).trigger("change");
             modal_title.find('span').html(titulo);
             modal_title.find('i').removeClass().addClass('fa fa-edit');
             $('#modal-nuevo').modal('show');
@@ -1133,9 +1099,8 @@
 {% endblock %}
 <!-- esto es bloque para agregar mas funciones para inicializar los datos cuando se esconde el modal del registro -->
 {% block on_hidden_modal_extra %}
-  $('#id_provincia').val('').trigger("change");
-  //$('#id_municipio').html('');
+  $('#id_profesor').val(null).trigger('change');
   $('#id_jcb').val('').trigger("change");
-  $('#id_cargo').val('').trigger("change");
   $('#id_jcp').val('').trigger("change");
+  $('#id_curso').val('').trigger("change");
 {% endblock %}
