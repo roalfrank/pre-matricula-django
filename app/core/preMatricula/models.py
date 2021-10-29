@@ -68,7 +68,7 @@ class JCP(models.Model):
         Entidad, verbose_name="Entidad", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.entidad} - ({self.codigo_jcp})"
+        return f"{self.entidad}"
 
     def toJson(self):
         item = self.entidad.toJson()
@@ -146,6 +146,43 @@ class Cargo(models.Model):
         return item
 
 
+class Gestor(models.Model):
+    usuario = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
+    jcm = models.ForeignKey(JCM, on_delete=models.CASCADE,
+                            verbose_name='Joven Club Municipal')
+
+    def __str__(self):
+        return self.usuario.perfil.get_nombre()
+
+    def toJson(self):
+        gestor = model_to_dict(self, fields=['usuario'])
+        gestor['id_gestor'] = self.pk
+        gestor['nombre_usuario'] = self.usuario.perfil.get_nombre()
+        gestor['username'] = self.usuario.username
+        gestor['provincia'] = self.usuario.perfil.municipio.provincia.nombre
+        gestor['ci'] = self.usuario.perfil.ci
+        gestor['correo'] = self.usuario.perfil.correo
+        gestor['jcm'] = self.jcm.entidad.nombre
+        print('jcm', self.jcm.entidad.nombre)
+        gestor['image_user'] = self.usuario.perfil.get_image()
+        gestor['tipo'] = self.usuario.perfil.tipo
+        if self.usuario.perfil.tipo == 'PR':
+            gestor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
+        else:
+            gestor['icono'] = ''
+        return gestor
+
+    def datosAllJson(self):
+        gestor = model_to_dict(self)
+        gestor.update(self.usuario.perfil.toJson())
+        gestor['nombre_usuario'] = self.usuario.perfil.nombre
+        gestor['username'] = self.usuario.username
+        gestor['id_jcp'] = self.jcm.region.jcp.id
+        gestor['id_region'] = self.jcm.region.id
+        gestor['id_jcm'] = self.jcm.id
+        return gestor
+# fin del gestor
 class Instructor(models.Model):
 
     usuario_siscae = models.CharField(
@@ -160,7 +197,7 @@ class Instructor(models.Model):
     def __str__(self):
         return f"{self.usuario.username}-{self.usuario.perfil.nombre}"
 
-    def toJson(self):
+    def toJson(self, user=None):
         instrutor = model_to_dict(self, fields=['usuario'])
         instrutor['nombre_usuario'] = self.usuario.perfil.get_nombre()
         instrutor['username'] = self.usuario.username
@@ -169,10 +206,16 @@ class Instructor(models.Model):
         instrutor['jcb'] = self.jcb.entidad.nombre
         instrutor['image_user'] = self.usuario.perfil.get_image()
         instrutor['tipo'] = self.usuario.perfil.tipo
+        instrutor['esGestor'] = False
         if self.usuario.perfil.tipo == 'PR':
             instrutor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
         else:
             instrutor['icono'] = ''
+        if not user == None:
+            gestor = Gestor.objects.filter(usuario__pk=user).first()
+            if gestor:
+               if gestor.jcm == self.jcb.jcm:
+                   instrutor['esGestor'] = True
         return instrutor
 
     def datosAllJson(self):
@@ -294,43 +337,7 @@ class EstudianteCursoSiscae(models.Model):
 # Gestor de JCM es un usuario
 
 
-class Gestor(models.Model):
-    usuario = models.OneToOneField(
-        User, on_delete=models.CASCADE, primary_key=True)
-    jcm = models.ForeignKey(JCM, on_delete=models.CASCADE,
-                            verbose_name='Joven Club Municipal')
 
-    def __str__(self):
-        return self.usuario.perfil.get_nombre()
-
-    def toJson(self):
-        gestor = model_to_dict(self, fields=['usuario'])
-        gestor['id_gestor'] = self.pk
-        gestor['nombre_usuario'] = self.usuario.perfil.get_nombre()
-        gestor['username'] = self.usuario.username
-        gestor['provincia'] = self.usuario.perfil.municipio.provincia.nombre
-        gestor['ci'] = self.usuario.perfil.ci
-        gestor['correo'] = self.usuario.perfil.correo
-        gestor['jcm'] = self.jcm.entidad.nombre
-        print('jcm', self.jcm.entidad.nombre)
-        gestor['image_user'] = self.usuario.perfil.get_image()
-        gestor['tipo'] = self.usuario.perfil.tipo
-        if self.usuario.perfil.tipo == 'PR':
-            gestor['icono'] = '<i class="fas fa-graduation-cap" aria-hidden="true"></i>'
-        else:
-            gestor['icono'] = ''
-        return gestor
-
-    def datosAllJson(self):
-        gestor = model_to_dict(self)
-        gestor.update(self.usuario.perfil.toJson())
-        gestor['nombre_usuario'] = self.usuario.perfil.nombre
-        gestor['username'] = self.usuario.username
-        gestor['id_jcp'] = self.jcm.region.jcp.id
-        gestor['id_region'] = self.jcm.region.id
-        gestor['id_jcm'] = self.jcm.id
-        return gestor
-# fin del gestor
 
 # relacion Mucho a Mucho de Gesto y estudiante , un gestor puede crear muchas estudiantes
 
@@ -434,7 +441,7 @@ class PreMatricula(models.Model):
         User, related_name='likes', blank=True, default=None)
     fecha_creado = models.DateTimeField(auto_now=True)
 
-    def toJson(self):
+    def toJson(self, user=None):
         jsonMatricula = model_to_dict(
             self, exclude=['curso', 'jcb', 'likes', 'modalidad', 'fecha_inicio', 'fecha_fin', 'estado'])
         jsonMatricula['estado'] = self.get_estado_display()
@@ -465,7 +472,27 @@ class PreMatricula(models.Model):
         jsonMatricula['jcp'] = self.jcb.jcm.region.jcp.entidad.nombre
         jsonMatricula['cantidad_estudiante'] = self.cantidadEstudiante()
         jsonMatricula['descripcion_curso'] = self.descripcionCorta()
+        jsonMatricula['esMaestro'] = False
+        jsonMatricula['esGestor'] = False
+        print('desde modelo , usuario dado como parametro:', user)
+        if not user == None:
+            lista_maestros_usuarios_pk = [n['maestro__instructor__usuario__pk'] for n in self.prematriculamaestro_set.all().values(
+                'maestro__instructor__usuario__pk')]
+            print('listado de maestros :', lista_maestros_usuarios_pk)
+            if user in lista_maestros_usuarios_pk:
+                print('dentro de si es maestro')
+                jsonMatricula['esMaestro'] = True
+            id_municipio = self.jcb.jcm.entidad.municipio.pk
 
+            listado_gestores_municipio = [n['usuario__pk'] for n in Gestor.objects.filter(
+                jcm__entidad__municipio__pk=id_municipio).values('usuario__pk')]
+            print('listado de gestores :', Gestor.objects.filter(
+                jcm__entidad__municipio__pk=id_municipio).values('usuario__pk'))
+            print(type(listado_gestores_municipio[0]))
+            print(type(user))
+            if user in listado_gestores_municipio:
+                jsonMatricula['esGestor'] = True
+        print('es maestro', jsonMatricula['esMaestro'])
         return jsonMatricula
 
     def toJsonForm(self):

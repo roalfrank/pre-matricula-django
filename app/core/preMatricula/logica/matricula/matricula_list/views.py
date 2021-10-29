@@ -66,38 +66,54 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
                 limite = int(request.POST['limite'])
                 inicio = int(request.POST['inicio'])
                 busqueda = request.POST['busqueda']
+                lista_id_maestros = []
                 print(busqueda)
                 if busqueda != '':
                     lista_filtro = {
-                        'nombre': 'curso__nombre__icontains',
+                        'curso': 'curso__pk',
                         'jcp': 'jcb__jcm__region__jcp__pk',
                         'region': 'jcb__jcm__region__pk',
                         'jcm': 'jcb__jcm__pk',
                         'jcb': 'jcb__pk',
                         'horas': 'curso__duracion',
                         'rango': 'fecha_inicio__range',
-                        'estado': 'estado'
-                    }
+                        'estado': 'estado',
+                        'profesor': 'prematriculamaestro__maestro__pk__in'}
                     busqueda_json = json.loads(busqueda)
                     filtros = busqueda_json['filtro']
                     condicion = Q()
                     # contador para limitar el for, solo se ejecute una ves si encuentra desde o hasta.
                     contador_solo_desde = 0
                     for key, value in filtros.items():
+                        # si uno de los valores de busqueda es desde o hasta
                         if (key == 'desde' or key == 'hasta'):
+                            # si contador es 0 - solo se hace una sola busqueda de fecha , asi evitamos volver a buscar
                             if contador_solo_desde == 0:
+                                # rango de fecha en una lista para pasarla como parametro a la consulta
                                 rango_fecha = [
                                     filtros['desde'], filtros['hasta']]
+                                # se realiza la condicion de busqueda para el rangp se  fecha con el atributo de  range
                                 condicion.add(
                                     Q(**{lista_filtro['rango']: rango_fecha}), Q.AND)
+                                # cambio el contador para que no se realize mas, esto es solo una vez
                                 contador_solo_desde = 1
                         else:
+                            # tengo que chequear el parametro de busqueda estado para condicionarlo
                             if key == 'estado':
+                                # si es diferente a todos , pues realizo la busqueda
                                 if value != 'TD':
                                     condicion.add(
                                         Q(**{lista_filtro[key]: value}), Q.AND)
+                            elif key == 'profesor':
+                                lista_id_maestros = []
+                                if type(value) == list:
+                                    lista_id_maestros = [int(n) for n in value]
+                                else:
+                                    lista_id_maestros.append(int(value))
+                                # condicion.add(
+                                #     Q(**{'prematriculamaestro__maestro__pk__in': lista_id_maestros}), Q.AND)
                             else:
-                                print('si estoy entrando')
+                                # aqui ya realizo las condiciones normales para todos los parametros de busquedas
                                 condicion.add(
                                     Q(**{lista_filtro[key]: value}), Q.AND)
                     # si no esta estado como parametro de busqueda , entonces filtro por abierto
@@ -106,14 +122,23 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
                     except:
                         condicion.add(
                             Q(**{lista_filtro['estado']: 'AB'}), Q.AND)
+
                     matriculas = PreMatricula.objects.filter(condicion)
                 else:
                     matriculas = PreMatricula.objects.filter(estado='AB')
-
-                lista = [i.toJson()
-                         for i in matriculas[inicio:inicio+limite]]
+                # lista que tiene ya formateados a json los datos a buscar
+                lista = []
+                for m in matriculas[inicio:inicio+limite]:
+                    if len(lista_id_maestros) >= 1:
+                        lista_pk_profesores_m = [
+                            maestro['maestro__pk'] for maestro in m.prematriculamaestro_set.all().values('maestro__pk')]
+                        if lista_pk_profesores_m == lista_id_maestros:
+                            lista.append(m.toJson(request.user.pk))
+                    else:
+                        lista.append(m.toJson(request.user.pk))
+                # formatos que es necesario para el datatble
                 data = {
-                    'total': matriculas.count(),
+                    'total': len(lista),
                     'lista': lista
                 }
                 respuesta = JsonResponse(data, safe=False)

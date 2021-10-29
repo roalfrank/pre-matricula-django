@@ -30,7 +30,12 @@ def enrutadorSistema(request):
         return redirect(reverse("sitio:panel-estudiante"))
     elif group.name == "Gestor":
         return redirect(reverse("sitio:panel-gestor"))
+    elif group.name == "Instructor":
+        return redirect(reverse("sitio:panel-gestor"))
+    elif group.name == "Maestro":
+        return redirect(reverse("sitio:panel-gestor"))
     else:
+
         return HttpResponseForbidden()
 
 

@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+from app.core.preMatricula.models import Gestor
 from core.preMatricula.models import Instructor, Maestro
 from core.preMatricula.logica.estudiante.estudiante.form import UserCrearAutomaticoForm
 from core.user.models import Perfil
@@ -43,11 +44,11 @@ class InstructorDetailView(DetailView):
 class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
     #model = Instructor
     template_name = "instructor/instructor/instructor_list.html"
-    permiso_vista = 'view_intructor'
+    permiso_vista = 'view_instructor'
     permiso_crud = {
         'add': 'add_intructor',
-        'change': 'change_intructor',
-        'delete': 'delete_intructor',
+        'change': 'change_instructor',
+        'delete': 'delete_instructor',
     }
 
     def post(self, request, *args, **kwargs):
@@ -123,7 +124,7 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                             usuario__username__icontains=busqueda) | Q(usuario__perfil__ci__icontains=busqueda) | Q(usuario__perfil__correo__icontains=busqueda)
                     )
 
-                lista = [i.toJson()
+                lista = [i.toJson(request.user.pk)
                          for i in instructors[inicio:inicio+limite]]
                 data = {
                     'total': instructors.count(),
@@ -229,6 +230,9 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
         context['form_perfil'] = UserPerfilRegistrationForm()
         context['form_instructor'] = InstructorForm()
         context['form_user'] = UserCrearAutomaticoForm()
+        gestor = Gestor.objects.filter(usuario=self.request.user).first()
+        if gestor:
+            context['municipio_gestor'] = gestor.jcm.pk
         return context
 
 

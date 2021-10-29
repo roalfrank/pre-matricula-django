@@ -143,6 +143,8 @@
   <th ></th>
   <th ></th>
   <th ></th>
+  <th ></th>
+  <th ></th>
 
   <!-- {% if perms.preMatricula.view_prematricula %} -->
   <th style="width:5%;">Acción</th>
@@ -165,12 +167,12 @@
             <div class="card-body p-2">
               <form action="" id='form_busqueda'>
                 <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="form-group m-0">
-                            <label for="inputNombre" class='m-0'>Nombre:</label>
-                            <input name="nombre" type="text"class="form-control form-control-sm" id="inputNombre">
-                        </div>
+                  <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="form-group mb-0">
+                       <label for="id_curso_busqueda" class='m-0'>Curso:</label>
+                      {{form_matricula.curso|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'|attr:'name:"nombre"'|attr:'id:id_curso_busqueda'}}
                     </div>
+                  </div>
                     <div class="col-12 col-sm-6 col-lg-4">
                       <div class="form-group m-0">
                         <label for="id_jcp_busqueda" class='m-0'>JCC Provincial</label>
@@ -218,19 +220,25 @@
                         <input type="date" class='form-control form-control-sm' name="hasta" id="id_hasta_busqueda" ></input>
                       </div>
                     </div>
-                     {% if not request.user|has_group:"Estudiante" %} 
-                      <div class="col-12 col-sm-6 col-lg-4">
-                        <div class="form-group m-0">
-                          <label for="id_estado_busqueda" class='m-0' >Estado</label>
-                            <select class='select2 form-control form-control-sm' name="estado" autocomplete="off" class="form-check-input" id="id_estado_busqueda" >
-                              <option value='TD'>todos</option>
-                              <option value='AB'>abierto</option>
-                              <option value='CE'>cerrado</option>
-                              <option value='PR'>en proceso</option>
-                            </select></span>
-                        </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_estado_busqueda" class='m-0' >Estado</label>
+                          <select class='select2 form-control form-control-sm' name="estado" autocomplete="off" class="form-check-input" id="id_estado_busqueda" >
+                            <option value='TD'>todos</option>
+                            <option value='AB'>abierto</option>
+                            <option value='CE'>cerrado</option>
+                            <option value='PR'>en proceso</option>
+                          </select></span>
                       </div>
-                     {% endif %}
+                    </div>
+                     {% if not request.user|has_group:"Estudiante" %} 
+                     <div class="col-12">
+                      <div class="form-group mb-0">
+                        <label for="id_profesor_busqueda" class='mb-0'>Profesores</label>
+                      <select class='select2 form-control form-control-sm' name="profesor" id="id_profesor_busqueda" multiple='multiple' required aria-placeholder="sdasdasd"></select>
+                      </div>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
               <!-- /.card-body -->
@@ -337,8 +345,12 @@
     $('#id_hasta_busqueda').val('');
     $('#id_desde').val('');
     $('#id_hasta').val('');
-    $('#id_profesor').val('');
-    
+    $('#id_profesor').val(null).trigger('change');
+    $('#id_profesor_busqueda').val(null).trigger('change');
+    $('#id_jcb').val('').trigger("change");
+    $('#id_jcp').val('').trigger("change");
+    $('#id_curso').val('').trigger("change");
+    $('#id_curso_busqueda').val('').trigger("change");
     
     $('#id_jcp').trigger('change');
     let templateSelctProfesor = function(state){
@@ -427,7 +439,42 @@
              });
              return {results}
            },
-           cache:true,
+        },
+        placeholder:'Ingresa un nombre ó carnet identidad ó usuario ....',
+        minimumInputLength:2,
+        theme: 'bootstrap4',
+        language: 'es',
+        templateResult: templateSelctProfesor,
+        templateSelection: templateSelctProfesorYa
+      });
+      $('#id_profesor_busqueda').select2({
+        ajax:{
+           type:'POST',
+           url:'{% url "prematricula:buscar-maestro" %}',
+           dataType:'json',
+           data: function (params){
+               return {
+                 busqueda: params.term,
+                 cantidad: 5,
+                 csrfmiddlewaretoken:'{{csrf_token}}'
+             }
+           },
+           processResults: function (data){
+             var results = [];
+             $.each(data, function(index,item){
+                results.push({
+                  id: item.id,
+                  text: item.nombre,
+                  foto:item.foto,
+                  ci:item.ci,
+                  jcp:item.jcp,
+                  jcm:item.jcm,
+                  jcb:item.jcb,
+                  username:item.username,
+                });
+             });
+             return {results}
+           },
         },
         placeholder:'Ingresa un nombre ó carnet identidad ó usuario ....',
         minimumInputLength:2,
@@ -516,6 +563,8 @@
         theme: 'bootstrap4',
         language: 'es',
       });
+      //select profesores en busqueda
+     
      $('#id_desde_busqueda').on('change',function(e){
        $('#id_hasta_busqueda').attr('min',$(this).val());
      });
@@ -675,6 +724,12 @@
         {
           "data": "nextCurso_id"
         },
+        {
+          "data": "esMaestro"
+        },
+        {
+          "data": "esGestor"
+        },
         //{% if perms.preMatricula.view_prematricula %}
         {
           "data": 'jcb'
@@ -754,7 +809,7 @@
           }
         },
         {
-          targets: [1,2,3, 4, 5, 6,7,8,9,10,11,12,13,14,15,16],
+          targets: [1,2,3, 4, 5, 6,7,8,9,10,11,12,13,14,15,16,17,18],
           visible: false,
         },
         {
@@ -768,15 +823,29 @@
             buttons =
               '<a href="/sistema/matricula-pagina/'+ row.id+'/" rel="view" class="text-success" data-toggle="tooltip" title="Ver prematricula"><i class="fa fa-search" aria-hidden="true"></i></a> ';
             //{%endif%}
-              //{% if perms.preMatricula.change_prematricula%}
-            buttons +=
-              '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar prematricula"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+            //{% if perms.preMatricula.change_prematricula%}
+                 //{% if request.user|has_group:"Admin" %}
+                      buttons +=
+                        '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar prematricula"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+                 //{% else %}  
+                    if(row.esMaestro || row.esGestor){
+                      buttons +=
+                        '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar prematricula"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+                    }
+                 //{% endif %}
             //{%endif%}
             //{% if perms.preMatricula.delete_prematricula%} 
-            buttons +=
-              '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar prematricula"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+                  //{% if request.user|has_group:"Admin" %}
+                        buttons +=
+                         '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar prematricula"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+                 //{% else %}  
+                    if(row.esMaestro || row.esGestor){
+                        buttons +=
+                          '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar prematricula"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+                    }
+                 //{% endif %}
+            
             //{%endif%}
-            console.log(buttons);
             return buttons
           }
         },
@@ -797,6 +866,7 @@
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+                  element.preventDefault();
                   abrir_modal_editar("Editar Matricula", tblListar, element.currentTarget);
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
@@ -854,7 +924,6 @@
      //boton de busquar 
      $('#buscar_btn').on('click',function(e){
       e.preventDefault();
-      console.log($('#id_desde_busqueda').val());
       var valido_fecha = true;
       if($('#id_desde_busqueda').val()!='' && $('#id_hasta_busqueda').val()!=''){
           valido_fecha=true;
@@ -878,18 +947,36 @@
         //recorro cada elemento y si tiene datos lo incorporo a la lista
         for (var i = 0, element; element = elements[i++];) {
           if(element.value!=''){
+            console.log(element);
             dict_busqueda[element.name]=element.value;
             if(element.nodeName=='SELECT'){
-              dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
+              if(element.hasAttribute('multiple')){
+                dict_busqueda[element.name]=$(element).val();
+                let collection = element.selectedOptions;
+                var output='"';
+                for (let i=0; i<collection.length; i++) {
+                  output += collection[i].label;
+
+                  if (i != (collection.length-1) ) {
+                    output += ", ";
+                  } 
+                }
+                output+='"'
+                dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+output+'</strong></span>';
+              }
+              else{
+                dict_busqueda[element.name]=element.value;
+                dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
+              }
             }
             else{
+              dict_busqueda[element.name]=element.value;
               dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
             }
           }
         }
         //si la lista no esta vacia procedo a realizar la busqueda
         if(Object.keys(dict_busqueda).length>0){
-          console.log(dict_busqueda);
           var dict_busqueda_json =JSON.stringify({
                       filtro:dict_busqueda
                       }); 
@@ -921,7 +1008,6 @@
       submitHandler: function (form) {
         var parametros = new FormData(form);
         parametros.append('id_edit', id_edit);
-        console.log('estoy en submit');
         submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
           parametros,
           function (data) {
@@ -1050,7 +1136,6 @@
             for (var i = 0, element; element = elements[i++];) {
                 if(element.type != 'button' && element.type != 'hidden' && element.type != 'submit'){
                    if(element.name=='profesor' || element.name =='curso' || element.name =='jcp' || element.name =='region'|| element.name =='jcm'|| element.name =='jcb'){
-                        console.log(element);
                   }
                   else{
                      element.value= respuesta[element.name]
@@ -1103,4 +1188,5 @@
   $('#id_jcb').val('').trigger("change");
   $('#id_jcp').val('').trigger("change");
   $('#id_curso').val('').trigger("change");
+  $('#id_curso_busqueda').val('').trigger("change");
 {% endblock %}
