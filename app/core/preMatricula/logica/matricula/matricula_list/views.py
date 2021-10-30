@@ -7,7 +7,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.db.models import Q
-from core.preMatricula.models import PreMatricula, Maestro, PreMatriculaMaestro
+from core.preMatricula.models import PreMatricula, Maestro, PreMatriculaMaestro, Gestor
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import PreMatriculaForm
 
@@ -233,6 +233,32 @@ class MatriculaView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixi
         context['title'] = "Lista de curso a matricular"
         context['icono_titulo'] = "fas fa-tachometer-alt"
         context['form_matricula'] = PreMatriculaForm()
+        gestor = Gestor.objects.filter(usuario=self.request.user).first()
+        maestro = Maestro.objects.filter(
+            instructor__usuario=self.request.user).first()
+        context['municipio_gestor'] = ''
+        context['region_gestor'] = ''
+        context['provincia_gestor'] = ''
+        context['datos_maestro'] = ''
+        if gestor:
+            context['municipio_gestor'] = gestor.jcm.pk
+            context['region_gestor'] = gestor.jcm.region.pk
+            context['provincia_gestor'] = gestor.jcm.region.jcp.pk
+        elif maestro:
+            context['municipio_gestor'] = maestro.instructor.jcb.jcm.pk
+            context['region_gestor'] = maestro.instructor.jcb.jcm.region.pk
+            context['provincia_gestor'] = maestro.instructor.jcb.jcm.region.jcp.pk
+            context['datos_maestro'] = {
+                'id': maestro.pk,
+                'nombre': maestro.instructor.usuario.perfil.get_nombre(),
+                'ci': maestro.instructor.usuario.perfil.ci,
+                'foto': maestro.instructor.usuario.perfil.get_image(),
+                'jcp': maestro.instructor.jcb.jcm.region.jcp.entidad.nombre,
+                'jcm': maestro.instructor.jcb.jcm.entidad.nombre,
+                'username': maestro.instructor.usuario.username,
+                'jcb': maestro.instructor.jcb.entidad.nombre,
+            }
+
         return context
 
 

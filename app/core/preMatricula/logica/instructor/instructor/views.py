@@ -7,8 +7,7 @@ from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
-from app.core.preMatricula.models import Gestor
-from core.preMatricula.models import Instructor, Maestro
+from core.preMatricula.models import Instructor, Maestro, Gestor
 from core.preMatricula.logica.estudiante.estudiante.form import UserCrearAutomaticoForm
 from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
@@ -46,7 +45,7 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
     template_name = "instructor/instructor/instructor_list.html"
     permiso_vista = 'view_instructor'
     permiso_crud = {
-        'add': 'add_intructor',
+        'add': 'add_instructor',
         'change': 'change_instructor',
         'delete': 'delete_instructor',
     }
@@ -57,12 +56,14 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
             action = request.POST['action']
             # action addd para adicionar registro
             if action == 'add':
+                print('comprobando que llega aqui en add instructor')
                 form_user = UserCrearAutomaticoForm(request.POST)
                 form_perfil = UserPerfilRegistrationForm(request.POST)
                 form_instructor = InstructorForm(request.POST)
                 tipo = request.POST['tipo']
                 if all([form_user.is_valid(), form_instructor.is_valid(), form_perfil.is_valid()]):
                     with transaction.atomic():
+                        print('entro en formulario valido')
                         user = form_user.save(commit=False)
                         user.save()
                         grupo_instructor = Group.objects.filter(
@@ -85,7 +86,19 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                         data['nombre'] = perfil.nombre
                 else:
                     data['enviado'] = False
-                    data['error'] = form_perfil.errors.as_json()
+                    print('entro en erorr de formulario valido')
+                    error = {}
+                    if not form_user.is_valid():
+                        print('error formulario user')
+                        error.update(form_user.errors.get_json_data())
+                    elif not form_instructor.is_valid():
+                        print('error formulario instructor')
+                        error.update(form_instructor.errors.get_json_data())
+                    elif not form_perfil.is_valid():
+                        print('error formulario perfil')
+                        error.update(form_perfil.errors.get_json_data())
+                    print(error)
+                    data['error'] = json.dumps(error)
 
             elif action == "cargarDatos":
                 limite = int(request.POST['limite'])
@@ -231,8 +244,13 @@ class InstructorView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
         context['form_instructor'] = InstructorForm()
         context['form_user'] = UserCrearAutomaticoForm()
         gestor = Gestor.objects.filter(usuario=self.request.user).first()
+        context['municipio_gestor'] = ''
+        context['region_gestor'] = ''
+        context['provincia_gestor'] = ''
         if gestor:
             context['municipio_gestor'] = gestor.jcm.pk
+            context['region_gestor'] = gestor.jcm.region.pk
+            context['provincia_gestor'] = gestor.jcm.region.jcp.pk
         return context
 
 

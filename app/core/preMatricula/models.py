@@ -85,7 +85,7 @@ class Region(models.Model):
         JCP, verbose_name="Joven Club Provincial", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Region-{self.nombre}-({self.jcp.entidad.nombre})"
+        return f"{self.nombre}-({self.jcp.entidad.nombre})"
 
     def toJson(self):
         item = model_to_dict(self)
@@ -183,6 +183,8 @@ class Gestor(models.Model):
         gestor['id_jcm'] = self.jcm.id
         return gestor
 # fin del gestor
+
+
 class Instructor(models.Model):
 
     usuario_siscae = models.CharField(
@@ -214,8 +216,8 @@ class Instructor(models.Model):
         if not user == None:
             gestor = Gestor.objects.filter(usuario__pk=user).first()
             if gestor:
-               if gestor.jcm == self.jcb.jcm:
-                   instrutor['esGestor'] = True
+                if gestor.jcm == self.jcb.jcm:
+                    instrutor['esGestor'] = True
         return instrutor
 
     def datosAllJson(self):
@@ -335,8 +337,6 @@ class EstudianteCursoSiscae(models.Model):
         return self.estudiante+'-' + self.cursoSiscae
 
 # Gestor de JCM es un usuario
-
-
 
 
 # relacion Mucho a Mucho de Gesto y estudiante , un gestor puede crear muchas estudiantes

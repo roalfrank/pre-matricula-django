@@ -1,9 +1,19 @@
-{% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}
+{% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}{% load filterCustom %}
 {% block head_list %}
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
- 
+ /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
   @media (max-width:674px){
       #resumen_busqueda{
         margin: 0 auto;
@@ -88,9 +98,7 @@
   <th >Provincia</th>
   <th >Correo</th>
   <th >image</th>
-  <!-- {% if perms.user.change_estudiante or perms.user.delete_estudiante %} -->
   <th style="width:5%;">Acción</th>
-  <!-- {%endif%} -->
 </tr>
 {% endblock %}
 
@@ -197,34 +205,45 @@
           {{form_perfil.apellido2|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-    </div>
-    <div class="row">
       <div class="col-4">
         <div class="form-group">
-          {{form_perfil.ci.label_tag}}
+          <label for="id_ci">Carnet Identidad:<small id='contenedor_contador_ci' class='ml-1' style="font-weight: 800;"><span id='cant_numero_ci'>0</span>/11</small></label>
           {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
       <div class="col-4">
         <div class="form-group">
-          {{form_user.username.label_tag}}
-          {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Usuario</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
-      </div>
-      <div class="col-4">
-        <div class="form-group">
-          {{form_perfil.correo.label_tag}}
-          {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
     </div>
-    <div class="row">
       <div class="col-4">
         <div class="form-group">
-          {{form_perfil.telefono.label_tag}}
-          {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Correo</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text">@</span>
+            </div>
+            {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
-      </div>
+    </div>
+    <div class="col-4">
+        <div class="form-group">
+          <label>Telefono</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+            </div>
+            {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
+        </div>
+    </div>
       <div class="col-4">
         <div class="form-group">
           {{form_perfil.provincia.label_tag}}
@@ -238,8 +257,6 @@
             </select>
         </div>
     </div>
-    </div>
-    <div class="row">
       <div class="col-8">
         <div class="form-group">
           {{form_perfil.direccion.label_tag}}
@@ -252,8 +269,6 @@
           {{form_estudiante.usuario_sisce|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
         </div>
       </div>
-    </div>
-    <div class="row">
       <div class="col-4">
         <div class="form-group">
           {{form_estudiante.ocupacion.label_tag}}
@@ -272,14 +287,14 @@
           {{form_estudiante.discapacidad|add_class:'form-control form-control-sm '|attr:'autocomplete:off'}}
         </div>
       </div>
-    </div>
-    {% if request.user.is_staff %}
+    {% if request.user|has_group:"Admin" or request.user|has_group:"Gestor" %}
     <div class="row justify-content-end">
         <div class="form-group mb-1 mr-1">
           <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
         </div>
     </div>
     {% endif %}
+    </div>
 
 {%endblock%}
 
@@ -288,6 +303,25 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
+    $('#id_ci').keyup(function(event){
+      let cant = this.value.length;
+      if(cant<11){
+        $('#contenedor_contador_ci').removeClass('text-success');
+        $('#contenedor_contador_ci').removeClass('text-danger');
+        $('#contenedor_contador_ci').addClass('text-info');
+      }
+      else if(cant==11){
+        $('#contenedor_contador_ci').removeClass('text-info');
+        $('#contenedor_contador_ci').removeClass('text-danger');
+        $('#contenedor_contador_ci').addClass('text-success');
+      }
+      else{
+        $('#contenedor_contador_ci').removeClass('text-success');
+        $('#contenedor_contador_ci').removeClass('text-info');
+        $('#contenedor_contador_ci').addClass('text-danger');
+      }
+       $('#cant_numero_ci').html(cant);
+    });
     funcion_vincular_select= function(){
       var select_municipio = $('#id_municipio');
       $('.select2').select2({
@@ -405,16 +439,19 @@
         {
           "data": "image_user"
         },
-        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
-          "data": "nombre"
+          "data": "usuario"
         }
-        //{%endif%}
       ],
       columnDefs: [{
           targets: 0,
           responsivePriority: 1 ,
           orderable: false,
+          //{% if perms.preMatricula.delete_instructor %}
+             visible: true,
+          //{% else %}
+            visible: false,
+          //{% endif %}
           class: 'text-center',
           render: function (data, type, row) {
             var buttons =
@@ -463,7 +500,7 @@
                           </div>
                            <div class='col-xl-2 d-none d-xl-block '>
                             <dl>
-                              <dt>JCCB</dt>
+                              <dt>Provincia</dt>
                               <dd>${row.provincia}</dd>
                             </dl>
                           </div>
@@ -476,7 +513,6 @@
             return buttons
           }
         },
-        //{% if perms.user.change_estudiante or perms.user.delete_estudiante %}
         {
           targets: [-1],
           responsivePriority: 3,
@@ -484,22 +520,21 @@
           orderable: false,
           render: function (data, type, row) {
             var buttons = ''
+            //{% if perms.preMatricula.view_estudiante%}
             buttons =
-            //{% if perms.user.view_estudiante%}
               '<a href="#" rel="view" class="text-success" data-toggle="tooltip" title="Ver Estudiante"><i class="fa fa-search" aria-hidden="true"></i></a> ';
             //{%endif%}
-              //{% if perms.user.change_estudiante%}
+              //{% if perms.preMatricula.change_estudiante%}
             buttons +=
               '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar Estudiante"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
             //{%endif%}
-            //{% if perms.user.delete_estudiante%} 
+            //{% if perms.preMatricula.delete_estudiante%} 
             buttons +=
               '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar Estudiante"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
             //{%endif%}
             return buttons
           }
         },
-        //{%endif%}
 
       ],
       order: [
@@ -527,7 +562,7 @@
     });//fin de DataTable server
     
     //agregamos los botones a la tabla
-    $('#data_filter').html('<!-- {% if perms.user.add_estudiante%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.user.delete_estudiante%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
+    $('#data_filter').html('<!-- {% if perms.preMatricula.add_estudiante%} --><button type="button" class="btn btn-default btn-xs" id="btnNuevo"><span>Nuevo Registro</span><i class="fa fa-plus ml-2"></i></button><!-- {%endif%}  {% if perms.preMatricula.delete_estudiante%} --><button type="button" class="btn btn-danger  ml-1 btn-xs" id="btnDeleteAll">  <span>Borrar selección</span><i class="fa fa-trash-alt ml-1"></i></button><!-- {% endif %} --><button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
      
     //tratamientos a los botones de las busquedas
     //boton para cancelar la busqueda

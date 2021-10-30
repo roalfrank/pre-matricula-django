@@ -153,6 +153,7 @@
 {% endblock %}
 
 {% block busqueda %}
+
     <div id='card_busqueda' class="card collapsed-card mb-1">
             <div class="card-header p-0 pl-2 py-1">
                 <div class="card-title">
@@ -255,6 +256,10 @@
 {% endblock %}
 
 {% block boton_accion%}
+{{ municipio_gestor|json_script:"municipio_gestor" }}
+{{ region_gestor|json_script:"region_gestor" }}
+{{ provincia_gestor|json_script:"provincia_gestor" }}
+{{ datos_maestro|json_script:"datos_maestro" }}
 {% endblock%}
 
 {%block class_modal%}modal-lg{% endblock %}
@@ -341,6 +346,7 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
+
     $('#id_desde_busqueda').val('');
     $('#id_hasta_busqueda').val('');
     $('#id_desde').val('');
@@ -351,6 +357,25 @@
     $('#id_jcp').val('').trigger("change");
     $('#id_curso').val('').trigger("change");
     $('#id_curso_busqueda').val('').trigger("change");
+
+    const municipio_gestor = JSON.parse(document.getElementById('municipio_gestor').textContent);
+    const region_gestor = JSON.parse(document.getElementById('region_gestor').textContent);
+    const provincia_gestor = JSON.parse(document.getElementById('provincia_gestor').textContent);
+    const datos_maestro = JSON.parse(document.getElementById('datos_maestro').textContent);
+    let solo_para_gestores_select = function(){
+      //aqui inicializo a todos los select
+
+      $('#id_jcp').val(provincia_gestor).trigger("change");
+      setTimeout(() => {
+          $('#id_region').val(region_gestor).trigger("change");
+      }, 100);
+      setTimeout(() => {
+          $('#id_jcm').val(municipio_gestor).trigger("change");
+      }, 100);
+      $('#id_jcp').prop("disabled", true);
+      $('#id_region').prop("disabled", true);
+      $('#id_jcm').prop("disabled", true);
+    }
     
     $('#id_jcp').trigger('change');
     let templateSelctProfesor = function(state){
@@ -862,12 +887,34 @@
                 });
 
                 $("#btnNuevo").on("click", function () {
+                  if(municipio_gestor!=''){
+                    solo_para_gestores_select()
+                    
+                    if(datos_maestro!=''){
+                      var searchfield = $('#id_profesor').parent().find('.select2-search__field');
+                      searchfield.val("");
+                      var option = new Option(datos_maestro.nombre, datos_maestro.id, true, true);
+                      option.dataset.ci = datos_maestro.ci;
+                      option.dataset.foto = datos_maestro.foto;
+                      option.dataset.jcp = datos_maestro.jcp;
+                      option.dataset.jcm = datos_maestro.jcm;
+                      option.dataset.username = datos_maestro.username;
+                      option.dataset.jcb = datos_maestro.jcb;
+                      $('#id_profesor').append(option).trigger('change');
+                      $('#id_profesor').prop("disabled", true);
+                    }
+                  }
                   abrir_modal_nuevo("Nueva Matricula");
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
                   element.preventDefault();
                   abrir_modal_editar("Editar Matricula", tblListar, element.currentTarget);
+                  if(municipio_gestor!=''){
+                    $('#id_jcp').prop("disabled", true);
+                    $('#id_region').prop("disabled", true);
+                    $('#id_jcm').prop("disabled", true);
+                  }
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
                   delete_registro(tblListar, element.currentTarget);
@@ -1008,6 +1055,9 @@
       submitHandler: function (form) {
         var parametros = new FormData(form);
         parametros.append('id_edit', id_edit);
+        if(datos_maestro!=''){
+          parametros.append('profesor', $('#id_profesor').val());
+        }
         submit_with_ajax(window.location.pathname, 'Notificacion', 'Estas seguro de guardar los datos?',
           parametros,
           function (data) {
@@ -1055,6 +1105,9 @@
           number: true,
           digits: true,
         },
+        jcp:{
+          reguired:false
+        },
         
       },
       messages: {
@@ -1066,9 +1119,6 @@
         },
         curso:{
           required: "El curso es necesario",
-        },
-        jcp:{
-          required: "El joven club provincial es necesario",
         },
         jcb:{
           required: "El joven club base es necesario",
@@ -1184,9 +1234,11 @@
 {% endblock %}
 <!-- esto es bloque para agregar mas funciones para inicializar los datos cuando se esconde el modal del registro -->
 {% block on_hidden_modal_extra %}
-  $('#id_profesor').val(null).trigger('change');
+  $('#id_profesor').html('');
   $('#id_jcb').val('').trigger("change");
   $('#id_jcp').val('').trigger("change");
   $('#id_curso').val('').trigger("change");
   $('#id_curso_busqueda').val('').trigger("change");
+  
+
 {% endblock %}

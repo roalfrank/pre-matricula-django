@@ -222,6 +222,9 @@
 {% endblock %}
 
 {% block boton_accion%}
+{{ municipio_gestor|json_script:"municipio_gestor" }}
+{{ region_gestor|json_script:"region_gestor" }}
+{{ provincia_gestor|json_script:"provincia_gestor" }}
 {% endblock%}
 
 {%block class_modal%}modal-lg{% endblock %}
@@ -323,7 +326,7 @@
           {{form_instructor.cargo|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
         </div>
       </div>
-      {% if request.user.is_staff %}
+      {% if request.user|has_group:"Admin" or request.user|has_group:"Gestor" %}
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group pt-4">
           <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>
@@ -339,7 +342,23 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
+    const municipio_gestor = JSON.parse(document.getElementById('municipio_gestor').textContent);
+    const region_gestor = JSON.parse(document.getElementById('region_gestor').textContent);
+    const provincia_gestor = JSON.parse(document.getElementById('provincia_gestor').textContent);
+    let solo_para_gestores_select = function(){
+      //aqui inicializo a todos los select
 
+      $('#id_jcp').val(provincia_gestor).trigger("change");
+      setTimeout(() => {
+          $('#id_region').val(region_gestor).trigger("change");
+      }, 100);
+      setTimeout(() => {
+          $('#id_jcm').val(municipio_gestor).trigger("change");
+      }, 100);
+      $('#id_jcp').prop("disabled", true);
+      $('#id_region').prop("disabled", true);
+      $('#id_jcm').prop("disabled", true);
+    }
     $('#id_jcp').trigger('change');
     funcion_vincular_select= function(){
        $('.select2').select2({
@@ -727,11 +746,21 @@
                 });
 
                 $("#btnNuevo").on("click", function () {
+                  if(municipio_gestor!=''){
+                    solo_para_gestores_select()
+                  }
                   abrir_modal_nuevo("Nuevo instructor");
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+                  element.preventDefault();
                   abrir_modal_editar("Editar instructor", tblListar, element.currentTarget);
+                  if(municipio_gestor!=''){
+                    $('#id_jcp').prop("disabled", true);
+                    $('#id_region').prop("disabled", true);
+                    $('#id_jcm').prop("disabled", true);
+                  }
+
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
                   delete_registro(tblListar, element.currentTarget);
@@ -872,6 +901,7 @@
               mensaje("success", "Guardado el Registro - " + data.nombre);
               id_edit = null;
             } else {
+              console.log('comprobar el dato que retorna servidor cuando error en submit',data);
               var error = JSON.parse(data.error)
               var listado_error = []
               for (const key in error) {

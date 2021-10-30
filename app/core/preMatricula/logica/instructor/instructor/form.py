@@ -4,7 +4,7 @@ from core.preMatricula.models import Instructor, JCP
 
 class InstructorForm(ModelForm):
     """Form definition for instructor."""
-    jcp = ModelChoiceField(queryset=JCP.objects.all(), widget=Select(attrs={
+    jcp = ModelChoiceField(queryset=JCP.objects.all(), required=False, widget=Select(attrs={
         'class': 'select2'
     }))
 
