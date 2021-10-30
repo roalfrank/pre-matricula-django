@@ -1,4 +1,5 @@
 {% load widget_tweaks %}
+{% load filterCustom %}
 <div class="row">
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
@@ -20,26 +21,46 @@
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_perfil.ci.label_tag}}
-          {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Carnet Identidad:<small id='contenedor_contador_ci' class='ml-1' style="font-weight: 800;"><span id='cant_numero_ci'>0</span>/11</small></label>
+          <div class="input-group input-group-sm">
+             <div class="input-group-prepend ">
+               <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+             </div>
+             {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+            </div>
+          </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group">
+          <label>Usuario</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_user.username.label_tag}}
-          {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Correo</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text">@</span>
+            </div>
+            {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_perfil.correo.label_tag}}
-          {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.telefono.label_tag}}
-          {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Telefono</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+            </div>
+            {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
@@ -56,14 +77,24 @@
       </div>
       <div class="col-8">
         <div class="form-group">
-          {{form_perfil.direccion.label_tag}}
-          {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Dirección</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-book-open"></i></span>
+            </div>
+            {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_instructor.usuario_siscae.label_tag}}
-          {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Usuario siscae</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+              {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
        <div class="col-12 col-sm-6 col-lg-4">
@@ -96,7 +127,7 @@
           {{form_instructor.cargo|add_class:'form-control form-control-sm select2'|attr:'autocomplete:off'}}
         </div>
       </div>
-      {% if request.user.is_staff %}
+      {% if request.user|has_group:"Admin" or request.user|has_group:"Gestor" %}
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group pt-4">
           <span><strong class="mr-4">Activo:</strong>{{form_user.is_active|add_class:'form-check-input'|attr:'autocomplete:off'}}</span>

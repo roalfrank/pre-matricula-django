@@ -4,6 +4,17 @@
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
 <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
 <style>
+   /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
   #conocimiento .info-box{
     min-height: 0px !important;
   }
@@ -250,26 +261,46 @@
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_perfil.ci.label_tag}}
-          {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Carnet Identidad:<small id='contenedor_contador_ci' class='ml-1' style="font-weight: 800;"><span id='cant_numero_ci'>0</span>/11</small></label>
+          <div class="input-group input-group-sm">
+             <div class="input-group-prepend ">
+               <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+             </div>
+             {{form_perfil.ci|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+            </div>
+          </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="form-group">
+          <label>Usuario</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_user.username.label_tag}}
-          {{form_user.username|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Correo</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text">@</span>
+            </div>
+            {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_perfil.correo.label_tag}}
-          {{form_perfil.correo|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="form-group">
-          {{form_perfil.telefono.label_tag}}
-          {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Telefono</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+            </div>
+            {{form_perfil.telefono|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
@@ -286,14 +317,24 @@
       </div>
       <div class="col-8">
         <div class="form-group">
-          {{form_perfil.direccion.label_tag}}
-          {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Dirección</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-book-open"></i></span>
+            </div>
+            {{form_perfil.direccion|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="form-group">
-          {{form_instructor.usuario_siscae.label_tag}}
-          {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          <label>Usuario siscae</label>
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend ">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+              {{form_instructor.usuario_siscae|add_class:'form-control form-control-sm'|attr:'autocomplete:off'}}
+          </div>
         </div>
       </div>
        <div class="col-12 col-sm-6 col-lg-4">
@@ -342,6 +383,25 @@
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
+    $('#id_ci').keyup(function(event){
+      let cant = this.value.length;
+      if(cant<11){
+        $('#contenedor_contador_ci').removeClass('text-success');
+        $('#contenedor_contador_ci').removeClass('text-danger');
+        $('#contenedor_contador_ci').addClass('text-info');
+      }
+      else if(cant==11){
+        $('#contenedor_contador_ci').removeClass('text-info');
+        $('#contenedor_contador_ci').removeClass('text-danger');
+        $('#contenedor_contador_ci').addClass('text-success');
+      }
+      else{
+        $('#contenedor_contador_ci').removeClass('text-success');
+        $('#contenedor_contador_ci').removeClass('text-info');
+        $('#contenedor_contador_ci').addClass('text-danger');
+      }
+       $('#cant_numero_ci').html(cant);
+    });
     const municipio_gestor = JSON.parse(document.getElementById('municipio_gestor').textContent);
     const region_gestor = JSON.parse(document.getElementById('region_gestor').textContent);
     const provincia_gestor = JSON.parse(document.getElementById('provincia_gestor').textContent);
@@ -1129,4 +1189,6 @@
   $('#id_jcb').val('').trigger("change");
   $('#id_cargo').val('').trigger("change");
   $('#id_jcp').val('').trigger("change");
+  $("#cant_numero_ci").html('0');
+  $('#contenedor_contador_ci').removeClass(['text-danger','text-success','text-info']);
 {% endblock %}
