@@ -181,3 +181,8 @@ def buscarCursos(request):
                               for i in cursos])
         return JsonResponse(select_cursos, safe=False)
     return JsonResponse([], safe=False)
+
+
+def cantCursos():
+    cant = Curso.objects.all().count()
+    return cant

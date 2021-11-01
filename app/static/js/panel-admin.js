@@ -11,66 +11,48 @@ $(function () {
 
   // eslint-disable-next-line no-unused-vars
   var $estudiantesSemanaChart = $('#estudiantes-semana-chart')
+  const lista_cantidad_estudiantes_dias_actual = JSON.parse(document.getElementById('lista_cantidad_estudiantes_dias_actual').textContent);
+  const lista_cantidad_estudiantes_dias_pasado = JSON.parse(document.getElementById('lista_cantidad_estudiantes_dias_pasado').textContent);
+  const maximo = JSON.parse(document.getElementById('maximo').textContent);
   // eslint-disable-next-line no-unused-vars
-  var estudiantesSemana = new Chart($estudiantesSemanaChart, {
-    data: {
-      labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-      datasets: [{
-        type: 'line',
-        data: [1, 0, 1, 4, 0, 0, 1],
-        backgroundColor: 'transparent',
-        borderColor: '#007bff',
-        pointBorderColor: '#007bff',
-        pointBackgroundColor: '#007bff',
-        fill: false
-        // pointHoverBackgroundColor: '#007bff',
-        // pointHoverBorderColor    : '#007bff'
-      },
-      {
-        type: 'line',
-        data: [2, 3, 0, 1, 0, 5, 3],
-        backgroundColor: 'tansparent',
-        borderColor: '#ced4da',
-        pointBorderColor: '#ced4da',
-        pointBackgroundColor: '#ced4da',
-        fill: false
-        // pointHoverBackgroundColor: '#ced4da',
-        // pointHoverBorderColor    : '#ced4da'
-      }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      tooltips: {
-        mode: mode,
-        intersect: intersect
-      },
-      hover: {
-        mode: mode,
-        intersect: intersect
-      },
-      legend: {
-        display: false
-      },
-      scales: {
-        yAxes: [{
-          // display: false,
-          gridLines: {
-            display: true,
-            lineWidth: '4px',
-            color: 'rgba(0, 0, 0, .2)',
-            zeroLineColor: 'transparent'
+ 
+var estudiantesSemana = new Chart($estudiantesSemanaChart, {
+      type: 'line',
+      data: {
+        labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+        datasets: [
+          {
+            label: 'Semana Actual',
+            data: lista_cantidad_estudiantes_dias_actual,
+            borderColor: '#0b5ad4',
+            backgroundColor:'#007bff',
           },
-          ticks: ticksStyle
-        }],
-        xAxes: [{
-          display: true,
-          gridLines: {
-            display: false
+          {
+            label: 'Semana Anterior',
+            data:lista_cantidad_estudiantes_dias_pasado ,
+            borderColor: '#6c757d',
+            backgroundColor: '#ced4da',
           },
-          ticks: ticksStyle
-        }]
-      }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          },
+        },
+        scales: {
+        y: {
+            max: maximo+1,
+            min: -0.2,
+            ticks: {
+                stepSize: 1
+            }
+        }
     }
+        
+      },
   })
 var $estudiantesMatriSemanaChart = $('#estudiantes-matriculados-semana-chart')
   // eslint-disable-next-line no-unused-vars

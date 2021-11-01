@@ -1,11 +1,12 @@
 import json
+import datetime
 from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
-from django.db.models import Q
+from django.db.models import Q, F
 from core.preMatricula.models import Estudiante
 from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
@@ -97,6 +98,7 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
                     data['error'] = form_perfil.errors.as_json()
 
             elif action == "cargarDatos":
+
                 print(request.POST)
                 limite = int(request.POST['limite'])
                 inicio = int(request.POST['inicio'])
@@ -219,3 +221,46 @@ class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMix
         context['form_estudiante'] = EstudianteForm()
         context['form_user'] = UserCrearAutomaticoForm()
         return context
+
+# metodos utiles
+
+
+def cantEstudiantes():
+    cant = Estudiante.objects.all().count()
+    return cant
+
+
+def cant_estudiantes_no_matriculados():
+    cant = Estudiante.objects.exclude(
+        prematriculaestudiante__estudiante__pk=F('pk')).count()
+    return cant
+
+
+def reporte_estudiante_semana_actual():
+    result = {}
+    date = datetime.datetime.today()
+    week = int(date.strftime("%V"))
+    lista_estudiante_semana_actual = Estudiante.objects.filter(
+        usuario__date_joined__week=week)
+    lista_estudiante_semana_pasada = Estudiante.objects.filter(
+        usuario__date_joined__week=week-1)
+    result['cantidad_estudiantes_semana_actual'] = lista_estudiante_semana_actual.count()
+    result['cantidad_estudiantes_semana_pasada'] = lista_estudiante_semana_pasada.count()
+    lista_cantidad_estudiantes_dias_actual = []
+    lista_cantidad_estudiantes_dias_pasado = []
+    for n in range(2, 8):
+        lista_cantidad_estudiantes_dias_actual.append(lista_estudiante_semana_actual.filter(
+            usuario__date_joined__week_day=n).count())
+        lista_cantidad_estudiantes_dias_pasado.append(lista_estudiante_semana_pasada.filter(
+            usuario__date_joined__week_day=n).count())
+    lista_cantidad_estudiantes_dias_actual.append(lista_estudiante_semana_actual.filter(
+        usuario__date_joined__week_day=1).count())
+    lista_cantidad_estudiantes_dias_pasado.append(lista_estudiante_semana_pasada.filter(
+        usuario__date_joined__week_day=1).count())
+    print('lista_cantidad_estudiantes_dias_actual',
+          lista_cantidad_estudiantes_dias_actual)
+    print('lista_cantidad_estudiantes_dias_pasado',
+          lista_cantidad_estudiantes_dias_pasado)
+    result['lista_cantidad_estudiantes_dias_actual'] = lista_cantidad_estudiantes_dias_actual
+    result['lista_cantidad_estudiantes_dias_pasado'] = lista_cantidad_estudiantes_dias_pasado
+    return result

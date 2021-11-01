@@ -1,9 +1,17 @@
+import datetime
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.urls.base import reverse_lazy
 from core.preMatricula.models import PreMatricula
+from core.preMatricula.logica.curso.curso.views import cantCursos
+from core.preMatricula.logica.estudiante.estudiante.views import (
+    cantEstudiantes,
+    cant_estudiantes_no_matriculados,
+    reporte_estudiante_semana_actual
+)
+from core.preMatricula.logica.maestro.views import cantidadMaestro
 
 from config import settings
 
@@ -124,6 +132,65 @@ def dashBoardAdmin(request):
         ],
         "icono_titulo": "fas fa-tachometer-alt"
     }
+    context['cantidadCurso'] = cantCursos()
+    context['cantidadEstudiante'] = cantEstudiantes()
+    context['cantidadMaestro'] = cantidadMaestro()
+    context['cantidadNoMatriculado'] = cant_estudiantes_no_matriculados()
+    # usuarios en la semana
+    # llamo al metodo para saber las cantidades de estudiantes semana actual y anterior
+    datos_reporte_semanal_nuevos = reporte_estudiante_semana_actual()
+    # diccionario almacenar los datos a mandar para la plantilla
+    reporte_semanal_estudiante = {}
+    # guardo cantidad de estudiantes semana actual
+    reporte_semanal_estudiante['cantidadEstudianteSemana'] = datos_reporte_semanal_nuevos['cantidad_estudiantes_semana_actual']
+    # cantidad de estudiantes semana pasada
+    reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior'] = datos_reporte_semanal_nuevos['cantidad_estudiantes_semana_pasada']
+    # comprobar las cantidades para saber que condicion tomar
+    if reporte_semanal_estudiante['cantidadEstudianteSemana'] < reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior']:
+        reporte_semanal_estudiante['maximo'] = reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior']
+    else:
+        reporte_semanal_estudiante['maximo'] = reporte_semanal_estudiante['cantidadEstudianteSemana']
+    # si las cantidades son 0 ,
+    if reporte_semanal_estudiante['cantidadEstudianteSemana'] == 0 and reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior'] == 0:
+        reporte_semanal_estudiante['color_porciento'] = 'danger'
+        reporte_semanal_estudiante['porciento'] = '0%'
+        reporte_semanal_estudiante['icono'] = 'fas fa-warning'
+    # si las cantidades semana anterior es 0
+    elif reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior'] == 0:
+        reporte_semanal_estudiante['color_porciento'] = 'success'
+        reporte_semanal_estudiante['porciento'] = str(
+            reporte_semanal_estudiante['cantidadEstudianteSemana'])+' estudiante'
+        reporte_semanal_estudiante['icono'] = 'fas fa-arrow-up'
+    elif reporte_semanal_estudiante['cantidadEstudianteSemana'] == 0:
+        reporte_semanal_estudiante['color_porciento'] = 'danger'
+        reporte_semanal_estudiante['porciento'] = '0%'
+        reporte_semanal_estudiante['icono'] = 'fas fa-warning'
+    else:
+        diferencia_cant_semanal = reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior'] - \
+            reporte_semanal_estudiante['cantidadEstudianteSemana']
+        if diferencia_cant_semanal == 0:
+            reporte_semanal_estudiante['color_porciento'] = 'warnig'
+            reporte_semanal_estudiante['porciento'] = "100%"
+            reporte_semanal_estudiante['icono'] = 'fas fa-warning'
+        elif diferencia_cant_semanal < 0:
+            diferencia_cant_semanal = diferencia_cant_semanal * -1
+            porciento_semana = (diferencia_cant_semanal * 100) / \
+                reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior']
+            reporte_semanal_estudiante['porciento'] = str(porciento_semana)+'%'
+            reporte_semanal_estudiante['color_porciento'] = 'success'
+            reporte_semanal_estudiante['icono'] = 'fas fa-arrow-up'
+        else:
+            porciento_semana = (diferencia_cant_semanal * 100) / \
+                reporte_semanal_estudiante['cantidadEstudianteSemanaAnterior']
+            reporte_semanal_estudiante['porciento'] = str(porciento_semana)+'%'
+            reporte_semanal_estudiante['color_porciento'] = 'danger'
+            reporte_semanal_estudiante['icono'] = 'fas fa-arrow-down'
+    # cargar las listas de las cantidades por dias en contecxt
+    reporte_semanal_estudiante['lista_cantidad_estudiantes_dias_actual'] = datos_reporte_semanal_nuevos['lista_cantidad_estudiantes_dias_actual']
+    reporte_semanal_estudiante['lista_cantidad_estudiantes_dias_pasado'] = datos_reporte_semanal_nuevos['lista_cantidad_estudiantes_dias_pasado']
+    # fin diccionario almacenar los datos a mandar para la plantilla
+
+    context['reporte_semanal_estudiante'] = reporte_semanal_estudiante
     return render(request, "sitio/panelAdmin.html", context)
 
 

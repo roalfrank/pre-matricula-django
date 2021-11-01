@@ -355,6 +355,26 @@ input[type=number] {
 <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
 <script>
   $(function () {
+
+    $('#id_ci').keyup(function(event){
+      let cant = this.value.length;
+      if(cant<11){
+        $('#contenedor_contador_ci').removeClass('text-success');
+        $('#contenedor_contador_ci').removeClass('text-danger');
+        $('#contenedor_contador_ci').addClass('text-info');
+      }
+      else if(cant==11){
+        $('#contenedor_contador_ci').removeClass('text-info');
+        $('#contenedor_contador_ci').removeClass('text-danger');
+        $('#contenedor_contador_ci').addClass('text-success');
+      }
+      else{
+        $('#contenedor_contador_ci').removeClass('text-success');
+        $('#contenedor_contador_ci').removeClass('text-info');
+        $('#contenedor_contador_ci').addClass('text-danger');
+      }
+       $('#cant_numero_ci').html(cant);
+    });
     $('#id_jcp').trigger('change');
     funcion_vincular_select= function(){
        $('.select2').select2({

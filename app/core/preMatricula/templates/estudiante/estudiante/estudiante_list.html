@@ -558,18 +558,22 @@ input[type=number] {
       initComplete: function (settings, json) {
             
             //botones de accion 
-                $('#btnDeleteAll').on('click', function () {
+                $('#btnDeleteAll').on('click', function (element) {
+                  element.preventDefault();
                   delete_select(tblListar);
                 });
 
-                $("#btnNuevo").on("click", function () {
+                $("#btnNuevo").on("click", function (element) {
+                  element.preventDefault();
                   abrir_modal_nuevo("Nuevo Estudiante");
                 });
                 
                 $('#data tbody').on('click', 'a[rel="edit"]', function (element) {
+                  element.preventDefault();
                   abrir_modal_editar("Editar Estudiante", tblListar, element.currentTarget);
                 });
                 $('#data tbody').on('click', 'a[rel="delete"]', function (element) {
+                  element.preventDefault();
                   delete_registro(tblListar, element.currentTarget);
                 });
             //fin de botones de accion
@@ -657,6 +661,7 @@ input[type=number] {
 
     //botones del nav de detalle
     $('#data tbody').on('click', 'a[rel="view"]', function (element) {
+      element.preventDefault();
       var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
       //paso a data una lista de los valores de la row a editar
       var data = tblListar.row(tr.row).data();

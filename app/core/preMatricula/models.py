@@ -307,6 +307,12 @@ class Estudiante(models.Model):
     def __str__(self):
         return self.usuario.username
 
+    @property
+    def estaMatriculado(self):
+        if self.premariculaestudiante.all().count() == 0:
+            return False
+        return True
+
     def toJson(self):
         estudiante = model_to_dict(self, fields=['usuario'])
         estudiante['nombre_usuario'] = self.usuario.perfil.get_nombre()
