@@ -13,7 +13,9 @@ $(function () {
   var $estudiantesSemanaChart = $('#estudiantes-semana-chart')
   const lista_cantidad_estudiantes_dias_actual = JSON.parse(document.getElementById('lista_cantidad_estudiantes_dias_actual').textContent);
   const lista_cantidad_estudiantes_dias_pasado = JSON.parse(document.getElementById('lista_cantidad_estudiantes_dias_pasado').textContent);
-  const maximo = JSON.parse(document.getElementById('maximo').textContent);
+  const cantidadEstudianteSemana = JSON.parse(document.getElementById('cantidadEstudianteSemana').textContent);
+  const cantidadEstudianteSemanaAnterior = JSON.parse(document.getElementById('cantidadEstudianteSemanaAnterior').textContent);
+  const maximo_estudiante_semana = JSON.parse(document.getElementById('maximo_estudiante_semana').textContent);
   // eslint-disable-next-line no-unused-vars
  
 var estudiantesSemana = new Chart($estudiantesSemanaChart, {
@@ -22,13 +24,13 @@ var estudiantesSemana = new Chart($estudiantesSemanaChart, {
         labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
         datasets: [
           {
-            label: 'Semana Actual',
+            label: 'Semana Actual ('+cantidadEstudianteSemana+')',
             data: lista_cantidad_estudiantes_dias_actual,
             borderColor: '#0b5ad4',
             backgroundColor:'#007bff',
           },
           {
-            label: 'Semana Anterior',
+            label: 'Semana Anterior ('+cantidadEstudianteSemanaAnterior+')',
             data:lista_cantidad_estudiantes_dias_pasado ,
             borderColor: '#6c757d',
             backgroundColor: '#ced4da',
@@ -44,7 +46,7 @@ var estudiantesSemana = new Chart($estudiantesSemanaChart, {
         },
         scales: {
         y: {
-            max: maximo+1,
+            max: maximo_estudiante_semana+1,
             min: -0.2,
             ticks: {
                 stepSize: 1
@@ -55,57 +57,47 @@ var estudiantesSemana = new Chart($estudiantesSemanaChart, {
       },
   })
 var $estudiantesMatriSemanaChart = $('#estudiantes-matriculados-semana-chart')
-  // eslint-disable-next-line no-unused-vars
+const lista_cantidad_estudiantes_dias_matriculado_actual = JSON.parse(document.getElementById('lista_cantidad_estudiantes_dias_matriculado_actual').textContent);
+const lista_cantidad_estudiantes_dias_matriculado_pasado = JSON.parse(document.getElementById('lista_cantidad_estudiantes_dias_matriculado_pasado').textContent);
+const cantidad_estudiantes_semana_matriculado_actual = JSON.parse(document.getElementById('cantidad_estudiantes_semana_matriculado_actual').textContent);
+const cantidad_estudiantes_semana_matriculado_pasada = JSON.parse(document.getElementById('cantidad_estudiantes_semana_matriculado_pasada').textContent);
+const maximo_estudiante_semana_matriculado = JSON.parse(document.getElementById('maximo_estudiante_semana_matriculado').textContent);
 var estudiantesMatriSemana = new Chart($estudiantesMatriSemanaChart, {
     type: 'bar',
     data: {
-       labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-      datasets: [
-        {
-          backgroundColor: '#007bff',
-          borderColor: '#007bff',
-          data: [30, 20, 10, 25, 60, 13,23]
-        },
-        {
-          backgroundColor: '#ced4da',
-          borderColor: '#ced4da',
-          data: [20, 10, 15, 30, 45, 14,20]
-        }
-      ]
+        labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+        datasets: [
+          {
+            label: 'Semana Actual ('+cantidad_estudiantes_semana_matriculado_actual+')',
+            data:lista_cantidad_estudiantes_dias_matriculado_actual,
+            borderColor: '#0b5ad4',
+            backgroundColor:'#007bff',
+          },
+          {
+            label: 'Semana Anterior ('+cantidad_estudiantes_semana_matriculado_pasada+')',
+            data:lista_cantidad_estudiantes_dias_matriculado_pasado,
+            borderColor: '#6c757d',
+            backgroundColor: '#ced4da',
+          }
+        ]
     },
     options: {
-      maintainAspectRatio: false,
-      tooltips: {
-        mode: mode,
-        intersect: intersect
-      },
-      hover: {
-        mode: mode,
-        intersect: intersect
-      },
-      legend: {
-        display: false
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
       },
       scales: {
-        yAxes: [{
-          // display: false,
-          gridLines: {
-            display: true,
-            lineWidth: '4px',
-            color: 'rgba(0, 0, 0, .2)',
-            zeroLineColor: 'transparent'
-          },
-          ticks:  ticksStyle
-        }],
-        xAxes: [{
-          display: true,
-          gridLines: {
-            display: false
-          },
-          ticks: ticksStyle
-        }]
-      }
+        y: {
+            max: maximo_estudiante_semana_matriculado+1,
+            min: -0.2,
+            ticks: {
+                stepSize: 1
+            }
+        }
     }
+    },
 })
   /*gradica de los no matriculados*/
   var $estudiantesNoMatriculadosChart = $('#estudiantes-NoMatriculados-chart')

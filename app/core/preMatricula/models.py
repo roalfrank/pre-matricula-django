@@ -1,4 +1,8 @@
 import json
+import random
+import qrcode
+from datetime import datetime
+import time
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.dispatch import receiver
@@ -7,10 +11,6 @@ from config.settings import MEDIA_URL, STATIC_URL
 from django.contrib.auth.models import User
 from django.forms import model_to_dict
 from django.db import models
-import random
-import qrcode
-from datetime import datetime
-import time
 
 
 # Create your models here.
@@ -621,9 +621,10 @@ class PreMatriculaEstudiante(models.Model):
         Estudiante, on_delete=models.CASCADE, verbose_name='Estudiante')
     activo = models.BooleanField(
         verbose_name='El Estudiante ha sido chequeado', default=False)
+    fecha_creado = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.perfil.nombre
+        return self.preMatricula.curso.nombre + "- " + self.estudiante.usuario.username
 
     def save(self, *args, **kwargs):
         cantidad_estudiante = self.preMatricula.cantidadEstudiante()

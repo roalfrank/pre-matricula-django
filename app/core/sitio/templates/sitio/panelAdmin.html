@@ -75,7 +75,7 @@
             estudiantes en la semana</h3>
         </div>
       </div>
-      <div class="card-body p-3">
+      <div class="card-body" style="padding-top: 0px;padding-bottom: 1px;">
         <div class="d-flex">
           <p class="d-flex flex-column mb-0">
             <span class="badge badge-{% if reporte_semanal_estudiante.cantidadEstudianteSemana == 0 %}danger{% else %}success{% endif %}">{{reporte_semanal_estudiante.cantidadEstudianteSemana}}</span>
@@ -99,40 +99,30 @@
   </div>
   <div class="col-12 col-md-6">
     <div class="card">
-      <div class="card-header border-0">
+      <div class="card-header border-0 p-2">
         <div class="d-flex justify-content-between">
-          <h3 class="card-title"><img class='icono-encabezado' src="{% static 'img/estudiante.png'%}" /> Estudiantes
-            matriculados en la semana </h3>
+          <h3 class="card-title"><img class='icono-encabezado' src="{% static 'img/estudiante.png'%}" /> Matriculas realizadas en la semana </h3>
         </div>
       </div>
-      <div class="card-body">
+      <div class="card-body" style="padding-top: 0px;padding-bottom: 1px;">
         <div class="d-flex">
           <p class="d-flex flex-column">
-            <span class="badge badge-success">100</span>
+            <span class="badge badge-{% if reporte_semanal_estudiante_matriculados.cantidad_estudiantes_semana_matriculado_actual == 0 %}danger{% else %}success{% endif %}">{{reporte_semanal_estudiante_matriculados.cantidad_estudiantes_semana_matriculado_actual}}</span>
             <span>Matriculados</span>
           </p>
           <p class="ml-auto d-flex flex-column text-right">
-            <span class="badge badge-success">
-              <i class="fas fa-arrow-up"></i> 5%
+            <span class="badge badge-{{reporte_semanal_estudiante_matriculados.color_porciento}}">
+              <i class="{{reporte_semanal_estudiante_matriculados.icono}} mr-1"></i>{{reporte_semanal_estudiante_matriculados.porciento}}
           </span>
             <span class="text-perfil">Esta semana</span>
           </p>
         </div>
         <!-- /.d-flex -->
 
-        <div class="position-relative mb-4">
+        <div class="position-relative mb-1">
           <canvas id="estudiantes-matriculados-semana-chart" height="200"></canvas>
         </div>
 
-        <div class="d-flex flex-row justify-content-end">
-          <span class="mr-2">
-            <i class="fas fa-square text-primary"></i> Esta semana
-          </span>
-
-          <span>
-            <i class="fas fa-square text-gray"></i> Semana pasada
-          </span>
-        </div>
       </div>
     </div>
   </div>
@@ -312,7 +302,15 @@
 </div>
 {{ reporte_semanal_estudiante.lista_cantidad_estudiantes_dias_actual|json_script:"lista_cantidad_estudiantes_dias_actual" }}
 {{ reporte_semanal_estudiante.lista_cantidad_estudiantes_dias_pasado|json_script:"lista_cantidad_estudiantes_dias_pasado" }}
-{{ reporte_semanal_estudiante.maximo|json_script:"maximo" }}
+{{ reporte_semanal_estudiante.maximo|json_script:"maximo_estudiante_semana" }}
+{{ reporte_semanal_estudiante.cantidadEstudianteSemana|json_script:"cantidadEstudianteSemana" }}
+{{ reporte_semanal_estudiante.cantidadEstudianteSemanaAnterior|json_script:"cantidadEstudianteSemanaAnterior" }}
+<!-- las variables para el archivo js matriculados -->
+{{ reporte_semanal_estudiante_matriculados.cantidad_estudiantes_semana_matriculado_actual|json_script:"cantidad_estudiantes_semana_matriculado_actual" }}
+{{ reporte_semanal_estudiante_matriculados.cantidad_estudiantes_semana_matriculado_pasada|json_script:"cantidad_estudiantes_semana_matriculado_pasada" }}
+{{ reporte_semanal_estudiante_matriculados.maximo|json_script:"maximo_estudiante_semana_matriculado" }}
+{{ reporte_semanal_estudiante_matriculados.lista_cantidad_estudiantes_dias_matriculado_actual|json_script:"lista_cantidad_estudiantes_dias_matriculado_actual" }}
+{{ reporte_semanal_estudiante_matriculados.lista_cantidad_estudiantes_dias_matriculado_pasado|json_script:"lista_cantidad_estudiantes_dias_matriculado_pasado" }}
 {%endblock%}
 
 {%block js %}

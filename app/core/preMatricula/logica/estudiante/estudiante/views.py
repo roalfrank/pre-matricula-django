@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.db.models.deletion import RestrictedError
 from django.contrib.auth.models import User, Group
 from django.db.models import Q, F
-from core.preMatricula.models import Estudiante
+from core.preMatricula.models import Estudiante, PreMatriculaEstudiante
 from core.user.models import Perfil
 from core.preMatricula.mixis import ValidatePermissionRequiredCrudSimpleMixin
 from .form import UserCrearAutomaticoForm, EstudianteForm
@@ -59,7 +59,7 @@ class EstudianteDetailView(DetailView):
 
 
 class EstudianteView(LoginRequiredMixin, ValidatePermissionRequiredCrudSimpleMixin, TemplateView):
-    #model = Estudiante
+    # model = Estudiante
     template_name = "estudiante/estudiante/estudiante_list.html"
     permiso_vista = 'view_estudiante'
     permiso_crud = {
@@ -233,12 +233,17 @@ def cantEstudiantes():
 def cant_estudiantes_no_matriculados():
     cant = Estudiante.objects.exclude(
         prematriculaestudiante__estudiante__pk=F('pk')).count()
+    hace_una_semana = datetime.datetime.now() - datetime.timedelta(days=7)
+    print(hace_una_semana)
+    print(Estudiante.objects.exclude(
+        Q(prematriculaestudiante__estudiante__pk=F('pk'))).filter(Q(usuario__date_joined__lt=hace_una_semana)))
     return cant
 
 
 def reporte_estudiante_semana_actual():
     result = {}
     date = datetime.datetime.today()
+    dia_semana = date.weekday()+1
     week = int(date.strftime("%V"))
     lista_estudiante_semana_actual = Estudiante.objects.filter(
         usuario__date_joined__week=week)
@@ -248,19 +253,41 @@ def reporte_estudiante_semana_actual():
     result['cantidad_estudiantes_semana_pasada'] = lista_estudiante_semana_pasada.count()
     lista_cantidad_estudiantes_dias_actual = []
     lista_cantidad_estudiantes_dias_pasado = []
-    for n in range(2, 8):
-        lista_cantidad_estudiantes_dias_actual.append(lista_estudiante_semana_actual.filter(
-            usuario__date_joined__week_day=n).count())
+    for dia in range(1, 8):
+        if dia <= dia_semana:
+            lista_cantidad_estudiantes_dias_actual.append(lista_estudiante_semana_actual.filter(
+                usuario__date_joined__iso_week_day=dia).count())
         lista_cantidad_estudiantes_dias_pasado.append(lista_estudiante_semana_pasada.filter(
-            usuario__date_joined__week_day=n).count())
-    lista_cantidad_estudiantes_dias_actual.append(lista_estudiante_semana_actual.filter(
-        usuario__date_joined__week_day=1).count())
-    lista_cantidad_estudiantes_dias_pasado.append(lista_estudiante_semana_pasada.filter(
-        usuario__date_joined__week_day=1).count())
-    print('lista_cantidad_estudiantes_dias_actual',
-          lista_cantidad_estudiantes_dias_actual)
-    print('lista_cantidad_estudiantes_dias_pasado',
-          lista_cantidad_estudiantes_dias_pasado)
+            usuario__date_joined__iso_week_day=dia).count())
     result['lista_cantidad_estudiantes_dias_actual'] = lista_cantidad_estudiantes_dias_actual
     result['lista_cantidad_estudiantes_dias_pasado'] = lista_cantidad_estudiantes_dias_pasado
     return result
+
+
+def matriculados_en_la_semana_actual():
+    result = {}
+    date = datetime.datetime.today()
+    dia_semana = date.weekday()+1
+    week = int(date.strftime("%V"))
+    lista_estudiante_semana_matriculado_actual = PreMatriculaEstudiante.objects.filter(
+        fecha_creado__week=week)
+    lista_estudiante_semana_matriculado_pasada = PreMatriculaEstudiante.objects.filter(
+        fecha_creado__week=week-1)
+    # para que funcione el distint es necesario extraer por values()
+    result['cantidad_estudiantes_semana_matriculado_actual'] = lista_estudiante_semana_matriculado_actual.count()
+    result['cantidad_estudiantes_semana_matriculado_pasada'] = lista_estudiante_semana_matriculado_pasada.count()
+    lista_cantidad_estudiantes_dias_matriculado_actual = []
+    lista_cantidad_estudiantes_dias_matriculado_pasado = []
+    for dia in range(1, 8):
+        if dia <= dia_semana:
+            lista_cantidad_estudiantes_dias_matriculado_actual.append(lista_estudiante_semana_matriculado_actual.filter(
+                fecha_creado__iso_week_day=dia).count())
+        lista_cantidad_estudiantes_dias_matriculado_pasado.append(lista_estudiante_semana_matriculado_pasada.filter(
+            fecha_creado__iso_week_day=dia).count())
+    result['lista_cantidad_estudiantes_dias_matriculado_actual'] = lista_cantidad_estudiantes_dias_matriculado_actual
+    result['lista_cantidad_estudiantes_dias_matriculado_pasado'] = lista_cantidad_estudiantes_dias_matriculado_pasado
+    return result
+
+
+def estudiantes_no_matriculados_7dias_registrado():
+    pass
