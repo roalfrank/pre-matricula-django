@@ -15,6 +15,7 @@ from core.preMatricula.logica.gestor.gestor.views import GestorView, deleteGesto
 from core.preMatricula.logica.estudiante.estudianteocupacion.views import OcupacionEstudianteView
 from core.preMatricula.logica.estudiante.estudiantediscapacidad.views import DiscapacidadEstudianteView
 from core.preMatricula.logica.estudiante.estudianteCatOcupacional.views import CategoriaOcupacionalEstudianteView
+from core.preMatricula.logica.estudiante.estudianteCursos.views import EstudianteCursosView
 from core.preMatricula.logica.estudiante.estudiante.views import EstudianteView, EstudianteDetailView, EstudianteDetailCargarFormAddView
 # importaciones para cursos
 from core.preMatricula.logica.curso.curso.views import CursoView, CursoDetailView, CursoDetailCargarFormAddView, buscarCurso, buscarCursos
@@ -78,6 +79,8 @@ urlpatterns = [
          EstudianteDetailView.as_view(), name="estudiante-detail"),
     path("estudiante-add-form/",
          EstudianteDetailCargarFormAddView.as_view(), name="estudiante-add-form"),
+    path("estudiante-cursos/",
+         EstudianteCursosView.as_view(), name="estudiante-cursos"),
     # ----Gestor enlaces---------
     path("gestor/", GestorView.as_view(), name="gestor"),
     path("gestor-detail/<int:pk>/",

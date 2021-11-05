@@ -1,0 +1,536 @@
+{% extends 'element_comun/list.html' %} {% load static %} {% load widget_tweaks %}{% load filterCustom %}
+{% block head_list %}
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css'%}" />
+<link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css'%}" />
+<style>
+#campos_formulario label{
+    margin-bottom: 0px;
+  }
+   /* esto es para que no se salga el texto largo de la tabla */
+  .table.dataTable.nowrap th, table.dataTable.nowrap td{
+    white-space: inherit !important;
+  }
+  table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child::before, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child::before{
+    z-index: 50;
+  }
+  .badge-curso-listar{
+   top:0px !important;
+   box-shadow: 1px 3px 5px -2px #3f474e; 
+  }
+  a .badge-curso-listar:hover{
+      background-color: #346373;
+      font-weight: 800;
+  }
+  .badge-curso-listar-estado{
+    position: absolute;
+    top: 1px !important;
+    left: -16px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    padding: 0px 2px;
+    box-shadow: 1px 3px 5px -2px #3f474e; 
+    transform: rotate(-45deg);
+    width: 5rem;
+    letter-spacing: 0.1rem;
+  }
+      
+  #conocimiento .info-box{
+    min-height: 0px !important;
+  }
+  @media (max-width:674px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+      }
+  }
+  @media (max-width:464px){
+      #resumen_busqueda{
+        margin: 0 auto;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+       .badge-curso-listar{
+         opacity: 0;
+          }
+  }
+  .info-prematricula-tabla{
+    background-color: #343a401c;
+    border-radius: 10px;  
+  }
+   .info-prematricula-tabla dl{
+    margin-bottom: 0px!important;
+  }
+  .badge-tabla{
+    position: absolute;
+    font-size: 0.5rem;
+    top: -6px;
+  }
+
+  .select2-container {
+    background-color: #fff;
+  }
+
+  .modal-header {
+    padding: 0.5rem 1.2rem !important;
+  }
+  #data td{
+     padding: 1px!important;
+  }
+  .modal-body {
+    padding: 0 1rem;
+  }
+
+  .select2-container--bootstrap4 .select2-selection--single {
+    height: calc(1.8125rem + 2px) !important;
+  }
+  .modal-body .card {
+    background-color: #fff;
+  }
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #26bdef;
+  } 
+  .nav-link.active:hover{
+    color: #dad6d6 !important;
+  } 
+  .modal a:hover{
+    color: #26bdef !important;
+  }
+  .list-group-item{
+    padding: 0;
+    
+  }
+  .modal-footer{
+    padding-top: 0 !important;
+  }
+  #badge_frecuencia_interes{
+    position: absolute;
+    margin-left: 0.2rem;
+  }
+  
+#tb-interes_info,#tb-matriculado_info{
+  padding-top: 2rem;
+}
+#tb-interes_paginate,#tb-matriculado_paginate{
+  margin: -0.5rem;
+}
+
+
+.pagination{
+  font-size: smaller;
+}
+</style>
+{% endblock %}
+{% block columns %}
+<tr>
+  <th style="width:95%;">Cursos Matriculados</th>
+  <th></th>
+  <th></th>
+  <th></th>
+  <th></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+  <th ></th>
+
+  <!-- {% if perms.preMatricula.view_prematricula %} -->
+  <th style="width:5%;">Acción</th>
+  <!-- {%endif%} -->
+</tr>
+{% endblock %}
+
+{% block busqueda %}
+     <div id='card_busqueda' class="card collapsed-card mb-1">
+            <div class="card-header p-0 pl-2 py-1">
+                <div class="card-title">
+                    <small><i class="fa fa-search pr-2"></i>Busqueda: <span class='text-black-50' id='resumen_busqueda'>Todos</span></small>
+                </div>
+                <div class="card-tools pr-4">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-2">
+              <form action="" id='form_busqueda'>
+                <div class="row">
+                  <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="form-group mb-0">
+                       <label for="id_curso_busqueda" class='m-0'>Curso:</label>
+                      {{form_estudiante_curso.cursos|add_class:'form-control form-control-sm'|attr:'autocomplete:off'|attr:'name:curso'|attr:'id:id_curso_busqueda'}}
+                    </div>
+                  </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                         <label for="id_horas_busqueda" class='m-0' >Horas Clases</label>
+                          <select class='select2 form-control form-control-sm' name="horas" autocomplete="off" class="form-check-input" id="id_horas_busqueda" >
+                            <option value=''>------</option>
+                            <option value='24'>24 Horas</option>
+                            <option value='36'>36 horas</option>
+                            <option value='64'>64 horas</option>
+                          </select></span>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="form-group m-0">
+                        <label for="id_estado_busqueda" class='m-0' >Estado</label>
+                          <select class='select2 form-control form-control-sm' name="estado" autocomplete="off" class="form-check-input" id="id_estado_busqueda" >
+                            <option value='TD'>todos</option>
+                            <option value='AB'>abierto</option>
+                            <option value='CE'>cerrado</option>
+                            <option value='PR'>en proceso</option>
+                          </select></span>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer p-2">
+                <button id='buscar_btn' class="btn btn-primary btn-xs">
+                  Realizar Busqueda<i class="fa fa-search pl-2"></i>
+                </button>
+                <button  id='cancelar_buscar_btn' class="btn btn-danger btn-xs">
+                  Cancelar y Mostrar Todos<i class="fa fa-trash-alt ml-1"></i>
+                </button>
+              </div>
+            </form>
+        </div>
+{% endblock %}
+
+{% block boton_accion%}
+{% endblock%}
+
+{%block class_modal%}modal-lg{% endblock %}
+{%block form_modal%}
+
+{%endblock%}
+
+{%block js_listar%}
+<script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %} "></script>
+<script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %} "></script>
+<script>
+  $(function () {
+    $('#id_curso_busqueda').val('').trigger("change");
+    
+    var vincular_busqueda_provincia_municipio= function(){
+      $('.select2').select2({
+        theme: 'bootstrap4',
+        language: 'es',
+      });
+    }
+    vincular_busqueda_provincia_municipio();
+    //creacion de la tabla con  serverside
+    var tblListar = $("#data").DataTable({
+      'serverSide':true,
+      'processing':true,
+      'buttons': [
+        'copy', 'excel', 'pdf'
+    ],
+      responsive: {
+        details: true,
+    },
+      'ajax':function(data,callback,settings){
+         $.post(window.location.pathname,{
+           'action': 'cargarDatos',
+           'csrfmiddlewaretoken': function () {
+             return $('input[name="csrfmiddlewaretoken"]').val();
+           },
+           limite:data.length,
+           inicio:data.start,
+           busqueda:data.search.value
+
+         },function(response){
+               callback({
+                 recordsTotal:response.total,
+                 recordsFiltered:response.total,
+                 data:response.lista
+
+               });
+         });
+      },
+        columns: [{
+          "data": 'nombre_curso',
+         
+        },
+        {
+          "data": 'id',
+         
+        },
+        {
+          "data": "descripcion_curso"
+        },
+         {
+          "data": "estado"
+        },
+        {
+          "data": "fecha_inicio"
+        },
+        {
+          "data": "fecha_fin"
+        },
+        {
+          "data": "modalidad"
+        },
+        {
+          "data": "capacidad"
+        },
+        {
+          "data": "frecuencia"
+        },
+        {
+          "data": "horas"
+        },
+        {
+          "data": "foto_url"
+        },
+        {
+          "data": "jcp"
+        },
+        {
+          "data": "jcm"
+        },
+        {
+          "data": "jcb"
+        },
+        {
+          "data": "cantidad_estudiante"
+        },
+        {
+          "data": "estado_color"
+        },
+        {
+          "data": "nextCurso_id"
+        },
+        {
+          "data": "esMaestro"
+        },
+        {
+          "data": "esGestor"
+        },
+        //{% if perms.preMatricula.view_prematricula %}
+        {
+          "data": 'jcb'
+        }
+        //{%endif%}
+      ],
+      columnDefs: [{
+          targets: 0,
+          responsivePriority: 1,
+          orderable: false,
+          class: 'text-center',
+          render: function (data, type, row) {
+            var buttons =
+              `
+              <div class='wrapper'>
+             <div class="card p-0 py-2 m-1" style="overflow:hidden;">
+                <div class='card-body p-0 m-1'>
+                  <div class='row'>
+                    <div class='col-12  col-lg-2 col-md-2 col-sm-2 d-flex flex-column '>
+                      <img src='${row.foto_url}' class=' mx-auto img-circle elevation-2 img-curso-lista' alt='image usuario' width='40px' height='40px'>
+                      <small class='text-center duracion-curso-lista'><span class="badge badge-success ">${row.horas}</span></small>
+                       <span class="bg-${row.estado_color} badge-curso-listar-estado"><strong>${row.estado}</strong></span>
+                    </div>
+                    <div class='col-12 col-lg-10 col-md-10 col-sm-10  p-1 pb-0 text-center bg-info' style="box-shadow: 0.5px 5px 5px 1px rgba(0,0,0,0.25);border-radius: 10px 1px 1px 10px;">
+                      <small>
+                        <div class='row'>
+                          <div class='col-12'>  
+                            <h5 class='mb-0' style="font-size: 0.9rem;font-weight: bold;">${data}</h5>
+                            <p class="texto-curso-lista mb-0" style="color: #ffffffdb;">${row.descripcion_curso}</p>
+                          </div>
+                        </div>  
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class='card-footer mb-0 p-1' style='font-size:0.8rem;box-shadow: 0px 5px 5px -2px rgba(0,0,0,0.25);margin-top: 0.5rem;border-top-color: #e9eeeec7;border-top-width: 1px;'>
+                  <div class='row text-center'>
+                    <div class='col-12 col-lg-3 col-md-4 col-sm-4'>
+                      <div class='badge badge-secondary'>
+                        <span data-toggle="tooltip" data-placement="top" title="Tooltip on top">JCP:</span>
+                        <span >${row.jcp}</span>
+                       </div>
+                    </div>
+                    <div class='col-12 col-lg-2 col-md-4 col-sm-4'>
+                      <div class='badge badge-secondary'>
+                        <span >JCM:</span>
+                        <span >${row.jcm}</span>
+                       </div>
+                    </div>
+                     <div class='col-12 col-lg-2 col-md-4 col-sm-4'>
+                      <div class='badge badge-secondary'>
+                        <span >JCB:</span>
+                        <span >${row.jcb}</span>
+                      </div>
+                     </div>
+                     <div class='col-12 col-lg-1 col-md-4 col-sm-4'>
+                         <span ><i class="fa fa-user pr-1"></i>:</span>
+                         <span >${row.capacidad}</span>
+                      </div>
+                      <div class='col-12 col-lg-1 col-md-4 col-sm-4'>
+                         <span ><i class="fa fa-graduation-cap pr-1"></i>:</span>
+                         <span >${row.cantidad_estudiante}</span>
+                      </div>
+                      <div class='col-12 col-lg-3 col-md-4 col-sm-4'>
+                         <span><i class='fa fa-calendar-check mr-1'></i>:</span>
+                         <span class="badge badge-success" style="font-size:0.5rem;">${row.fecha_inicio}</span>
+                         <span class="badge badge-danger" style="font-size:0.5rem;">${row.fecha_fin}</span>
+                        </div>
+                  </div>
+                </div>
+                <a href="${row.nextCurso_id == 'no' ? '#':`/sistema/matricula-pagina/${row.nextCurso_id}/`}">
+                <span class="badge badge-secondary navbar-badge badge-curso-listar">R: <strong>${row.nextCurso}</strong></span>
+                </a>
+               </div>
+              `;
+            return buttons
+          }
+        },
+        {
+          targets: [1,2,3, 4, 5, 6,7,8,9,10,11,12,13,14,15,16,17,18],
+          visible: false,
+        },
+        {
+          targets: [-1],
+          responsivePriority: 2,
+          class: "text-center",
+          orderable: false,
+          render: function (data, type, row) {
+            var buttons = ''
+            //{% if perms.preMatricula.view_prematricula%}
+            buttons =
+              '<a href="/sistema/matricula-pagina/'+ row.id+'/" rel="view" class="text-success" data-toggle="tooltip" title="Ver prematricula"><i class="fa fa-search" aria-hidden="true"></i></a> ';
+            //{%endif%}
+            //{% if perms.preMatricula.change_prematricula%}
+                 //{% if request.user|has_group:"Admin" %}
+                      buttons +=
+                        '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar prematricula"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+                 //{% else %}  
+                    if(row.esMaestro || row.esGestor){
+                      buttons +=
+                        '<a href="#" rel="edit" class="pl-1 text-info" data-toggle="tooltip" title="Editar prematricula"><i class="fa fa-edit" aria-hidden="true"></i></a> ';
+                    }
+                 //{% endif %}
+            //{%endif%}
+            //{% if perms.preMatricula.delete_prematricula%} 
+                  //{% if request.user|has_group:"Admin" %}
+                        buttons +=
+                         '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar prematricula"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+                 //{% else %}  
+                    if(row.esMaestro || row.esGestor){
+                        buttons +=
+                          '<a href="#" rel="delete" class="pl-1 text-danger" data-toggle="tooltip" title="Eliminar prematricula"><i class="fa fa-trash-alt" aria-hidden="true"></i></a>'
+                    }
+                 //{% endif %}
+            
+            //{%endif%}
+            return buttons
+          }
+        },
+
+      ],
+      order: [
+        [4, 'asc']
+      ],
+      initComplete: function (settings, json) {
+            
+           
+      }
+    });//fin de DataTable server
+    
+    //agregamos los botones a la tabla
+    $('#data_filter').html('<button  id="cancelar_buscar_btn_tabla" class="btn btn-danger btn-xs ml-1">Cancelar Busqueda<i class="fa fa-search ml-1"></i></button>');
+     
+    //tratamientos a los botones de las busquedas
+    //boton para cancelar la busqueda
+    let funcionCancelarBusqueda = function (e) {
+      e.preventDefault();
+      //obtener todos los elementos del formulario de busqueda
+      var elements = document.getElementById("form_busqueda").elements;
+      //iteramos todos para inicializarlos a todos
+      for (var i = 0, element; element = elements[i++];) {
+        //verifico si es un select, porque llevan un tratamiento diferente
+        if(element.nodeName=='SELECT'){
+          $(element).val('');
+          $(element).trigger('change');
+        }
+        else{
+          //los otros elementos normal el inicio
+          element.value='';
+        }
+      }
+      //actualizo los datos en el titulo de la caja de busqueda
+      $('#resumen_busqueda').html('Todos');
+      //genero un diccionario con filtro vacio para criterio de busqueda sea todo
+      var dict_busqueda_json =JSON.stringify({
+                    filtro:{}
+                    }); 
+      //llamo al metodo buscar de datatable y pinto la busqueda
+      tblListar.search(dict_busqueda_json).draw();
+    }
+    $('#cancelar_buscar_btn').on('click',function(e){
+      funcionCancelarBusqueda(e);
+    });
+    $('#cancelar_buscar_btn_tabla').on('click',function(e){
+      funcionCancelarBusqueda(e);
+    });
+     //boton de busquar 
+     $('#buscar_btn').on('click',function(e){
+      e.preventDefault();
+      //listado de los datos a busquar
+      let dict_busqueda = new Object()
+      let dict_busqueda_text = ''
+      //todos los elementos del formulario
+      var elements = document.getElementById("form_busqueda").elements;
+      //recorro cada elemento y si tiene datos lo incorporo a la lista
+      for (var i = 0, element; element = elements[i++];) {
+        if(element.value!=''){
+          dict_busqueda[element.name]=element.value;
+          if(element.nodeName=='SELECT'){
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.options[element.selectedIndex].innerHTML+'</strong></span>';
+          }
+          else{
+            dict_busqueda_text += '<span>'+element.name+':<strong class="mx-1">'+element.value+'</strong></span>';
+          }
+        }
+      }
+      //si la lista no esta vacia procedo a realizar la busqueda
+      if(Object.keys(dict_busqueda).length>0){
+        console.log(dict_busqueda);
+        var dict_busqueda_json =JSON.stringify({
+                    filtro:dict_busqueda
+                    }); 
+        tblListar.search(dict_busqueda_json).draw();
+        $('#resumen_busqueda').html(dict_busqueda_text);
+        $('#card_busqueda').CardWidget('collapse');
+      }
+      
+    });
+
+    //fin de tratamiento de botones de las busquedas
+
+    // //botones del nav de detalle
+    // $('#data tbody').on('click', 'a[rel="view"]', function (element) {
+    //   element.preventDefault();
+    //   var tr = tblListar.cell($(element.currentTarget).closest('td,li')).index();
+    //   //paso a data una lista de los valores de la row a editar
+    //   var data = tblListar.row(tr.row).data();
+    //   //variable como semafaro para en la funcion del cerrar del modal cargar el formulario 
+    //   cargar_extra_on_hide_modal = true
+    //   window.location.href = "sistema/matricula-pagina/"+ data.id+"/";
+    // });
+  });
+</script>
+{%endblock%}
+<!-- actualizacion de varios bloques -->

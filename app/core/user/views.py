@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.views.generic import DetailView
 from django.contrib.auth.models import User
+from core.user.models import Perfil
 
 
 # Create your views here.
@@ -23,9 +25,21 @@ def estaUsuario(request):
     return JsonResponse(estas, safe=False)
 
 
-def perfil(request):
+def verperfil(request):
+    return redirect(f"/user/perfil/{request.user.perfil.pk}/")
+
+
+class PerfilDetailView(DetailView):
+    model = Perfil
     data = {
         'title': "Perfil",
         'icono_titulo': "fas fa-user-circle"
     }
-    return render(request, "user/perfil.html", data)
+    template_name = "user/perfil.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Perfil"
+        context['icono_titulo'] = "fas fa-user-circle"
+        print(self.get_object())
+        return context
